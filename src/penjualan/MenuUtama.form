@@ -31,9 +31,16 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Kasir"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuKasirActionPerformed"/>
-          </Events>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="smBukaKasir">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Buka Menu Kasir"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="smBukaKasirActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenu3">
           <Properties>
@@ -83,21 +90,33 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Penjualan"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="smPenjualanActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="smTbPenjualan">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Tabel Penjualan"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="smTbPenjualanActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="smReturPenjualan">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Retur Penjualan"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="smReturPenjualanActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="smTbReturPenjualan">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Retur Penjualan"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="smTbReturPenjualanActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
