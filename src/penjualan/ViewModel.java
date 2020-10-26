@@ -38,4 +38,11 @@ public class ViewModel extends Koneksi {
         rs.next();
         return rs.getInt("id") + 1;
     }
+    
+    public String getIdFromKode(String field_kode, String value_kode, String table) throws Exception {
+        String query = "SELECT id FROM " + table + " WHERE " + field_kode + " = '" + value_kode + "'";
+        ResultSet rs = stmt.executeQuery(query);
+        rs.next();
+        return rs.getString("id");
+    }
 }

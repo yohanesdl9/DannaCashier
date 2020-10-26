@@ -280,6 +280,9 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Tambah"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tambahBarangActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="exit">
                       <Properties>
@@ -511,15 +514,15 @@
                           <Properties>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="9" rowCount="35">
-                                <Column editable="true" title="No" type="java.lang.Integer"/>
+                                <Column editable="true" title="No" type="java.lang.Object"/>
                                 <Column editable="true" title="Kode" type="java.lang.Object"/>
-                                <Column editable="true" title="Nama" type="java.lang.String"/>
-                                <Column editable="true" title="Kategori" type="java.lang.String"/>
-                                <Column editable="true" title="Jumlah Stok" type="java.lang.Integer"/>
-                                <Column editable="true" title="Satuan" type="java.lang.String"/>
-                                <Column editable="true" title="Harga Beli" type="java.lang.Integer"/>
-                                <Column editable="true" title="Harga Jual" type="java.lang.Integer"/>
-                                <Column editable="true" title="Suplier" type="java.lang.String"/>
+                                <Column editable="true" title="Nama" type="java.lang.Object"/>
+                                <Column editable="true" title="Kategori" type="java.lang.Object"/>
+                                <Column editable="true" title="Jumlah Stok" type="java.lang.Object"/>
+                                <Column editable="true" title="Satuan" type="java.lang.Object"/>
+                                <Column editable="true" title="Harga Jual" type="java.lang.Object"/>
+                                <Column editable="true" title="Harga Beli" type="java.lang.Object"/>
+                                <Column editable="true" title="Suplier" type="java.lang.Object"/>
                               </Table>
                             </Property>
                             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -530,11 +533,6 @@
                                   <Renderer/>
                                 </Column>
                                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                                  <Title value="Kode"/>
-                                  <Editor/>
-                                  <Renderer/>
-                                </Column>
-                                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                                   <Title/>
                                   <Editor/>
                                   <Renderer/>
@@ -555,12 +553,17 @@
                                   <Renderer/>
                                 </Column>
                                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                                  <Title value="Kontak"/>
+                                  <Title/>
                                   <Editor/>
                                   <Renderer/>
                                 </Column>
                                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                                  <Title value=""/>
+                                  <Title/>
+                                  <Editor/>
+                                  <Renderer/>
+                                </Column>
+                                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                                  <Title/>
                                   <Editor/>
                                   <Renderer/>
                                 </Column>
@@ -696,6 +699,9 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Keluar"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exit1ActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JTextField" name="searchSupplier">
                       <Events>

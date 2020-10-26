@@ -5,7 +5,11 @@
  */
 package penjualan.kasir;
 
+import java.awt.Choice;
+import java.sql.ResultSet;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import penjualan.ViewModel;
 
 /**
  *
@@ -16,9 +20,37 @@ public class InputDataBarang extends javax.swing.JFrame {
     /**
      * Creates new form InputDataBarang
      */
+    ViewModel vm = new ViewModel();
+    int id;
+    static int mode_form;
+    
     public InputDataBarang() {
         initComponents();
-       
+        initDropdown(kategori, "id_tipe = 1", "tb_general", "keterangan");
+        initDropdown(satuan, "id_tipe = 2", "tb_general", "keterangan");
+        initDropdown(supplier, "tb_supplier", "nama");
+    }
+    
+    public void initDropdown(Choice comboBox, String table, String field) {
+        try {
+            ResultSet rs = vm.getAllDataFromTable(table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void initDropdown(Choice comboBox, String param, String table, String field) {
+        try {
+            ResultSet rs = vm.getDataByParameter(param, table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

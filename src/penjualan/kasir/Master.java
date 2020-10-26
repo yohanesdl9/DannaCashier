@@ -290,6 +290,11 @@ public class Master extends javax.swing.JFrame {
         });
 
         tambahBarang.setText("Tambah");
+        tambahBarang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tambahBarangActionPerformed(evt);
+            }
+        });
 
         exit.setText("Keluar");
         exit.addActionListener(new java.awt.event.ActionListener() {
@@ -419,23 +424,12 @@ public class Master extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "No", "Kode", "Nama", "Kategori", "Jumlah Stok", "Satuan", "Harga Beli", "Harga Jual", "Suplier"
+                "No", "Kode", "Nama", "Kategori", "Jumlah Stok", "Satuan", "Harga Jual", "Harga Beli", "Suplier"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
+        ));
         scrollTableBarang.setViewportView(tabelBarang);
         if (tabelBarang.getColumnModel().getColumnCount() > 0) {
             tabelBarang.getColumnModel().getColumn(0).setPreferredWidth(3);
-            tabelBarang.getColumnModel().getColumn(1).setHeaderValue("Kode");
-            tabelBarang.getColumnModel().getColumn(6).setHeaderValue("Kontak");
-            tabelBarang.getColumnModel().getColumn(7).setHeaderValue("");
         }
 
         javax.swing.GroupLayout contentLayout = new javax.swing.GroupLayout(content);
@@ -563,6 +557,11 @@ public class Master extends javax.swing.JFrame {
         });
 
         exit1.setText("Keluar");
+        exit1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exit1ActionPerformed(evt);
+            }
+        });
 
         searchSupplier.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -1264,7 +1263,6 @@ public class Master extends javax.swing.JFrame {
         // TODO add your handling code here:
         InputDataSuplier.mode_form = 0;
         new InputDataSuplier().setVisible(true);
-        
     }//GEN-LAST:event_tambahSuplierActionPerformed
 
     private void tambahPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahPelangganActionPerformed
@@ -1387,6 +1385,18 @@ public class Master extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (tabelSupplier.getSelectedRow() >= 0) {
             String kode = tabelSupplier.getValueAt(tabelSupplier.getSelectedRow(), 1).toString();
+            try {
+                String id = vm.getIdFromKode("kode", kode, "tb_supplier");
+                int result = supplierDAO.deleteSupplier(id);
+                if (result >= 0) {
+                    JOptionPane.showMessageDialog(null, "Berhasil menghapus data", "Berhasil", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Gagal menghapus data, terjadi kesalahan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e){
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         }
@@ -1411,6 +1421,7 @@ public class Master extends javax.swing.JFrame {
                     new InputDataPelanggan().setVisible(true);
                 }
             } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
             }
         } else {
@@ -1422,6 +1433,18 @@ public class Master extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (tabelPelanggan.getSelectedRow() >= 0) {
             String kode = tabelPelanggan.getValueAt(tabelPelanggan.getSelectedRow(), 1).toString();
+            try {
+                String id = vm.getIdFromKode("kode", kode, "tb_pelanggan");
+                int result = pelangganDAO.deletePelanggan(id);
+                if (result >= 0) {
+                    JOptionPane.showMessageDialog(null, "Berhasil menghapus data", "Berhasil", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Gagal menghapus data, terjadi kesalahan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e){
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         }
@@ -1431,7 +1454,7 @@ public class Master extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (tabelSales.getSelectedRow() >= 0) {
             String kode = tabelSales.getValueAt(tabelSales.getSelectedRow(), 1).toString();
-                        try {
+            try {
                 ResultSet rs = vm.getDataByParameter("kode = '" + kode + "'", "tb_sales");
                 if (rs.next()){
                     Sales sp = new Sales();
@@ -1460,6 +1483,18 @@ public class Master extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (tabelSales.getSelectedRow() >= 0) {
             String kode = tabelSales.getValueAt(tabelSales.getSelectedRow(), 1).toString();
+            try {
+                String id = vm.getIdFromKode("kode", kode, "tb_sales");
+                int result = salesDAO.deleteSales(id);
+                if (result >= 0) {
+                    JOptionPane.showMessageDialog(null, "Berhasil menghapus data", "Berhasil", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Gagal menghapus data, terjadi kesalahan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e){
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         }
@@ -1485,6 +1520,17 @@ public class Master extends javax.swing.JFrame {
         // TODO add your handling code here:
         update();
     }//GEN-LAST:event_btnRefreshAllActionPerformed
+
+    private void exit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exit1ActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_exit1ActionPerformed
+
+    private void tambahBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahBarangActionPerformed
+        // TODO add your handling code here:
+        InputDataBarang.mode_form = 0;
+        new InputDataBarang().setVisible(true);
+    }//GEN-LAST:event_tambahBarangActionPerformed
 
     /**
      * @param args the command line arguments
