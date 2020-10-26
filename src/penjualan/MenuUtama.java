@@ -34,6 +34,7 @@ public class MenuUtama extends javax.swing.JFrame {
         smLogout = new javax.swing.JMenuItem();
         smKeluarApl = new javax.swing.JMenuItem();
         menuKasir = new javax.swing.JMenu();
+        smBukaKasir = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         smPembelian = new javax.swing.JMenuItem();
         smTbPembelian = new javax.swing.JMenuItem();
@@ -68,11 +69,15 @@ public class MenuUtama extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         menuKasir.setText("Kasir");
-        menuKasir.addActionListener(new java.awt.event.ActionListener() {
+
+        smBukaKasir.setText("Buka Menu Kasir");
+        smBukaKasir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuKasirActionPerformed(evt);
+                smBukaKasirActionPerformed(evt);
             }
         });
+        menuKasir.add(smBukaKasir);
+
         jMenuBar1.add(menuKasir);
 
         jMenu3.setText("Transaksi Pembelian");
@@ -114,15 +119,35 @@ public class MenuUtama extends javax.swing.JFrame {
         jMenu4.setText("Transaksi Penjualan");
 
         smPenjualan.setText("Penjualan");
+        smPenjualan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                smPenjualanActionPerformed(evt);
+            }
+        });
         jMenu4.add(smPenjualan);
 
         smTbPenjualan.setText("Tabel Penjualan");
+        smTbPenjualan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                smTbPenjualanActionPerformed(evt);
+            }
+        });
         jMenu4.add(smTbPenjualan);
 
         smReturPenjualan.setText("Retur Penjualan");
+        smReturPenjualan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                smReturPenjualanActionPerformed(evt);
+            }
+        });
         jMenu4.add(smReturPenjualan);
 
         smTbReturPenjualan.setText("Retur Penjualan");
+        smTbReturPenjualan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                smTbReturPenjualanActionPerformed(evt);
+            }
+        });
         jMenu4.add(smTbReturPenjualan);
 
         jMenuBar1.add(jMenu4);
@@ -162,28 +187,48 @@ public class MenuUtama extends javax.swing.JFrame {
 
     private void smTbReturPembelianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smTbReturPembelianActionPerformed
         // TODO add your handling code here:
-        new penjualan.pembelian.Tabelreturpembelian_frame().setVisible(true);
+        new penjualan.pembelian.TabelReturPembelian().setVisible(true);
     }//GEN-LAST:event_smTbReturPembelianActionPerformed
 
     private void smPembelianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smPembelianActionPerformed
         // TODO add your handling code here:
-        new penjualan.pembelian.Pembeliantunai_frame().setVisible(true);
+        new penjualan.pembelian.PembelianTunai().setVisible(true);
     }//GEN-LAST:event_smPembelianActionPerformed
 
     private void smTbPembelianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smTbPembelianActionPerformed
         // TODO add your handling code here:
-        new penjualan.pembelian.Tabelpembelian_frame().setVisible(true);
+        new penjualan.pembelian.TabelPembelian().setVisible(true);
     }//GEN-LAST:event_smTbPembelianActionPerformed
 
     private void smReturPembelianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smReturPembelianActionPerformed
         // TODO add your handling code here:
-        new penjualan.pembelian.Returpembelian_frame().setVisible(true);
+        new penjualan.pembelian.ReturPembelian().setVisible(true);
     }//GEN-LAST:event_smReturPembelianActionPerformed
 
-    private void menuKasirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuKasirActionPerformed
+    private void smPenjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smPenjualanActionPerformed
+        // TODO add your handling code here:
+        new penjualan.penjualan.PenjualanTunai().setVisible(true);
+    }//GEN-LAST:event_smPenjualanActionPerformed
+
+    private void smTbPenjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smTbPenjualanActionPerformed
+        // TODO add your handling code here:
+        new penjualan.penjualan.TabelPenjualan().setVisible(true);
+    }//GEN-LAST:event_smTbPenjualanActionPerformed
+
+    private void smReturPenjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smReturPenjualanActionPerformed
+        // TODO add your handling code here:
+        new penjualan.penjualan.ReturPenjualan().setVisible(true);
+    }//GEN-LAST:event_smReturPenjualanActionPerformed
+
+    private void smTbReturPenjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smTbReturPenjualanActionPerformed
+        // TODO add your handling code here:
+        new penjualan.penjualan.TabelReturPenjualan().setVisible(true);
+    }//GEN-LAST:event_smTbReturPenjualanActionPerformed
+
+    private void smBukaKasirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smBukaKasirActionPerformed
         // TODO add your handling code here:
         new penjualan.kasir.Master().setVisible(true);
-    }//GEN-LAST:event_menuKasirActionPerformed
+    }//GEN-LAST:event_smBukaKasirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -226,6 +271,7 @@ public class MenuUtama extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu menuKasir;
+    private javax.swing.JMenuItem smBukaKasir;
     private javax.swing.JMenuItem smKeluarApl;
     private javax.swing.JMenuItem smLogout;
     private javax.swing.JMenuItem smPembelian;

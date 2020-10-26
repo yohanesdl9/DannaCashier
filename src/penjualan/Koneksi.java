@@ -17,7 +17,7 @@ public class Koneksi {
     public Koneksi(){
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            koneksi = DriverManager.getConnection("jdbc:mysql://localhost:3306/[nama_database]", "root", "");
+            koneksi = DriverManager.getConnection("jdbc:mysql://localhost:3306/danna", "root", "");
             stmt = koneksi.createStatement();
         } catch (Exception e){
             e.printStackTrace();

@@ -5,6 +5,22 @@
  */
 package penjualan.kasir;
 
+import dao.PelangganDAO;
+import dao.SalesDAO;
+import dao.SupplierDAO;
+import datatable.PelangganDataTable;
+import datatable.SalesDataTable;
+import datatable.SupplierDataTable;
+import java.sql.ResultSet;
+import java.util.List;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.Pelanggan;
+import model.Sales;
+import model.Supplier;
+import penjualan.ViewModel;
+
 /**
  *
  * @author Dandi
@@ -14,10 +30,69 @@ public class Master extends javax.swing.JFrame {
     /**
      * Creates new form Master
      */
+    ViewModel vm = new ViewModel();
+    PelangganDAO pelangganDAO = PelangganDAO.getInstance();
+    SupplierDAO supplierDAO = SupplierDAO.getInstance();
+    SalesDAO salesDAO = SalesDAO.getInstance();
+    List<Pelanggan> listPelanggan;
+    List<Supplier> listSupplier;
+    List<Sales> listSales;
+    
     public Master() {
         initComponents();
+        initDropdown(listKategori, "id_tipe = 1", "tb_general", "keterangan");
+        initDropdown(listSatuan, "id_tipe = 2", "tb_general", "keterangan");
+        initTabelSupplier();
+        initTabelPelanggan();
+        initTabelSales();
     }
-
+    
+    public void initDropdown(JComboBox comboBox, String param, String table, String field) {
+        try {
+            ResultSet rs = vm.getDataByParameter(param, table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void initTabelSupplier(){
+        try {
+            listSupplier = supplierDAO.getListSupplier();
+            tabelSupplier.setModel(new SupplierDataTable(listSupplier));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    
+    public void initTabelSales(){
+        try {
+            listSales = salesDAO.getListSales();
+            tabelSales.setModel(new SalesDataTable(listSales));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    
+    public void initTabelPelanggan(){
+        try {
+            listPelanggan = pelangganDAO.getListPelanggan();
+            tabelPelanggan.setModel(new PelangganDataTable(listPelanggan));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    
+    public void update(){
+        initTabelSupplier();
+        initTabelSales();
+        initTabelPelanggan();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,9 +103,6 @@ public class Master extends javax.swing.JFrame {
     private void initComponents() {
 
         bodypanel = new javax.swing.JPanel();
-        TopNav = new javax.swing.JPanel();
-        btnTransaksi = new javax.swing.JButton();
-        btnMaster = new javax.swing.JButton();
         menuPanel = new javax.swing.JPanel();
         btnBarang = new javax.swing.JButton();
         btnSuplier = new javax.swing.JButton();
@@ -38,6 +110,7 @@ public class Master extends javax.swing.JFrame {
         btnSales = new javax.swing.JButton();
         btnHutang = new javax.swing.JButton();
         btnPengaturan = new javax.swing.JButton();
+        btnRefreshAll = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         panelBarang = new javax.swing.JPanel();
         botNav = new javax.swing.JPanel();
@@ -59,96 +132,56 @@ public class Master extends javax.swing.JFrame {
         eksportExcel = new javax.swing.JButton();
         copyBarcode = new javax.swing.JButton();
         cetakBarcode = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scrollTableBarang = new javax.swing.JScrollPane();
         tabelBarang = new javax.swing.JTable();
         panelSuplier = new javax.swing.JPanel();
         botNav1 = new javax.swing.JPanel();
-        hapusBarang1 = new javax.swing.JButton();
-        editBarang1 = new javax.swing.JButton();
-        tambahBarang1 = new javax.swing.JButton();
+        hapusSuplier = new javax.swing.JButton();
+        editSuplier = new javax.swing.JButton();
+        tambahSuplier = new javax.swing.JButton();
         exit1 = new javax.swing.JButton();
-        searchBarang1 = new javax.swing.JTextField();
+        searchSupplier = new javax.swing.JTextField();
         content1 = new javax.swing.JPanel();
         labelbarang1 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tabelBarang1 = new javax.swing.JTable();
+        scrollTableSupplier = new javax.swing.JScrollPane();
+        tabelSupplier = new javax.swing.JTable();
         panelPelanggan = new javax.swing.JPanel();
         botNav3 = new javax.swing.JPanel();
-        hapusBarang3 = new javax.swing.JButton();
-        editBarang3 = new javax.swing.JButton();
-        tambahBarang3 = new javax.swing.JButton();
+        hapusPelanggan = new javax.swing.JButton();
+        editPelanggan = new javax.swing.JButton();
+        tambahPelanggan = new javax.swing.JButton();
         exit3 = new javax.swing.JButton();
-        searchBarang3 = new javax.swing.JTextField();
+        searchPelanggan = new javax.swing.JTextField();
         content3 = new javax.swing.JPanel();
         labelbarang3 = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        tabelBarang3 = new javax.swing.JTable();
+        scrollTablePelanggan = new javax.swing.JScrollPane();
+        tabelPelanggan = new javax.swing.JTable();
         panelSales = new javax.swing.JPanel();
         botNav2 = new javax.swing.JPanel();
-        hapusBarang2 = new javax.swing.JButton();
-        editBarang2 = new javax.swing.JButton();
-        tambahBarang2 = new javax.swing.JButton();
+        hapusSales = new javax.swing.JButton();
+        editSales = new javax.swing.JButton();
+        tambahSales = new javax.swing.JButton();
         exit2 = new javax.swing.JButton();
-        searchBarang2 = new javax.swing.JTextField();
+        searchSales = new javax.swing.JTextField();
         content2 = new javax.swing.JPanel();
         labelbarang2 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tabelBarang2 = new javax.swing.JTable();
+        scrollTableSales = new javax.swing.JScrollPane();
+        tabelSales = new javax.swing.JTable();
         panelHutang = new javax.swing.JPanel();
         botNav4 = new javax.swing.JPanel();
-        hapusBarang4 = new javax.swing.JButton();
-        editBarang4 = new javax.swing.JButton();
-        tambahBarang4 = new javax.swing.JButton();
+        hapusHutang = new javax.swing.JButton();
+        editHutang = new javax.swing.JButton();
+        tambahHutang = new javax.swing.JButton();
         exit4 = new javax.swing.JButton();
-        searchBarang4 = new javax.swing.JTextField();
+        searchHutang = new javax.swing.JTextField();
         content4 = new javax.swing.JPanel();
         labelbarang4 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        tabelBarang4 = new javax.swing.JTable();
+        tabelHutang = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         bodypanel.setBackground(new java.awt.Color(75, 87, 247));
-
-        TopNav.setBackground(new java.awt.Color(102, 204, 255));
-
-        btnTransaksi.setText("TRANSAKSI");
-        btnTransaksi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTransaksiActionPerformed(evt);
-            }
-        });
-
-        btnMaster.setText("MASTER");
-        btnMaster.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMasterActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout TopNavLayout = new javax.swing.GroupLayout(TopNav);
-        TopNav.setLayout(TopNavLayout);
-        TopNavLayout.setHorizontalGroup(
-            TopNavLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(TopNavLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(btnTransaksi)
-                .addGap(3, 3, 3)
-                .addComponent(btnMaster)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        TopNavLayout.setVerticalGroup(
-            TopNavLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(TopNavLayout.createSequentialGroup()
-                .addGap(4, 4, 4)
-                .addGroup(TopNavLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(TopNavLayout.createSequentialGroup()
-                        .addComponent(btnMaster)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(TopNavLayout.createSequentialGroup()
-                        .addComponent(btnTransaksi)
-                        .addGap(0, 0, Short.MAX_VALUE))))
-        );
 
         btnBarang.setText("BARANG");
         btnBarang.addActionListener(new java.awt.event.ActionListener() {
@@ -192,6 +225,13 @@ public class Master extends javax.swing.JFrame {
             }
         });
 
+        btnRefreshAll.setText("REFRESH DATA");
+        btnRefreshAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshAllActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
         menuPanel.setLayout(menuPanelLayout);
         menuPanelLayout.setHorizontalGroup(
@@ -209,6 +249,8 @@ public class Master extends javax.swing.JFrame {
                 .addComponent(btnHutang)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnPengaturan)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnRefreshAll)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         menuPanelLayout.setVerticalGroup(
@@ -221,7 +263,8 @@ public class Master extends javax.swing.JFrame {
                     .addComponent(btnPelanggan)
                     .addComponent(btnSales)
                     .addComponent(btnHutang)
-                    .addComponent(btnPengaturan))
+                    .addComponent(btnPengaturan)
+                    .addComponent(btnRefreshAll))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -233,14 +276,33 @@ public class Master extends javax.swing.JFrame {
         botNav.setBackground(new java.awt.Color(51, 102, 255));
 
         hapusBarang.setText("Hapus");
+        hapusBarang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hapusBarangActionPerformed(evt);
+            }
+        });
 
         editBarang.setText("Edit");
+        editBarang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBarangActionPerformed(evt);
+            }
+        });
 
         tambahBarang.setText("Tambah");
 
         exit.setText("Keluar");
+        exit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitActionPerformed(evt);
+            }
+        });
 
-        searchBarang.setText("Cari");
+        searchBarang.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchBarangKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout botNavLayout = new javax.swing.GroupLayout(botNav);
         botNav.setLayout(botNavLayout);
@@ -278,7 +340,7 @@ public class Master extends javax.swing.JFrame {
         labelbarang.setForeground(new java.awt.Color(255, 255, 255));
         labelbarang.setText("BARANG");
 
-        listKategori.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        listKategori.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua" }));
         listKategori.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 listKategoriActionPerformed(evt);
@@ -291,7 +353,7 @@ public class Master extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("SUPLIER");
 
-        listSuplier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        listSuplier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua" }));
         listSuplier.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 listSuplierActionPerformed(evt);
@@ -301,7 +363,7 @@ public class Master extends javax.swing.JFrame {
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("SATUAN");
 
-        listSatuan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        listSatuan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua" }));
         listSatuan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 listSatuanActionPerformed(evt);
@@ -368,7 +430,7 @@ public class Master extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tabelBarang);
+        scrollTableBarang.setViewportView(tabelBarang);
         if (tabelBarang.getColumnModel().getColumnCount() > 0) {
             tabelBarang.getColumnModel().getColumn(0).setPreferredWidth(3);
             tabelBarang.getColumnModel().getColumn(1).setHeaderValue("Kode");
@@ -410,7 +472,7 @@ public class Master extends javax.swing.JFrame {
             .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(contentLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1267, Short.MAX_VALUE)
+                    .addComponent(scrollTableBarang, javax.swing.GroupLayout.DEFAULT_SIZE, 1267, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         contentLayout.setVerticalGroup(
@@ -438,15 +500,15 @@ public class Master extends javax.swing.JFrame {
                                 .addComponent(listSuplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(listSatuan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(btnRefresh)))))
-                .addContainerGap(352, Short.MAX_VALUE))
+                .addContainerGap(363, Short.MAX_VALUE))
             .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(contentLayout.createSequentialGroup()
                     .addGap(47, 47, 47)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                    .addComponent(scrollTableBarang, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
-        jScrollPane1.getAccessibleContext().setAccessibleName("");
+        scrollTableBarang.getAccessibleContext().setAccessibleName("");
 
         javax.swing.GroupLayout panelBarangLayout = new javax.swing.GroupLayout(panelBarang);
         panelBarang.setLayout(panelBarangLayout);
@@ -463,7 +525,7 @@ public class Master extends javax.swing.JFrame {
         );
         panelBarangLayout.setVerticalGroup(
             panelBarangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 461, Short.MAX_VALUE)
+            .addGap(0, 472, Short.MAX_VALUE)
             .addGroup(panelBarangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(panelBarangLayout.createSequentialGroup()
                     .addGap(5, 5, 5)
@@ -479,15 +541,34 @@ public class Master extends javax.swing.JFrame {
 
         botNav1.setBackground(new java.awt.Color(51, 102, 255));
 
-        hapusBarang1.setText("Hapus");
+        hapusSuplier.setText("Hapus");
+        hapusSuplier.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hapusSuplierActionPerformed(evt);
+            }
+        });
 
-        editBarang1.setText("Edit");
+        editSuplier.setText("Edit");
+        editSuplier.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editSuplierActionPerformed(evt);
+            }
+        });
 
-        tambahBarang1.setText("Tambah");
+        tambahSuplier.setText("Tambah");
+        tambahSuplier.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tambahSuplierActionPerformed(evt);
+            }
+        });
 
         exit1.setText("Keluar");
 
-        searchBarang1.setText("Cari");
+        searchSupplier.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchSupplierKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout botNav1Layout = new javax.swing.GroupLayout(botNav1);
         botNav1.setLayout(botNav1Layout);
@@ -495,13 +576,13 @@ public class Master extends javax.swing.JFrame {
             botNav1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(botNav1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tambahBarang1)
+                .addComponent(tambahSuplier)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editBarang1)
+                .addComponent(editSuplier)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(hapusBarang1)
+                .addComponent(hapusSuplier)
                 .addGap(94, 94, 94)
-                .addComponent(searchBarang1, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 588, Short.MAX_VALUE)
                 .addComponent(exit1)
                 .addContainerGap())
@@ -511,10 +592,10 @@ public class Master extends javax.swing.JFrame {
             .addGroup(botNav1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(botNav1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tambahBarang1)
-                    .addComponent(editBarang1)
-                    .addComponent(hapusBarang1)
-                    .addComponent(searchBarang1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tambahSuplier)
+                    .addComponent(editSuplier)
+                    .addComponent(hapusSuplier)
+                    .addComponent(searchSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(exit1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -525,61 +606,25 @@ public class Master extends javax.swing.JFrame {
         labelbarang1.setForeground(new java.awt.Color(255, 255, 255));
         labelbarang1.setText("SUPLIER");
 
-        tabelBarang1.setModel(new javax.swing.table.DefaultTableModel(
+        tabelSupplier.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "No", "Kode", "Nama", "Alamat", "Telpon", "Email", "Kontak Person", "Rekening", "Keterangan"
+                "No", "Kode", "Nama", "Alamat", "Telepon", "Email", "Kontak Person", "Keterangan"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(tabelBarang1);
-        if (tabelBarang1.getColumnModel().getColumnCount() > 0) {
-            tabelBarang1.getColumnModel().getColumn(0).setPreferredWidth(3);
-            tabelBarang1.getColumnModel().getColumn(1).setHeaderValue("Kode");
-            tabelBarang1.getColumnModel().getColumn(7).setHeaderValue("");
+        scrollTableSupplier.setViewportView(tabelSupplier);
+        if (tabelSupplier.getColumnModel().getColumnCount() > 0) {
+            tabelSupplier.getColumnModel().getColumn(0).setPreferredWidth(3);
         }
 
         javax.swing.GroupLayout content1Layout = new javax.swing.GroupLayout(content1);
@@ -593,7 +638,7 @@ public class Master extends javax.swing.JFrame {
             .addGroup(content1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(content1Layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1287, Short.MAX_VALUE)
+                    .addComponent(scrollTableSupplier, javax.swing.GroupLayout.DEFAULT_SIZE, 1287, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         content1Layout.setVerticalGroup(
@@ -601,11 +646,11 @@ public class Master extends javax.swing.JFrame {
             .addGroup(content1Layout.createSequentialGroup()
                 .addGap(7, 7, 7)
                 .addComponent(labelbarang1)
-                .addContainerGap(352, Short.MAX_VALUE))
+                .addContainerGap(363, Short.MAX_VALUE))
             .addGroup(content1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(content1Layout.createSequentialGroup()
                     .addGap(47, 47, 47)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                    .addComponent(scrollTableSupplier, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
@@ -624,7 +669,7 @@ public class Master extends javax.swing.JFrame {
         );
         panelSuplierLayout.setVerticalGroup(
             panelSuplierLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 461, Short.MAX_VALUE)
+            .addGap(0, 472, Short.MAX_VALUE)
             .addGroup(panelSuplierLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(panelSuplierLayout.createSequentialGroup()
                     .addGap(5, 5, 5)
@@ -640,15 +685,34 @@ public class Master extends javax.swing.JFrame {
 
         botNav3.setBackground(new java.awt.Color(51, 102, 255));
 
-        hapusBarang3.setText("Hapus");
+        hapusPelanggan.setText("Hapus");
+        hapusPelanggan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hapusPelangganActionPerformed(evt);
+            }
+        });
 
-        editBarang3.setText("Edit");
+        editPelanggan.setText("Edit");
+        editPelanggan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editPelangganActionPerformed(evt);
+            }
+        });
 
-        tambahBarang3.setText("Tambah");
+        tambahPelanggan.setText("Tambah");
+        tambahPelanggan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tambahPelangganActionPerformed(evt);
+            }
+        });
 
         exit3.setText("Keluar");
 
-        searchBarang3.setText("Cari");
+        searchPelanggan.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchPelangganKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout botNav3Layout = new javax.swing.GroupLayout(botNav3);
         botNav3.setLayout(botNav3Layout);
@@ -656,13 +720,13 @@ public class Master extends javax.swing.JFrame {
             botNav3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(botNav3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tambahBarang3)
+                .addComponent(tambahPelanggan)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editBarang3)
+                .addComponent(editPelanggan)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(hapusBarang3)
+                .addComponent(hapusPelanggan)
                 .addGap(94, 94, 94)
-                .addComponent(searchBarang3, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 588, Short.MAX_VALUE)
                 .addComponent(exit3)
                 .addContainerGap())
@@ -672,10 +736,10 @@ public class Master extends javax.swing.JFrame {
             .addGroup(botNav3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(botNav3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tambahBarang3)
-                    .addComponent(editBarang3)
-                    .addComponent(hapusBarang3)
-                    .addComponent(searchBarang3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tambahPelanggan)
+                    .addComponent(editPelanggan)
+                    .addComponent(hapusPelanggan)
+                    .addComponent(searchPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(exit3))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -686,43 +750,9 @@ public class Master extends javax.swing.JFrame {
         labelbarang3.setForeground(new java.awt.Color(255, 255, 255));
         labelbarang3.setText("PELANGGAN");
 
-        tabelBarang3.setModel(new javax.swing.table.DefaultTableModel(
+        tabelPelanggan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
                 "No", "Kode", "Nama", "Alamat", "Telpon", "Keterangan"
@@ -736,10 +766,9 @@ public class Master extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane4.setViewportView(tabelBarang3);
-        if (tabelBarang3.getColumnModel().getColumnCount() > 0) {
-            tabelBarang3.getColumnModel().getColumn(0).setPreferredWidth(3);
-            tabelBarang3.getColumnModel().getColumn(1).setHeaderValue("Kode");
+        scrollTablePelanggan.setViewportView(tabelPelanggan);
+        if (tabelPelanggan.getColumnModel().getColumnCount() > 0) {
+            tabelPelanggan.getColumnModel().getColumn(0).setPreferredWidth(3);
         }
 
         javax.swing.GroupLayout content3Layout = new javax.swing.GroupLayout(content3);
@@ -753,7 +782,7 @@ public class Master extends javax.swing.JFrame {
             .addGroup(content3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(content3Layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1287, Short.MAX_VALUE)
+                    .addComponent(scrollTablePelanggan, javax.swing.GroupLayout.DEFAULT_SIZE, 1287, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         content3Layout.setVerticalGroup(
@@ -761,11 +790,11 @@ public class Master extends javax.swing.JFrame {
             .addGroup(content3Layout.createSequentialGroup()
                 .addGap(7, 7, 7)
                 .addComponent(labelbarang3)
-                .addContainerGap(352, Short.MAX_VALUE))
+                .addContainerGap(363, Short.MAX_VALUE))
             .addGroup(content3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(content3Layout.createSequentialGroup()
                     .addGap(47, 47, 47)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                    .addComponent(scrollTablePelanggan, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
@@ -784,7 +813,7 @@ public class Master extends javax.swing.JFrame {
         );
         panelPelangganLayout.setVerticalGroup(
             panelPelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 461, Short.MAX_VALUE)
+            .addGap(0, 472, Short.MAX_VALUE)
             .addGroup(panelPelangganLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(panelPelangganLayout.createSequentialGroup()
                     .addGap(5, 5, 5)
@@ -800,15 +829,34 @@ public class Master extends javax.swing.JFrame {
 
         botNav2.setBackground(new java.awt.Color(51, 102, 255));
 
-        hapusBarang2.setText("Hapus");
+        hapusSales.setText("Hapus");
+        hapusSales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hapusSalesActionPerformed(evt);
+            }
+        });
 
-        editBarang2.setText("Edit");
+        editSales.setText("Edit");
+        editSales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editSalesActionPerformed(evt);
+            }
+        });
 
-        tambahBarang2.setText("Tambah");
+        tambahSales.setText("Tambah");
+        tambahSales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tambahSalesActionPerformed(evt);
+            }
+        });
 
         exit2.setText("Keluar");
 
-        searchBarang2.setText("Cari");
+        searchSales.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchSalesKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout botNav2Layout = new javax.swing.GroupLayout(botNav2);
         botNav2.setLayout(botNav2Layout);
@@ -816,13 +864,13 @@ public class Master extends javax.swing.JFrame {
             botNav2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(botNav2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tambahBarang2)
+                .addComponent(tambahSales)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editBarang2)
+                .addComponent(editSales)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(hapusBarang2)
+                .addComponent(hapusSales)
                 .addGap(94, 94, 94)
-                .addComponent(searchBarang2, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchSales, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 588, Short.MAX_VALUE)
                 .addComponent(exit2)
                 .addContainerGap())
@@ -832,10 +880,10 @@ public class Master extends javax.swing.JFrame {
             .addGroup(botNav2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(botNav2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tambahBarang2)
-                    .addComponent(editBarang2)
-                    .addComponent(hapusBarang2)
-                    .addComponent(searchBarang2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tambahSales)
+                    .addComponent(editSales)
+                    .addComponent(hapusSales)
+                    .addComponent(searchSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(exit2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -846,43 +894,9 @@ public class Master extends javax.swing.JFrame {
         labelbarang2.setForeground(new java.awt.Color(255, 255, 255));
         labelbarang2.setText("SALES");
 
-        tabelBarang2.setModel(new javax.swing.table.DefaultTableModel(
+        tabelSales.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "No", "Kode", "Nama", "Alamat", "Telpon", "Email", "Kontak Person", "Rekening", "Keterangan"
@@ -896,11 +910,9 @@ public class Master extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(tabelBarang2);
-        if (tabelBarang2.getColumnModel().getColumnCount() > 0) {
-            tabelBarang2.getColumnModel().getColumn(0).setPreferredWidth(3);
-            tabelBarang2.getColumnModel().getColumn(1).setHeaderValue("Kode");
-            tabelBarang2.getColumnModel().getColumn(7).setHeaderValue("");
+        scrollTableSales.setViewportView(tabelSales);
+        if (tabelSales.getColumnModel().getColumnCount() > 0) {
+            tabelSales.getColumnModel().getColumn(0).setPreferredWidth(3);
         }
 
         javax.swing.GroupLayout content2Layout = new javax.swing.GroupLayout(content2);
@@ -914,7 +926,7 @@ public class Master extends javax.swing.JFrame {
             .addGroup(content2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(content2Layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1287, Short.MAX_VALUE)
+                    .addComponent(scrollTableSales, javax.swing.GroupLayout.DEFAULT_SIZE, 1287, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         content2Layout.setVerticalGroup(
@@ -922,11 +934,11 @@ public class Master extends javax.swing.JFrame {
             .addGroup(content2Layout.createSequentialGroup()
                 .addGap(7, 7, 7)
                 .addComponent(labelbarang2)
-                .addContainerGap(352, Short.MAX_VALUE))
+                .addContainerGap(363, Short.MAX_VALUE))
             .addGroup(content2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(content2Layout.createSequentialGroup()
                     .addGap(47, 47, 47)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                    .addComponent(scrollTableSales, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
@@ -945,7 +957,7 @@ public class Master extends javax.swing.JFrame {
         );
         panelSalesLayout.setVerticalGroup(
             panelSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 461, Short.MAX_VALUE)
+            .addGap(0, 472, Short.MAX_VALUE)
             .addGroup(panelSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(panelSalesLayout.createSequentialGroup()
                     .addGap(5, 5, 5)
@@ -961,15 +973,34 @@ public class Master extends javax.swing.JFrame {
 
         botNav4.setBackground(new java.awt.Color(51, 102, 255));
 
-        hapusBarang4.setText("Hapus");
+        hapusHutang.setText("Hapus");
+        hapusHutang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hapusHutangActionPerformed(evt);
+            }
+        });
 
-        editBarang4.setText("Edit");
+        editHutang.setText("Edit");
+        editHutang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editHutangActionPerformed(evt);
+            }
+        });
 
-        tambahBarang4.setText("Tambah");
+        tambahHutang.setText("Tambah");
+        tambahHutang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tambahHutangActionPerformed(evt);
+            }
+        });
 
         exit4.setText("Keluar");
 
-        searchBarang4.setText("Cari");
+        searchHutang.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchHutangKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout botNav4Layout = new javax.swing.GroupLayout(botNav4);
         botNav4.setLayout(botNav4Layout);
@@ -977,13 +1008,13 @@ public class Master extends javax.swing.JFrame {
             botNav4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(botNav4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tambahBarang4)
+                .addComponent(tambahHutang)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editBarang4)
+                .addComponent(editHutang)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(hapusBarang4)
+                .addComponent(hapusHutang)
                 .addGap(94, 94, 94)
-                .addComponent(searchBarang4, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchHutang, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 588, Short.MAX_VALUE)
                 .addComponent(exit4)
                 .addContainerGap())
@@ -993,10 +1024,10 @@ public class Master extends javax.swing.JFrame {
             .addGroup(botNav4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(botNav4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tambahBarang4)
-                    .addComponent(editBarang4)
-                    .addComponent(hapusBarang4)
-                    .addComponent(searchBarang4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tambahHutang)
+                    .addComponent(editHutang)
+                    .addComponent(hapusHutang)
+                    .addComponent(searchHutang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(exit4))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -1007,7 +1038,7 @@ public class Master extends javax.swing.JFrame {
         labelbarang4.setForeground(new java.awt.Color(255, 255, 255));
         labelbarang4.setText("HUTANG/PIUTANG");
 
-        tabelBarang4.setModel(new javax.swing.table.DefaultTableModel(
+        tabelHutang.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null},
@@ -1057,9 +1088,9 @@ public class Master extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane5.setViewportView(tabelBarang4);
-        if (tabelBarang4.getColumnModel().getColumnCount() > 0) {
-            tabelBarang4.getColumnModel().getColumn(0).setPreferredWidth(3);
+        jScrollPane5.setViewportView(tabelHutang);
+        if (tabelHutang.getColumnModel().getColumnCount() > 0) {
+            tabelHutang.getColumnModel().getColumn(0).setPreferredWidth(3);
         }
 
         javax.swing.GroupLayout content4Layout = new javax.swing.GroupLayout(content4);
@@ -1081,7 +1112,7 @@ public class Master extends javax.swing.JFrame {
             .addGroup(content4Layout.createSequentialGroup()
                 .addGap(7, 7, 7)
                 .addComponent(labelbarang4)
-                .addContainerGap(352, Short.MAX_VALUE))
+                .addContainerGap(363, Short.MAX_VALUE))
             .addGroup(content4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(content4Layout.createSequentialGroup()
                     .addGap(47, 47, 47)
@@ -1104,7 +1135,7 @@ public class Master extends javax.swing.JFrame {
         );
         panelHutangLayout.setVerticalGroup(
             panelHutangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 461, Short.MAX_VALUE)
+            .addGap(0, 472, Short.MAX_VALUE)
             .addGroup(panelHutangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(panelHutangLayout.createSequentialGroup()
                     .addGap(5, 5, 5)
@@ -1121,19 +1152,17 @@ public class Master extends javax.swing.JFrame {
         bodypanelLayout.setHorizontalGroup(
             bodypanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(TopNav, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bodypanelLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addContainerGap()
                 .addComponent(menuPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(22, 22, 22))
+                .addGap(20, 20, 20))
         );
         bodypanelLayout.setVerticalGroup(
             bodypanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bodypanelLayout.createSequentialGroup()
-                .addComponent(TopNav, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
+                .addContainerGap()
                 .addComponent(menuPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -1146,36 +1175,51 @@ public class Master extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(bodypanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(bodypanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnMasterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMasterActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnMasterActionPerformed
-
-    private void btnTransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransaksiActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnTransaksiActionPerformed
-
     private void btnPengaturanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPengaturanActionPerformed
         // TODO add your handling code here:
+
     }//GEN-LAST:event_btnPengaturanActionPerformed
 
     private void btnHutangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHutangActionPerformed
         // TODO add your handling code here:
+        mainPanel.removeAll();
+        mainPanel.repaint();
+        mainPanel.revalidate();
+        
+        //add panel
+        mainPanel.add(panelHutang);
+        mainPanel.repaint();
+        mainPanel.revalidate();
     }//GEN-LAST:event_btnHutangActionPerformed
 
     private void btnSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalesActionPerformed
         // TODO add your handling code here:
+        mainPanel.removeAll();
+        mainPanel.repaint();
+        mainPanel.revalidate();
+        
+        //add panel
+        mainPanel.add(panelSales);
+        mainPanel.repaint();
+        mainPanel.revalidate();
     }//GEN-LAST:event_btnSalesActionPerformed
 
     private void btnPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPelangganActionPerformed
         // TODO add your handling code here:
+        mainPanel.removeAll();
+        mainPanel.repaint();
+        mainPanel.revalidate();
+        
+        //add panel
+        mainPanel.add(panelPelanggan);
+        mainPanel.repaint();
+        mainPanel.revalidate();
     }//GEN-LAST:event_btnPelangganActionPerformed
 
     private void listSatuanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listSatuanActionPerformed
@@ -1215,6 +1259,232 @@ public class Master extends javax.swing.JFrame {
         mainPanel.repaint();
         mainPanel.revalidate();
     }//GEN-LAST:event_btnSuplierActionPerformed
+
+    private void tambahSuplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahSuplierActionPerformed
+        // TODO add your handling code here:
+        InputDataSuplier.mode_form = 0;
+        new InputDataSuplier().setVisible(true);
+        
+    }//GEN-LAST:event_tambahSuplierActionPerformed
+
+    private void tambahPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahPelangganActionPerformed
+        // TODO add your handling code here:
+        InputDataPelanggan.mode_form = 0;
+        new InputDataPelanggan().setVisible(true);
+    }//GEN-LAST:event_tambahPelangganActionPerformed
+
+    private void tambahSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahSalesActionPerformed
+        // TODO add your handling code here:
+        InputDataSales.mode_form = 0;
+        new InputDataSales().setVisible(true);
+    }//GEN-LAST:event_tambahSalesActionPerformed
+
+    private void exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_exitActionPerformed
+
+    private void searchSupplierKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchSupplierKeyReleased
+        // TODO add your handling code here:
+        String keyword = searchSupplier.getText();
+        try {
+            if (keyword.equals("")){
+                listSupplier = supplierDAO.getListSupplier();
+            } else {
+                listSupplier = supplierDAO.getListSupplier(keyword);
+            }
+            tabelSupplier.setModel(new SupplierDataTable(listSupplier));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_searchSupplierKeyReleased
+
+    private void searchPelangganKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchPelangganKeyReleased
+        // TODO add your handling code here:
+        String keyword = searchPelanggan.getText();
+        try {
+            if (keyword.equals("")){
+                listPelanggan = pelangganDAO.getListPelanggan();
+            } else {
+                listPelanggan = pelangganDAO.getListPelanggan(keyword);
+            }
+            tabelPelanggan.setModel(new PelangganDataTable(listPelanggan));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_searchPelangganKeyReleased
+
+    private void searchSalesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchSalesKeyReleased
+        // TODO add your handling code here:
+        String keyword = searchSales.getText();
+        try {
+            if (keyword.equals("")){
+                listSales = salesDAO.getListSales();
+            } else {
+                listSales = salesDAO.getListSales(keyword);
+            }
+            tabelSales.setModel(new SalesDataTable(listSales));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_searchSalesKeyReleased
+
+    private void searchBarangKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchBarangKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchBarangKeyReleased
+
+    private void editBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBarangActionPerformed
+        // TODO add your handling code here:
+        if (tabelBarang.getSelectedRow() >= 0) {
+            String kode = tabelBarang.getValueAt(tabelBarang.getSelectedRow(), 1).toString();
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_editBarangActionPerformed
+
+    private void hapusBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusBarangActionPerformed
+        // TODO add your handling code here:
+        if (tabelBarang.getSelectedRow() >= 0) {
+            String kode = tabelBarang.getValueAt(tabelBarang.getSelectedRow(), 1).toString();
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_hapusBarangActionPerformed
+
+    private void editSuplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSuplierActionPerformed
+        // TODO add your handling code here:
+        if (tabelSupplier.getSelectedRow() >= 0) {
+            String kode = tabelSupplier.getValueAt(tabelSupplier.getSelectedRow(), 1).toString();
+            try {
+                ResultSet rs = vm.getDataByParameter("kode = '" + kode + "'", "tb_supplier");
+                if (rs.next()){
+                    Supplier sp = new Supplier();
+                    sp.setId(rs.getString("id"));
+                    sp.setKode(rs.getString("kode"));
+                    sp.setNama(rs.getString("nama"));
+                    sp.setAlamat(rs.getString("alamat"));
+                    sp.setTelepon(rs.getString("telepon"));
+                    sp.setEmail(rs.getString("email"));
+                    sp.setContact_person(rs.getString("contact_person"));
+                    sp.setRekening(rs.getString("rekening"));
+                    sp.setKeterangan(rs.getString("keterangan"));
+                    InputDataSuplier.supplierEdit = sp;
+                    InputDataSuplier.mode_form = 1;
+                    new InputDataSuplier().setVisible(true);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_editSuplierActionPerformed
+
+    private void hapusSuplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusSuplierActionPerformed
+        // TODO add your handling code here:
+        if (tabelSupplier.getSelectedRow() >= 0) {
+            String kode = tabelSupplier.getValueAt(tabelSupplier.getSelectedRow(), 1).toString();
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_hapusSuplierActionPerformed
+
+    private void editPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPelangganActionPerformed
+        // TODO add your handling code here:
+        if (tabelPelanggan.getSelectedRow() >= 0) {
+            String kode = tabelPelanggan.getValueAt(tabelPelanggan.getSelectedRow(), 1).toString();
+                try {
+                ResultSet rs = vm.getDataByParameter("kode = '" + kode + "'", "tb_pelanggan");
+                if (rs.next()){
+                    Pelanggan sp = new Pelanggan();
+                    sp.setId(rs.getString("id"));
+                    sp.setKode(rs.getString("kode"));
+                    sp.setNama(rs.getString("nama"));
+                    sp.setAlamat(rs.getString("alamat"));
+                    sp.setTelepon(rs.getString("telepon"));
+                    sp.setKeterangan(rs.getString("keterangan"));
+                    InputDataPelanggan.pelangganEdit = sp;
+                    InputDataPelanggan.mode_form = 1;
+                    new InputDataPelanggan().setVisible(true);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_editPelangganActionPerformed
+
+    private void hapusPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusPelangganActionPerformed
+        // TODO add your handling code here:
+        if (tabelPelanggan.getSelectedRow() >= 0) {
+            String kode = tabelPelanggan.getValueAt(tabelPelanggan.getSelectedRow(), 1).toString();
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_hapusPelangganActionPerformed
+
+    private void editSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSalesActionPerformed
+        // TODO add your handling code here:
+        if (tabelSales.getSelectedRow() >= 0) {
+            String kode = tabelSales.getValueAt(tabelSales.getSelectedRow(), 1).toString();
+                        try {
+                ResultSet rs = vm.getDataByParameter("kode = '" + kode + "'", "tb_sales");
+                if (rs.next()){
+                    Sales sp = new Sales();
+                    sp.setId(rs.getString("id"));
+                    sp.setKode(rs.getString("kode"));
+                    sp.setNama(rs.getString("nama"));
+                    sp.setAlamat(rs.getString("alamat"));
+                    sp.setTelepon(rs.getString("telepon"));
+                    sp.setEmail(rs.getString("email"));
+                    sp.setContact_person(rs.getString("contact_person"));
+                    sp.setRekening(rs.getString("rekening"));
+                    sp.setKeterangan(rs.getString("keterangan"));
+                    InputDataSales.salesEdit = sp;
+                    InputDataSales.mode_form = 1;
+                    new InputDataSales().setVisible(true);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_editSalesActionPerformed
+
+    private void hapusSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusSalesActionPerformed
+        // TODO add your handling code here:
+        if (tabelSales.getSelectedRow() >= 0) {
+            String kode = tabelSales.getValueAt(tabelSales.getSelectedRow(), 1).toString();
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_hapusSalesActionPerformed
+
+    private void searchHutangKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchHutangKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchHutangKeyReleased
+
+    private void tambahHutangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahHutangActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tambahHutangActionPerformed
+
+    private void editHutangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editHutangActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_editHutangActionPerformed
+
+    private void hapusHutangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusHutangActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_hapusHutangActionPerformed
+
+    private void btnRefreshAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshAllActionPerformed
+        // TODO add your handling code here:
+        update();
+    }//GEN-LAST:event_btnRefreshAllActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1259,7 +1529,6 @@ public class Master extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel TopNav;
     private javax.swing.JPanel bodypanel;
     private javax.swing.JPanel botNav;
     private javax.swing.JPanel botNav1;
@@ -1268,13 +1537,12 @@ public class Master extends javax.swing.JFrame {
     private javax.swing.JPanel botNav4;
     private javax.swing.JButton btnBarang;
     private javax.swing.JButton btnHutang;
-    private javax.swing.JButton btnMaster;
     private javax.swing.JButton btnPelanggan;
     private javax.swing.JButton btnPengaturan;
     private javax.swing.JButton btnRefresh;
+    private javax.swing.JButton btnRefreshAll;
     private javax.swing.JButton btnSales;
     private javax.swing.JButton btnSuplier;
-    private javax.swing.JButton btnTransaksi;
     private javax.swing.JButton cetakBarcode;
     private javax.swing.JPanel content;
     private javax.swing.JPanel content1;
@@ -1283,10 +1551,10 @@ public class Master extends javax.swing.JFrame {
     private javax.swing.JPanel content4;
     private javax.swing.JButton copyBarcode;
     private javax.swing.JButton editBarang;
-    private javax.swing.JButton editBarang1;
-    private javax.swing.JButton editBarang2;
-    private javax.swing.JButton editBarang3;
-    private javax.swing.JButton editBarang4;
+    private javax.swing.JButton editHutang;
+    private javax.swing.JButton editPelanggan;
+    private javax.swing.JButton editSales;
+    private javax.swing.JButton editSuplier;
     private javax.swing.JButton eksportExcel;
     private javax.swing.JButton exit;
     private javax.swing.JButton exit1;
@@ -1294,18 +1562,14 @@ public class Master extends javax.swing.JFrame {
     private javax.swing.JButton exit3;
     private javax.swing.JButton exit4;
     private javax.swing.JButton hapusBarang;
-    private javax.swing.JButton hapusBarang1;
-    private javax.swing.JButton hapusBarang2;
-    private javax.swing.JButton hapusBarang3;
-    private javax.swing.JButton hapusBarang4;
+    private javax.swing.JButton hapusHutang;
+    private javax.swing.JButton hapusPelanggan;
+    private javax.swing.JButton hapusSales;
+    private javax.swing.JButton hapusSuplier;
     private javax.swing.JButton importExcel;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JLabel labelbarang;
     private javax.swing.JLabel labelbarang1;
@@ -1322,20 +1586,24 @@ public class Master extends javax.swing.JFrame {
     private javax.swing.JPanel panelPelanggan;
     private javax.swing.JPanel panelSales;
     private javax.swing.JPanel panelSuplier;
+    private javax.swing.JScrollPane scrollTableBarang;
+    private javax.swing.JScrollPane scrollTablePelanggan;
+    private javax.swing.JScrollPane scrollTableSales;
+    private javax.swing.JScrollPane scrollTableSupplier;
     private javax.swing.JTextField searchBarang;
-    private javax.swing.JTextField searchBarang1;
-    private javax.swing.JTextField searchBarang2;
-    private javax.swing.JTextField searchBarang3;
-    private javax.swing.JTextField searchBarang4;
+    private javax.swing.JTextField searchHutang;
+    private javax.swing.JTextField searchPelanggan;
+    private javax.swing.JTextField searchSales;
+    private javax.swing.JTextField searchSupplier;
     private javax.swing.JTable tabelBarang;
-    private javax.swing.JTable tabelBarang1;
-    private javax.swing.JTable tabelBarang2;
-    private javax.swing.JTable tabelBarang3;
-    private javax.swing.JTable tabelBarang4;
+    private javax.swing.JTable tabelHutang;
+    private javax.swing.JTable tabelPelanggan;
+    private javax.swing.JTable tabelSales;
+    private javax.swing.JTable tabelSupplier;
     private javax.swing.JButton tambahBarang;
-    private javax.swing.JButton tambahBarang1;
-    private javax.swing.JButton tambahBarang2;
-    private javax.swing.JButton tambahBarang3;
-    private javax.swing.JButton tambahBarang4;
+    private javax.swing.JButton tambahHutang;
+    private javax.swing.JButton tambahPelanggan;
+    private javax.swing.JButton tambahSales;
+    private javax.swing.JButton tambahSuplier;
     // End of variables declaration//GEN-END:variables
 }
