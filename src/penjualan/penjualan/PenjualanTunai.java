@@ -33,6 +33,7 @@ public class PenjualanTunai extends javax.swing.JFrame {
     Calendar cal = Calendar.getInstance();
     DefaultTableModel model;
     int totalPenjualan = 0;
+    String faktur;
     
     public PenjualanTunai() {
         initComponents();
@@ -40,6 +41,7 @@ public class PenjualanTunai extends javax.swing.JFrame {
         try {
             cal.setTimeZone(TimeZone.getTimeZone("GMT+7"));
             tanggalJual.setDate(cal.getTime());
+            faktur = vm.getLatestIdPembelian();
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -99,6 +101,21 @@ public class PenjualanTunai extends javax.swing.JFrame {
     public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
         for (int i = 0; i < columnSizes.length; i++){
             table.getColumnModel().getColumn(i).setPreferredWidth(columnSizes[i]);
+        }
+    }
+    
+    public void resetAll(){
+        inputSubTotal.setText("");
+        inputPembulatan.setText("");
+        inputNominalDiskon.setText("");
+        inputGrandTotal.setText("");
+        inputTunai.setText("");
+        inputKembalian.setText("");
+        model.setRowCount(0);
+        try {
+            faktur = vm.getLatestIdPenjualan();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -483,13 +500,7 @@ public class PenjualanTunai extends javax.swing.JFrame {
 
     private void btnNewKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnNewKeyPressed
         // TODO add your handling code here:
-        inputSubTotal.setText("");
-        inputPembulatan.setText("");
-        inputNominalDiskon.setText("");
-        inputGrandTotal.setText("");
-        inputTunai.setText("");
-        inputKembalian.setText("");
-        model.setRowCount(0);
+        resetAll();
     }//GEN-LAST:event_btnNewKeyPressed
 
     private void inputJumlahKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputJumlahKeyPressed

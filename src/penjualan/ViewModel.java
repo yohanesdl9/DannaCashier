@@ -6,12 +6,17 @@
 package penjualan;
 
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  *
  * @author Yohanes Dwi Listio
  */
 public class ViewModel extends Koneksi {
+    
+    Calendar cal = Calendar.getInstance();
+    
     public ResultSet getDataByParameter(String condition, String table) throws Exception {
         String query = "SELECT * FROM " + table + " WHERE " + condition + ";";
         return stmt.executeQuery(query);
@@ -44,5 +49,21 @@ public class ViewModel extends Koneksi {
         ResultSet rs = stmt.executeQuery(query);
         rs.next();
         return rs.getString("id");
+    }
+    
+    public String getLatestIdPenjualan() throws Exception {
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+        String query = "SELECT COUNT(id) AS id FROM tb_penjualan WHERE tanggal = '" + date + "';";
+        ResultSet rs = stmt.executeQuery(query);
+        rs.next();
+        return "PENJ" + new SimpleDateFormat("ddMMyy").format(cal.getTime()) + String.format("%05d", rs.getInt("id") + 1);
+    }
+    
+    public String getLatestIdPembelian() throws Exception {
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+        String query = "SELECT COUNT(id) AS id FROM tb_pembelian WHERE tanggal = '" + date + "';";
+        ResultSet rs = stmt.executeQuery(query);
+        rs.next();
+        return "PEMB" + new SimpleDateFormat("ddMMyy").format(cal.getTime()) + String.format("%05d", rs.getInt("id") + 1);
     }
 }

@@ -42,6 +42,7 @@ public class PembelianTunai extends javax.swing.JFrame {
         try {
             cal.setTimeZone(TimeZone.getTimeZone("GMT+7"));
             tanggalBeli.setDate(cal.getTime());
+            noFaktur.setText(vm.getLatestIdPembelian());
         } catch (Exception e){
             e.printStackTrace();
         }
