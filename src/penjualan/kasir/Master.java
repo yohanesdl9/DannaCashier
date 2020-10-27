@@ -5,20 +5,27 @@
  */
 package penjualan.kasir;
 
+import dao.BarangDAO;
 import dao.PelangganDAO;
 import dao.SalesDAO;
 import dao.SupplierDAO;
+import datatable.BarangDataTable;
 import datatable.PelangganDataTable;
 import datatable.SalesDataTable;
 import datatable.SupplierDataTable;
 import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import model.Barang;
 import model.Pelanggan;
 import model.Sales;
 import model.Supplier;
+import model.ViewBarang;
 import penjualan.ViewModel;
 
 /**
@@ -34,17 +41,22 @@ public class Master extends javax.swing.JFrame {
     PelangganDAO pelangganDAO = PelangganDAO.getInstance();
     SupplierDAO supplierDAO = SupplierDAO.getInstance();
     SalesDAO salesDAO = SalesDAO.getInstance();
+    BarangDAO barangDAO = BarangDAO.getInstance();
     List<Pelanggan> listPelanggan;
     List<Supplier> listSupplier;
     List<Sales> listSales;
+    List<ViewBarang> listBarang;
     
     public Master() {
         initComponents();
         initDropdown(listKategori, "id_tipe = 1", "tb_general", "keterangan");
         initDropdown(listSatuan, "id_tipe = 2", "tb_general", "keterangan");
+        initDropdown(listSuplier, "tb_supplier", "nama");
         initTabelSupplier();
         initTabelPelanggan();
         initTabelSales();
+        initTabelBarang();
+        initTabelHutang();
     }
     
     public void initDropdown(JComboBox comboBox, String param, String table, String field) {
@@ -58,6 +70,22 @@ public class Master extends javax.swing.JFrame {
         }
     }
     
+    public void initDropdown(JComboBox comboBox, String table, String field) {
+        try {
+            ResultSet rs = vm.getAllDataFromTable(table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void initTabelHutang(){
+        int[] size = {5, 80, 120, 60, 60, 60, 80};
+        adjustTableColumnWidth(tabelHutang, size);
+    }
+    
     public void initTabelSupplier(){
         try {
             listSupplier = supplierDAO.getListSupplier();
@@ -66,6 +94,8 @@ public class Master extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
+        int[] size = {5, 40, 80, 120, 42, 50, 60, 55};
+        adjustTableColumnWidth(tabelSupplier, size);
     }
     
     public void initTabelSales(){
@@ -76,6 +106,8 @@ public class Master extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
+        int[] size = {5, 40, 80, 120, 42, 50, 60, 55};
+        adjustTableColumnWidth(tabelSales, size);
     }
     
     public void initTabelPelanggan(){
@@ -86,12 +118,52 @@ public class Master extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
+        int[] size = {5, 40, 100, 150, 80, 82};
+        adjustTableColumnWidth(tabelPelanggan, size);
+    }
+    
+    public void initTabelBarang() {        
+        String keyword = searchBarang.getText();
+        String kategori = listKategori.getSelectedItem().toString();
+        String satuan = listSatuan.getSelectedItem().toString();
+        String supplier = listSuplier.getSelectedItem().toString();
+        try {
+            HashMap<String, String> where = new HashMap<String, String>();
+            if (!keyword.equals("")) where.put("tb.nama LIKE ", "'" + keyword + "'");
+            if (!kategori.equals("Semua")) where.put("kategori.keterangan = ", "'" + kategori + "'");
+            if (!satuan.equals("Semua")) where.put("satuan.keterangan = ", "'" + satuan + "'");
+            if (!supplier.equals("Semua")) where.put("ts.nama = ", "'" + supplier + "'");
+            if (where.isEmpty()) {
+                listBarang = barangDAO.getListBarang();
+            } else {
+                String where_query = "WHERE ";
+                int i = 1; int count = where.size();
+                for (Map.Entry<String, String> entry : where.entrySet()) {
+                    where_query += (entry.getKey() + entry.getValue() + (i < count ? " AND " : ""));
+                    i++;
+                }
+                listBarang = barangDAO.getListBarang(where_query);
+            }
+            tabelBarang.setModel(new BarangDataTable(listBarang));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        int[] size = {5, 45, 180, 70, 45, 70, 50, 50, 100};
+        adjustTableColumnWidth(tabelBarang, size);
     }
     
     public void update(){
         initTabelSupplier();
         initTabelSales();
         initTabelPelanggan();
+        initTabelBarang();
+        initTabelHutang();
+    }
+    
+    public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
+        for (int i = 0; i < columnSizes.length; i++){
+            table.getColumnModel().getColumn(i).setPreferredWidth(columnSizes[i]);
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -1223,14 +1295,17 @@ public class Master extends javax.swing.JFrame {
 
     private void listSatuanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listSatuanActionPerformed
         // TODO add your handling code here:
+        initTabelBarang();
     }//GEN-LAST:event_listSatuanActionPerformed
 
     private void listSuplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listSuplierActionPerformed
         // TODO add your handling code here:
+        initTabelBarang();
     }//GEN-LAST:event_listSuplierActionPerformed
 
     private void listKategoriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listKategoriActionPerformed
         // TODO add your handling code here:
+        initTabelBarang();
     }//GEN-LAST:event_listKategoriActionPerformed
 
     private void btnBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBarangActionPerformed
@@ -1332,12 +1407,20 @@ public class Master extends javax.swing.JFrame {
 
     private void searchBarangKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchBarangKeyReleased
         // TODO add your handling code here:
+        initTabelBarang();
     }//GEN-LAST:event_searchBarangKeyReleased
 
     private void editBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBarangActionPerformed
         // TODO add your handling code here:
         if (tabelBarang.getSelectedRow() >= 0) {
             String kode = tabelBarang.getValueAt(tabelBarang.getSelectedRow(), 1).toString();
+            try {
+                InputDataBarang.barangEdit = barangDAO.getBarang("tb.kode = '" + kode + "'");
+                InputDataBarang.mode_form = 1;
+                new InputDataBarang().setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         }
@@ -1347,9 +1430,22 @@ public class Master extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (tabelBarang.getSelectedRow() >= 0) {
             String kode = tabelBarang.getValueAt(tabelBarang.getSelectedRow(), 1).toString();
+            try {
+                String id = vm.getIdFromKode("kode", kode, "tb_barang");
+                int result = barangDAO.deleteBarang(id);
+                if (result >= 0) {
+                    JOptionPane.showMessageDialog(null, "Berhasil menghapus data", "Berhasil", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Gagal menghapus data, terjadi kesalahan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e){
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         }
+        update();
     }//GEN-LAST:event_hapusBarangActionPerformed
 
     private void editSuplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSuplierActionPerformed
@@ -1400,13 +1496,14 @@ public class Master extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         }
+        update();
     }//GEN-LAST:event_hapusSuplierActionPerformed
 
     private void editPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPelangganActionPerformed
         // TODO add your handling code here:
         if (tabelPelanggan.getSelectedRow() >= 0) {
             String kode = tabelPelanggan.getValueAt(tabelPelanggan.getSelectedRow(), 1).toString();
-                try {
+            try {
                 ResultSet rs = vm.getDataByParameter("kode = '" + kode + "'", "tb_pelanggan");
                 if (rs.next()){
                     Pelanggan sp = new Pelanggan();
@@ -1448,6 +1545,7 @@ public class Master extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         }
+        update();
     }//GEN-LAST:event_hapusPelangganActionPerformed
 
     private void editSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSalesActionPerformed
@@ -1498,6 +1596,7 @@ public class Master extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(null, "Pilih baris tabel terlebih dahulu", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         }
+        update();
     }//GEN-LAST:event_hapusSalesActionPerformed
 
     private void searchHutangKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchHutangKeyReleased

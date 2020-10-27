@@ -6,11 +6,18 @@
 package penjualan.penjualan;
 
 import com.sun.glass.events.KeyEvent;
+import dao.BarangDAO;
+import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import model.Barang;
+import penjualan.CustomCombo;
+import penjualan.ViewModel;
 import static penjualan.penjualan.Penjualantunai_frame.getDate;
 
 /**
@@ -22,6 +29,7 @@ public class PenjualanTunai extends javax.swing.JFrame {
     /**
      * Creates new form PenjualanTunai
      */
+    ViewModel vm = new ViewModel();
     Calendar cal = Calendar.getInstance();
     DefaultTableModel model;
     int totalPenjualan = 0;
@@ -31,14 +39,31 @@ public class PenjualanTunai extends javax.swing.JFrame {
         model = (DefaultTableModel) tablePenjualan.getModel();
         try {
             cal.setTimeZone(TimeZone.getTimeZone("GMT+7"));
-            tanggalJual.setDate(new SimpleDateFormat("yyyy-MM-dd").parse(getDate(cal)));
+            tanggalJual.setDate(cal.getTime());
         } catch (Exception e){
             e.printStackTrace();
         }
     }
     
+    public void fillDataBarang(JComboBox combo) {
+        try {
+            combo.removeAllItems();
+            ResultSet rs = vm.getAllDataFromTable("tb_barang");
+            while (rs.next()) {
+                new CustomCombo(combo).custom(combo, rs.getString("kode"));
+                combo.setSelectedItem(null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static String getDate(Calendar cal){
+        return "" + cal.get(Calendar.DATE) + "-" + (cal.get(Calendar.MONTH)+1) + "-" + cal.get(Calendar.YEAR);
+    }
+    
     public void addToCart(){
-        String jbkb = inputBarcode.getText();
+        String jbkb = inputBarcode.getSelectedItem().toString();
         String nama = inputNama.getText();
         String jumlah = inputJumlah.getText();
         String satuan = inputSatuan.getText();
@@ -70,6 +95,12 @@ public class PenjualanTunai extends javax.swing.JFrame {
         inputHargaBersih.setText("");
         inputTotal.setText("");
     }
+    
+    public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
+        for (int i = 0; i < columnSizes.length; i++){
+            table.getColumnModel().getColumn(i).setPreferredWidth(columnSizes[i]);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -92,7 +123,6 @@ public class PenjualanTunai extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         selectPelanggan = new javax.swing.JComboBox<>();
-        inputBarcode = new javax.swing.JTextField();
         inputNama = new javax.swing.JTextField();
         inputJumlah = new javax.swing.JTextField();
         inputSatuan = new javax.swing.JTextField();
@@ -127,6 +157,7 @@ public class PenjualanTunai extends javax.swing.JFrame {
         btnNew = new javax.swing.JButton();
         inputKembalian = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox<>();
+        inputBarcode = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -155,17 +186,23 @@ public class PenjualanTunai extends javax.swing.JFrame {
 
         selectPelanggan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        inputBarcode.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                inputBarcodeKeyPressed(evt);
-            }
-        });
+        inputNama.setEditable(false);
 
         inputJumlah.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 inputJumlahKeyPressed(evt);
             }
         });
+
+        inputSatuan.setEditable(false);
+
+        inputHargaJual.setEditable(false);
+
+        inputDiskon.setEditable(false);
+
+        inputHargaBersih.setEditable(false);
+
+        inputTotal.setEditable(false);
 
         jLabel8.setText("Kode Barang");
 
@@ -235,6 +272,13 @@ public class PenjualanTunai extends javax.swing.JFrame {
         inputKembalian.setEditable(false);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        inputBarcode.setEditable(true);
+        inputBarcode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputBarcodeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -379,14 +423,14 @@ public class PenjualanTunai extends javax.swing.JFrame {
                     .addComponent(jLabel14))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(inputBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputHargaJual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputHargaBersih, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputSatuan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(inputDiskon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(inputDiskon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(inputBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -448,27 +492,40 @@ public class PenjualanTunai extends javax.swing.JFrame {
         model.setRowCount(0);
     }//GEN-LAST:event_btnNewKeyPressed
 
-    private void inputBarcodeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputBarcodeKeyPressed
-        // TODO add your handling code here:
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (inputBarcode.getText().equals("") || inputJumlah.getText().equals("")) {
-                JOptionPane.showMessageDialog(null, "Masukkan data dengan benar!", "Kesalahan", JOptionPane.ERROR_MESSAGE);
-            } else {
-                addToCart();
-            }
-        }
-    }//GEN-LAST:event_inputBarcodeKeyPressed
-
     private void inputJumlahKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputJumlahKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (inputBarcode.getText().equals("") || inputJumlah.getText().equals("")) {
+            if (inputBarcode.getSelectedItem().equals("") || inputJumlah.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Masukkan data dengan benar!", "Kesalahan", JOptionPane.ERROR_MESSAGE);
             } else {
                 addToCart();
             }
         }
     }//GEN-LAST:event_inputJumlahKeyPressed
+
+    private void inputBarcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputBarcodeActionPerformed
+        // TODO add your handling code here:
+        if (inputBarcode.getSelectedItem() != null){
+            try {
+                Barang barang = BarangDAO.getInstance().getBarang("tb.kode = '" + inputBarcode.getSelectedItem().toString() + "'");
+                inputHargaJual.setText(barang.getHarga_jual());
+                inputNama.setText(barang.getNama());
+                inputSatuan.setText(barang.getId_satuan());
+                if (barang.getDiskon_nominal().equals("")) {
+                    inputDiskon.setText("0");
+                    inputHargaBersih.setText(barang.getHarga_jual());
+                    inputTotal.setText(barang.getHarga_jual());
+                } else {
+                    int diskon = Integer.parseInt(barang.getHarga_jual()) * (100 - Integer.parseInt(barang.getDiskon_nominal()));
+                    inputDiskon.setText(barang.getDiskon_nominal());
+                    inputHargaBersih.setText(String.valueOf(diskon));
+                    inputTotal.setText(String.valueOf(diskon));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_inputBarcodeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -509,7 +566,7 @@ public class PenjualanTunai extends javax.swing.JFrame {
     private javax.swing.JButton btnNew;
     private javax.swing.JButton btnPrint;
     private javax.swing.JButton btnSave;
-    private javax.swing.JTextField inputBarcode;
+    private javax.swing.JComboBox<String> inputBarcode;
     private javax.swing.JTextField inputDiskon;
     private javax.swing.JTextField inputGrandTotal;
     private javax.swing.JTextField inputHargaBersih;

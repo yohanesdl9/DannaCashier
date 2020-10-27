@@ -134,7 +134,7 @@ public class MenuUtama extends javax.swing.JFrame {
         });
         jMenu4.add(smTbPenjualan);
 
-        smReturPenjualan.setText("Retur Penjualan");
+        smReturPenjualan.setText("Tabel Retur Penjualan");
         smReturPenjualan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 smReturPenjualanActionPerformed(evt);

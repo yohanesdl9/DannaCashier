@@ -5,6 +5,9 @@
  */
 package penjualan.penjualan;
 
+import java.util.Calendar;
+import javax.swing.JTable;
+
 /**
  *
  * @author Yohanes Dwi Listio
@@ -16,6 +19,12 @@ public class TabelReturPenjualan extends javax.swing.JFrame {
      */
     public TabelReturPenjualan() {
         initComponents();
+    }
+    
+    public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
+        for (int i = 0; i < columnSizes.length; i++){
+            table.getColumnModel().getColumn(i).setPreferredWidth(columnSizes[i]);
+        }
     }
 
     /**

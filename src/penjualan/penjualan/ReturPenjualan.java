@@ -5,6 +5,9 @@
  */
 package penjualan.penjualan;
 
+import java.util.Calendar;
+import javax.swing.JTable;
+
 /**
  *
  * @author Yohanes Dwi Listio
@@ -16,6 +19,12 @@ public class ReturPenjualan extends javax.swing.JFrame {
      */
     public ReturPenjualan() {
         initComponents();
+    }
+    
+    public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
+        for (int i = 0; i < columnSizes.length; i++){
+            table.getColumnModel().getColumn(i).setPreferredWidth(columnSizes[i]);
+        }
     }
 
     /**
@@ -61,9 +70,17 @@ public class ReturPenjualan extends javax.swing.JFrame {
 
             },
             new String [] {
-                "NO", "FAKTUR", "TANGGAL", "TUNAIKREDIT", "HARI", "JATUH TEMPO", "SUPLIER KODE", "SUPLIER NAMA", "GRANDTOTAL", "OPERATOR"
+                "No.", "Faktur", "Tanggal", "Kode Pelanggan", "Nama Pelanggan", "Total Nilai Retur", "Total Dibayar", "Total Mengurangi Piutang", "Operator"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tablePenjualan);
 
         jLabel6.setText("Total Nilai Retur");

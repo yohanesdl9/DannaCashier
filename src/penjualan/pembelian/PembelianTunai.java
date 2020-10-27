@@ -6,11 +6,18 @@
 package penjualan.pembelian;
 
 import com.sun.glass.events.KeyEvent;
+import dao.BarangDAO;
+import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import model.Barang;
+import penjualan.CustomCombo;
+import penjualan.ViewModel;
 import static penjualan.pembelian.Pembeliantunai_frame.getDate;
 
 /**
@@ -25,47 +32,109 @@ public class PembelianTunai extends javax.swing.JFrame {
     int totalPembelian = 0;
     DefaultTableModel model;
     Calendar cal = Calendar.getInstance();
+    ViewModel vm = new ViewModel();
     
     public PembelianTunai() {
         initComponents();
-        initComponents();
+        fillDataBarang(inputBarcode);
+        initDropdown(pilihSupplier, "tb_supplier", "nama");
         model = (DefaultTableModel) tblPembelian.getModel();
         try {
             cal.setTimeZone(TimeZone.getTimeZone("GMT+7"));
-            tanggalBeli.setDate(new SimpleDateFormat("yyyy-MM-dd").parse(getDate(cal)));
+            tanggalBeli.setDate(cal.getTime());
         } catch (Exception e){
             e.printStackTrace();
         }
     }
     
-    public void addToCart(){
-        String barcode = inputBarcode.getText();
-        String jumlah = inputJumlah.getText();
-        String harga_beli = inputHargaBeli.getText();
-        String nama = inputNama.getText();
-        String satuan = inputSatuan.getText();
-        String total = inputTotal.getText();
-
-        Object[] data = {barcode, nama, jumlah, satuan, harga_beli, "", total, ""};
-        model.addRow(data);
-
-        totalPembelian += Integer.parseInt(total);
-
-        subtotal.setText(Integer.toString(totalPembelian));
-
-        if (diskonPersen.getText().equals("")) {
-            grandtotal.setText(Integer.toString(totalPembelian));
-        } else {
-            diskonNominal.setText(Integer.toString(totalPembelian * Integer.parseInt(diskonPersen.getText()) / 100));
-            int grandTotal = totalPembelian - Integer.parseInt(diskonNominal.getText());
-            grandtotal.setText(Integer.toString(grandTotal));
+    public void initDropdown(JComboBox comboBox, String param, String table, String field) {
+        try {
+            ResultSet rs = vm.getDataByParameter(param, table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        inputBarcode.setText("");
+    }
+    
+    public void initDropdown(JComboBox comboBox, String table, String field) {
+        try {
+            ResultSet rs = vm.getAllDataFromTable(table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void addToCart(){
+        try {
+            String barcode = inputBarcode.getSelectedItem().toString();
+            String jumlah = inputJumlah.getText();
+            String harga_beli = inputHargaBeli.getText();
+            String nama = inputNama.getText();
+            String satuan = inputSatuan.getText();
+            String total = inputTotal.getText();
+            String harga_jual = vm.getDataByParameter("kode = '" + barcode + "'", "tb_barang", "harga_jual");
+
+            Object[] data = {barcode, nama, jumlah, satuan, harga_beli, total, harga_jual};
+            model.addRow(data);
+
+            totalPembelian += Integer.parseInt(total);
+            subtotal.setText(Integer.toString(totalPembelian));
+
+            if (diskonPersen.getText().equals("")) {
+                grandtotal.setText(Integer.toString(totalPembelian));
+            } else {
+                diskonNominal.setText(Integer.toString(totalPembelian * Integer.parseInt(diskonPersen.getText()) / 100));
+                int grandTotal = totalPembelian - Integer.parseInt(diskonNominal.getText());
+                grandtotal.setText(Integer.toString(grandTotal));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        inputBarcode.setSelectedItem(null);
         inputJumlah.setText("");
         inputHargaBeli.setText("");
         inputNama.setText("");
         inputSatuan.setText("");
         inputTotal.setText("");
+    }
+    
+    public void fillDataBarang(JComboBox combo) {
+        try {
+            combo.removeAllItems();
+            ResultSet rs = vm.getAllDataFromTable("tb_barang");
+            while (rs.next()) {
+                new CustomCombo(combo).custom(combo, rs.getString("kode"));
+                combo.setSelectedItem(null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        inputJumlah.setText("");
+        inputHargaBeli.setText("");
+        inputNama.setText("");
+        inputSatuan.setText("");
+        inputTotal.setText("");
+    }
+    
+    public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
+        for (int i = 0; i < columnSizes.length; i++){
+            table.getColumnModel().getColumn(i).setPreferredWidth(columnSizes[i]);
+        }
+    }
+    
+    public void resetAll(){
+        subtotal.setText("");
+        diskonPersen.setText("");
+        diskonNominal.setText("");
+        grandtotal.setText("");
+        tunai.setText("");
+        kembalian.setText("");
+        model.setRowCount(0);
     }
 
     /**
@@ -90,8 +159,6 @@ public class PembelianTunai extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        kodeSupplier = new javax.swing.JTextField();
-        inputBarcode = new javax.swing.JTextField();
         inputJumlah = new javax.swing.JTextField();
         inputHargaBeli = new javax.swing.JTextField();
         inputNama = new javax.swing.JTextField();
@@ -119,6 +186,8 @@ public class PembelianTunai extends javax.swing.JFrame {
         btnSimpan = new javax.swing.JButton();
         btnPrint = new javax.swing.JButton();
         btnBaru = new javax.swing.JButton();
+        inputBarcode = new javax.swing.JComboBox<>();
+        pilihSupplier = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -149,17 +218,22 @@ public class PembelianTunai extends javax.swing.JFrame {
 
         jLabel8.setText("Kode Supplier");
 
-        inputBarcode.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                inputBarcodeKeyPressed(evt);
-            }
-        });
-
         inputJumlah.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 inputJumlahKeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                inputJumlahKeyReleased(evt);
+            }
         });
+
+        inputHargaBeli.setEditable(false);
+
+        inputNama.setEditable(false);
+
+        inputSatuan.setEditable(false);
+
+        inputTotal.setEditable(false);
 
         jLabel9.setText("Kode/Barcode");
 
@@ -197,11 +271,23 @@ public class PembelianTunai extends javax.swing.JFrame {
 
         jLabel17.setText("Diskon (%)");
 
+        diskonPersen.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                diskonPersenKeyPressed(evt);
+            }
+        });
+
         diskonNominal.setEditable(false);
 
         jLabel18.setText("Grand Total");
 
         grandtotal.setEditable(false);
+
+        tunai.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tunaiKeyPressed(evt);
+            }
+        });
 
         jLabel19.setText("Tunai");
 
@@ -220,6 +306,15 @@ public class PembelianTunai extends javax.swing.JFrame {
             }
         });
 
+        inputBarcode.setEditable(true);
+        inputBarcode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputBarcodeActionPerformed(evt);
+            }
+        });
+
+        pilihSupplier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih Supplier" }));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -231,7 +326,7 @@ public class PembelianTunai extends javax.swing.JFrame {
                         .addComponent(jLabel6)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel7)
-                        .addGap(545, 545, 545))
+                        .addGap(545, 547, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -266,56 +361,56 @@ public class PembelianTunai extends javax.swing.JFrame {
                                 .addGap(173, 173, 173)
                                 .addComponent(btnBaru, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel3)
-                                            .addComponent(jLabel4))
-                                        .addGap(22, 22, 22)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(tanggalBeli, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
-                                            .addComponent(noFaktur, javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(metodeBayar, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jumlahHari, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel5))
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
                                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(inputBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jLabel9))
+                                                        .addComponent(jLabel9)
+                                                        .addComponent(inputBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(inputJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jLabel10))
+                                                        .addComponent(jLabel10)
+                                                        .addComponent(inputJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(inputHargaBeli, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addComponent(jLabel11)))
                                                 .addComponent(jLabel1))
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGap(4, 4, 4)
+                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                                    .addComponent(jLabel8)
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(pilihSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(inputNama, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(inputNama, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addComponent(jLabel12))
                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(inputSatuan, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jLabel13))
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jLabel14)
-                                                        .addComponent(inputTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                                    .addComponent(jLabel8)
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                    .addComponent(kodeSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                                        .addComponent(jLabel13))))
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel14)
+                                                .addComponent(inputTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel3)
+                                                .addComponent(jLabel4))
+                                            .addGap(22, 22, 22)
+                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(tanggalBeli, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                                                .addComponent(noFaktur, javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addComponent(metodeBayar, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jumlahHari, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(jLabel5))))
+                                .addGap(0, 4, Short.MAX_VALUE)))
                         .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
@@ -323,12 +418,12 @@ public class PembelianTunai extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
-                .addGap(21, 21, 21)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tanggalBeli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel8)
-                        .addComponent(kodeSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(pilihSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -354,12 +449,12 @@ public class PembelianTunai extends javax.swing.JFrame {
                     .addComponent(jLabel14))
                 .addGap(7, 7, 7)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(inputBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputHargaBeli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputSatuan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(inputTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(inputTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(inputBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -405,36 +500,58 @@ public class PembelianTunai extends javax.swing.JFrame {
 
     private void btnBaruActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBaruActionPerformed
         // TODO add your handling code here:
-        subtotal.setText("");
-        diskonPersen.setText("");
-        diskonNominal.setText("");
-        grandtotal.setText("");
-        tunai.setText("");
-        kembalian.setText("");
-        model.setRowCount(0);
+        resetAll();
     }//GEN-LAST:event_btnBaruActionPerformed
-
-    private void inputBarcodeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputBarcodeKeyPressed
-        // TODO add your handling code here:
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (inputBarcode.getText().equals("") || inputJumlah.getText().equals("")) {
-                JOptionPane.showMessageDialog(null, "Masukkan data dengan benar!", "Kesalahan", JOptionPane.ERROR_MESSAGE);
-            } else {
-                addToCart();
-            }
-        }
-    }//GEN-LAST:event_inputBarcodeKeyPressed
 
     private void inputJumlahKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputJumlahKeyPressed
         // TODO add your handling code here:
+        inputJumlah.setEditable((evt.getKeyChar() >= '0' && evt.getKeyChar() <= '9' || evt.getKeyCode() == 8));
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (inputBarcode.getText().equals("") || inputJumlah.getText().equals("")) {
+            if (inputBarcode.getSelectedItem().equals("") || inputJumlah.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Masukkan data dengan benar!", "Kesalahan", JOptionPane.ERROR_MESSAGE);
             } else {
                 addToCart();
             }
         }
     }//GEN-LAST:event_inputJumlahKeyPressed
+
+    private void inputBarcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputBarcodeActionPerformed
+        // TODO add your handling code here:
+        if (inputBarcode.getSelectedItem() != null){
+            try {
+                Barang barang = BarangDAO.getInstance().getBarang("tb.kode = '" + inputBarcode.getSelectedItem().toString() + "'");
+                inputHargaBeli.setText(barang.getHarga_beli());
+                inputNama.setText(barang.getNama());
+                inputSatuan.setText(barang.getId_satuan());
+                inputTotal.setText(barang.getHarga_beli());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+    }//GEN-LAST:event_inputBarcodeActionPerformed
+
+    private void inputJumlahKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputJumlahKeyReleased
+        // TODO add your handling code here:
+        if (inputJumlah.getText().length() > 0) {
+            int jumlah = Integer.parseInt(inputJumlah.getText());
+            int hargaBeli = Integer.parseInt(inputHargaBeli.getText());
+            int total = jumlah * hargaBeli;
+            inputTotal.setText(String.valueOf(total));
+        } else {
+            inputTotal.setText(inputHargaBeli.getText());
+        }
+    }//GEN-LAST:event_inputJumlahKeyReleased
+
+    private void diskonPersenKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_diskonPersenKeyPressed
+        // TODO add your handling code here:
+        diskonPersen.setEditable((evt.getKeyChar() >= '0' && evt.getKeyChar() <= '9' || evt.getKeyCode() == 8));
+    }//GEN-LAST:event_diskonPersenKeyPressed
+
+    private void tunaiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tunaiKeyPressed
+        // TODO add your handling code here:
+        tunai.setEditable((evt.getKeyChar() >= '0' && evt.getKeyChar() <= '9' || evt.getKeyCode() == 8));
+    }//GEN-LAST:event_tunaiKeyPressed
 
     /**
      * @param args the command line arguments
@@ -478,7 +595,7 @@ public class PembelianTunai extends javax.swing.JFrame {
     private javax.swing.JTextField diskonNominal;
     private javax.swing.JTextField diskonPersen;
     private javax.swing.JTextField grandtotal;
-    private javax.swing.JTextField inputBarcode;
+    private javax.swing.JComboBox<String> inputBarcode;
     private javax.swing.JTextField inputHargaBeli;
     private javax.swing.JTextField inputJumlah;
     private javax.swing.JTextField inputNama;
@@ -507,9 +624,9 @@ public class PembelianTunai extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jumlahHari;
     private javax.swing.JTextField kembalian;
-    private javax.swing.JTextField kodeSupplier;
     private javax.swing.JComboBox<String> metodeBayar;
     private javax.swing.JTextField noFaktur;
+    private javax.swing.JComboBox<String> pilihSupplier;
     private javax.swing.JTextField subtotal;
     private com.toedter.calendar.JDateChooser tanggalBeli;
     private javax.swing.JTable tblPembelian;

@@ -11,6 +11,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import model.Barang;
 import model.ViewBarang;
 import penjualan.Koneksi;
 import penjualan.ViewModel;
@@ -30,6 +31,36 @@ public class BarangDAO extends Koneksi {
         return instance;
     }
     
+    public Barang getBarang(String where) throws Exception {
+        Barang vb = new Barang();
+        String sql = "SELECT tb.*, ts.nama AS supplier, kategori.keterangan AS kategori, satuan.keterangan AS satuan\n" +
+        "FROM tb_barang AS tb\n" +
+        "INNER JOIN tb_supplier AS ts ON tb.id_supplier = ts.id\n" +
+        "INNER JOIN tb_general AS kategori ON tb.id_kategori = kategori.id\n" +
+        "INNER JOIN tb_general AS satuan ON tb.id_satuan = satuan.id WHERE " + where;
+        statement = koneksi.prepareStatement(sql);
+        ResultSet rs = statement.executeQuery();
+        if (rs.next()) {
+            vb.setId(rs.getString("id"));
+            vb.setKode(rs.getString("kode"));
+            vb.setNama(rs.getString("nama"));
+            vb.setId_kategori(rs.getString("kategori"));
+            vb.setStok(rs.getString("stok"));
+            vb.setId_satuan(rs.getString("satuan"));
+            vb.setHarga_jual(format(rs.getInt("harga_jual")));
+            vb.setHarga_beli(format(rs.getInt("harga_beli")));
+            vb.setId_supplier(rs.getString("supplier"));
+            vb.setStok_minimal(rs.getString("stok_minimal"));
+            vb.setTgl_expired(rs.getString("tgl_expired"));
+            vb.setLokasi(rs.getString("lokasi"));
+            vb.setDiskon_nominal(rs.getString("diskon_nominal"));
+            return vb;
+        } else {
+            return null;
+        }
+
+    }
+    
     public List<ViewBarang> getListBarang() throws Exception {
         listBarang = new ArrayList<>();
         String sql = "SELECT tb.*, ts.nama AS supplier, kategori.keterangan AS kategori, satuan.keterangan AS satuan\n" +
@@ -37,21 +68,77 @@ public class BarangDAO extends Koneksi {
         "INNER JOIN tb_supplier AS ts ON tb.id_supplier = ts.id\n" +
         "INNER JOIN tb_general AS kategori ON tb.id_kategori = kategori.id\n" +
         "INNER JOIN tb_general AS satuan ON tb.id_satuan = satuan.id";
-        ResultSet rs = statement.executeQuery(sql);
+        statement = koneksi.prepareStatement(sql);
+        ResultSet rs = statement.executeQuery();
         int i = 1;
         while (rs.next()){
             ViewBarang vb = new ViewBarang();
             vb.setId(Integer.toString(i));
             vb.setKode(rs.getString("kode"));
-            vb.setKode(rs.getString("nama"));
-            vb.setKode(rs.getString("kategori"));
-            vb.setKode(rs.getString("jumlah_stok"));
-            vb.setKode(rs.getString("satuan"));
-            vb.setKode(rs.getString("harga_jual"));
-            vb.setKode(rs.getString("harga_beli"));
-            vb.setKode(rs.getString("supplier"));
+            vb.setNama(rs.getString("nama"));
+            vb.setKategori(rs.getString("kategori"));
+            vb.setJumlah_stok(rs.getString("stok"));
+            vb.setSatuan(rs.getString("satuan"));
+            vb.setHarga_jual(format(rs.getInt("harga_jual")));
+            vb.setHarga_beli(format(rs.getInt("harga_beli")));
+            vb.setSupplier(rs.getString("supplier"));
+            listBarang.add(vb);
+            i++;
         }
         return listBarang;
+    }
+    
+    public List<ViewBarang> getListBarang(String where) throws Exception {
+        listBarang = new ArrayList<>();
+        String sql = "SELECT tb.*, ts.nama AS supplier, kategori.keterangan AS kategori, satuan.keterangan AS satuan\n" +
+        "FROM tb_barang AS tb\n" +
+        "INNER JOIN tb_supplier AS ts ON tb.id_supplier = ts.id\n" +
+        "INNER JOIN tb_general AS kategori ON tb.id_kategori = kategori.id\n" +
+        "INNER JOIN tb_general AS satuan ON tb.id_satuan = satuan.id\n" + where;
+        statement = koneksi.prepareStatement(sql);
+        ResultSet rs = statement.executeQuery();
+        int i = 1;
+        while (rs.next()){
+            ViewBarang vb = new ViewBarang();
+            vb.setId(Integer.toString(i));
+            vb.setKode(rs.getString("kode"));
+            vb.setNama(rs.getString("nama"));
+            vb.setKategori(rs.getString("kategori"));
+            vb.setJumlah_stok(rs.getString("stok"));
+            vb.setSatuan(rs.getString("satuan"));
+            vb.setHarga_jual(format(rs.getInt("harga_jual")));
+            vb.setHarga_beli(format(rs.getInt("harga_beli")));
+            vb.setSupplier(rs.getString("supplier"));
+            listBarang.add(vb);
+            i++;
+        }
+        return listBarang;
+    }
+    
+    public int insertBarang(String[] data) throws Exception {
+        String sql = "INSERT INTO tb_barang VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        statement = koneksi.prepareStatement(sql);
+        for (int i = 0; i < data.length; i++) {
+            statement.setString(i + 1, data[i]);
+        }
+        return statement.executeUpdate();
+    }
+    
+    public int updateBarang(String id, String[] data) throws Exception {
+        String sql = "UPDATE tb_barang SET kode = ?, nama = ?, id_kategori = ?, id_satuan = ?, stok = ?, "
+                + "harga_beli = ?, harga_jual = ?, id_supplier = ?, stok_minimal = ?, tgl_expired = ?, "
+                + "lokasi = ?, diskon_nominal = ? WHERE id = " + id;
+        statement = koneksi.prepareStatement(sql);
+        for (int i = 0; i < data.length; i++) {
+            statement.setString(i + 1, data[i]);
+        }
+        return statement.executeUpdate();
+    }
+    
+    public int deleteBarang(String id) throws Exception {
+        String sql = "DELETE FROM tb_barang WHERE id = " + id;
+        statement = koneksi.prepareStatement(sql);
+        return statement.executeUpdate();
     }
     
     public String format(int number){
@@ -60,5 +147,26 @@ public class BarangDAO extends Koneksi {
 
         DecimalFormat formatter = new DecimalFormat("###.###", symbols);
         return formatter.format(number);
+    }
+    
+    public int updateStockBarang(String id_barang, int stock_masuk, int stock_keluar, String keterangan) throws Exception {
+        String sql = "INSERT INTO tb_stok_barang VALUES (?, ?, ?, ?, ?)";
+        statement = koneksi.prepareStatement(sql);
+        statement.setString(1, String.valueOf(vm.getLatestId("id", "tb_stok_barang")));
+        statement.setString(2, id_barang);
+        statement.setString(3, String.valueOf(stock_masuk));
+        statement.setString(4, String.valueOf(stock_keluar));
+        statement.setString(5, keterangan);
+        int status = statement.executeUpdate();
+        if (status > 0) {
+            int stock = Integer.parseInt(vm.getDataByParameter("id = " + id_barang, "tb_barang", "stok"));
+            stock += (stock_masuk - stock_keluar);
+            sql = "UPDATE tb_barang SET stok = ? WHERE id = " + id_barang;
+            statement = koneksi.prepareStatement(sql);
+            statement.setString(1, String.valueOf(stock));
+            return statement.executeUpdate();
+        } else {
+            return status;
+        }
     }
 }

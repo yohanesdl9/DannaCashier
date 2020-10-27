@@ -5,17 +5,43 @@
  */
 package penjualan.pembelian;
 
+import dao.PembelianDAO;
+import java.util.Calendar;
+import java.util.List;
+import javax.swing.JTable;
+import model.ViewPembelian;
+import penjualan.ViewModel;
+
 /**
  *
  * @author Yohanes Dwi Listio
  */
 public class TabelPembelian extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TabelPembelian
-     */
+    Calendar cal = Calendar.getInstance();
+    PembelianDAO pembelianDAO = PembelianDAO.getInstance();
+    ViewModel vm = new ViewModel();
+    List<ViewPembelian> listPembelian;
+    
     public TabelPembelian() {
         initComponents();
+        try {
+            endDate.setDate(cal.getTime());
+            cal.add(Calendar.MONTH, -1);
+            startDate.setDate(cal.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void initTabelPembelian(){
+        
+    }
+    
+    public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
+        for (int i = 0; i < columnSizes.length; i++){
+            table.getColumnModel().getColumn(i).setPreferredWidth(columnSizes[i]);
+        }
     }
 
     /**
@@ -81,7 +107,7 @@ public class TabelPembelian extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tablePembelian);
 
-        operator.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        operator.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua Operator" }));
         operator.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 operatorActionPerformed(evt);
@@ -89,6 +115,8 @@ public class TabelPembelian extends javax.swing.JFrame {
         });
 
         jLabel2.setText("Rentang Waktu Pembelian");
+
+        txtGrandTotal.setEditable(false);
 
         jLabel3.setText("s.d.");
 

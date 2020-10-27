@@ -5,6 +5,13 @@
  */
 package penjualan.penjualan;
 
+import dao.PenjualanDAO;
+import java.util.Calendar;
+import java.util.List;
+import javax.swing.JTable;
+import model.ViewPenjualan;
+import penjualan.ViewModel;
+
 /**
  *
  * @author Yohanes Dwi Listio
@@ -14,8 +21,26 @@ public class TabelPenjualan extends javax.swing.JFrame {
     /**
      * Creates new form TabelPenjualan
      */
+    Calendar cal = Calendar.getInstance();
+    PenjualanDAO penjualanDAO = PenjualanDAO.getInstance();
+    ViewModel vm = new ViewModel();
+    List<ViewPenjualan> listPenjualan;
+    
     public TabelPenjualan() {
         initComponents();
+        try {
+            endDate.setDate(cal.getTime());
+            cal.add(Calendar.MONTH, -1);
+            startDate.setDate(cal.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
+        for (int i = 0; i < columnSizes.length; i++){
+            table.getColumnModel().getColumn(i).setPreferredWidth(columnSizes[i]);
+        }
     }
 
     /**
@@ -36,12 +61,12 @@ public class TabelPenjualan extends javax.swing.JFrame {
         tablePenjualan = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         btnExit = new javax.swing.JButton();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        startDate = new com.toedter.calendar.JDateChooser();
         jComboBox2 = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         btnTampilKasir = new javax.swing.JButton();
         btnDetail = new javax.swing.JButton();
-        jDateChooser2 = new com.toedter.calendar.JDateChooser();
+        endDate = new com.toedter.calendar.JDateChooser();
         btnDelete = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
 
@@ -49,7 +74,7 @@ public class TabelPenjualan extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 135, 255));
 
-        operator.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        operator.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua Operator" }));
 
         jLabel5.setText("Total Grandtotal");
 
@@ -65,9 +90,17 @@ public class TabelPenjualan extends javax.swing.JFrame {
 
             },
             new String [] {
-                "NO", "FAKTUR", "TANGGAL", "TUNAIKREDIT", "HARI", "JATUH TEMPO", "SUPLIER KODE", "SUPLIER NAMA", "GRANDTOTAL", "OPERATOR"
+                "No.", "Faktur", "Tanggal", "Tunai/Kredit", "Hari", "Jatuh Tempo", "Grand Total", "Sales", "Pelanggan"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tablePenjualan);
 
         jLabel2.setText("Rentang Waktu Penjualan");
@@ -103,11 +136,11 @@ public class TabelPenjualan extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(startDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(endDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -143,9 +176,9 @@ public class TabelPenjualan extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(startDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3)
-                            .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(endDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
@@ -228,9 +261,8 @@ public class TabelPenjualan extends javax.swing.JFrame {
     private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnTampilKasir;
+    private com.toedter.calendar.JDateChooser endDate;
     private javax.swing.JComboBox<String> jComboBox2;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -239,6 +271,7 @@ public class TabelPenjualan extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JComboBox<String> operator;
+    private com.toedter.calendar.JDateChooser startDate;
     private javax.swing.JTable tablePenjualan;
     private javax.swing.JTextField txtGrandTotal;
     // End of variables declaration//GEN-END:variables

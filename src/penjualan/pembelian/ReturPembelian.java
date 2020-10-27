@@ -5,6 +5,9 @@
  */
 package penjualan.pembelian;
 
+import java.util.Calendar;
+import javax.swing.JTable;
+
 /**
  *
  * @author Yohanes Dwi Listio
@@ -16,6 +19,12 @@ public class ReturPembelian extends javax.swing.JFrame {
      */
     public ReturPembelian() {
         initComponents();
+    }
+    
+    public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
+        for (int i = 0; i < columnSizes.length; i++){
+            table.getColumnModel().getColumn(i).setPreferredWidth(columnSizes[i]);
+        }
     }
 
     /**
