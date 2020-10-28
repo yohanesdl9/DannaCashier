@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import model.PenjualanDetail;
 import model.ViewPembelian;
 import model.ViewPenjualan;
 import penjualan.Koneksi;
@@ -25,6 +26,7 @@ public class PenjualanDAO extends Koneksi {
     private PreparedStatement statement;
     ViewModel vm = new ViewModel();
     List<ViewPenjualan> listPenjualan;
+    BarangDAO barangDAO = BarangDAO.getInstance();
     
     public static PenjualanDAO getInstance(){
         if (instance == null) instance = new PenjualanDAO();
@@ -65,6 +67,38 @@ public class PenjualanDAO extends Koneksi {
             i++;
         }
         return listPenjualan;
+    }
+    
+    public int insertPenjualan(String[] data_penjualan, ArrayList<PenjualanDetail> detail_penjualan) throws Exception {
+        String sql = "INSERT INTO tb_penjualan VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        statement = koneksi.prepareStatement(sql);
+        for (int i = 0; i < data_penjualan.length; i++){
+            statement.setString(i + 1, data_penjualan[i]);
+        }
+        int status = statement.executeUpdate();
+        if (status > 0) {
+            int id_detail = vm.getLatestId("id", "tb_pembelian_detail");
+            sql = "INSERT INTO tb_penjualan_detail VALUES ";
+            for (int i = 0; i < detail_penjualan.size(); i++){
+                sql += ("('" + detail_penjualan.get(i).getId() + "', '" + detail_penjualan.get(i).getId_penjualan() + "', '" +
+                        detail_penjualan.get(i).getId_barang() + "', '" + detail_penjualan.get(i).getKode_barang() + "', '" +
+                        detail_penjualan.get(i).getNama_barang() + "', '" + detail_penjualan.get(i).getJumlah() + "', '" +
+                        detail_penjualan.get(i).getSatuan() + "', '" + detail_penjualan.get(i).getHarga_jual() + "', '" + 
+                        detail_penjualan.get(i).getDiskon() + "', '" + detail_penjualan.get(i).getHarga_bersih()+ "', '" + detail_penjualan.get(i).getTotal() + "')");
+                if ((i + 1) < 10) {
+                    sql += ", ";
+                } else {
+                    sql += ";";
+                }
+            }
+            status = stmt.executeUpdate(sql);
+            // Update stock barang
+            for (int i = 0; i < detail_penjualan.size(); i++) {
+                int stok_keluar = Integer.parseInt(detail_penjualan.get(i).getJumlah());
+                status = barangDAO.updateStockBarang(detail_penjualan.get(i).getId_barang(), 0, stok_keluar, "Pengurangan stok dari transaksi penjualan " + data_penjualan[2]);
+            }
+        }
+        return status;
     }
     
     public String dateIndo(String date){

@@ -5,11 +5,13 @@
  */
 package dao;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import model.ReturPembelianDetail;
 import model.ViewReturPembelian;
 import penjualan.Koneksi;
 import penjualan.ViewModel;
@@ -19,7 +21,8 @@ import penjualan.ViewModel;
  * @author Yohanes Dwi Listio
  */
 public class ReturPembelianDAO extends Koneksi {
-    
+    BarangDAO barangDAO = BarangDAO.getInstance();
+    private PreparedStatement statement;
     static ReturPembelianDAO instance;
     List<ViewReturPembelian> listReturPembelian;
     ViewModel vm = new ViewModel();
@@ -53,6 +56,50 @@ public class ReturPembelianDAO extends Koneksi {
             listReturPembelian.add(vrp);
         }
         return listReturPembelian;
+    }
+    
+        public int insertReturPenjualan(String[] data_retur_beli, ArrayList<ReturPembelianDetail> detail_retur_beli) throws Exception {
+        String sql = "INSERT INTO tb_retur_pembelian VALUES (?, ?, ?, ?, ?, ?, ?)";
+        statement = koneksi.prepareStatement(sql);
+        for (int i = 0; i < data_retur_beli.length; i++){
+            statement.setString(i + 1, data_retur_beli[i]);
+        }
+        int status = statement.executeUpdate();
+        if (status > 0) {
+            int id_detail = vm.getLatestId("id", "tb_pembelian_detail");
+            sql = "INSERT INTO tb_penjualan_detail VALUES ";
+            for (int i = 0; i < detail_retur_beli.size(); i++){
+                sql += ("('" + detail_retur_beli.get(i).getId() + "', '" + detail_retur_beli.get(i).getId_retur_pembelian() + 
+                        "', '" + detail_retur_beli.get(i).getId_pembelian_detail() + "', '" + detail_retur_beli.get(i).getKode_barang() + 
+                        "', '" + detail_retur_beli.get(i).getNama_barang() + "', '" + detail_retur_beli.get(i).getJumlah() + 
+                        "', '" + detail_retur_beli.get(i).getSatuan() + "', '" + detail_retur_beli.get(i).getIsi() + 
+                        "', '" + detail_retur_beli.get(i).getTotal_isi() + "', '" + detail_retur_beli.get(i).getHarga_beli() + 
+                        "', '" + detail_retur_beli.get(i).getTotal() + "')");
+                if ((i + 1) < 10) {
+                    sql += ", ";
+                } else {
+                    sql += ";";
+                }
+            }
+            status = stmt.executeUpdate(sql);
+            // Update stock barang
+            for (int i = 0; i < detail_retur_beli.size(); i++) {
+                int stok_keluar = Integer.parseInt(detail_retur_beli.get(i).getJumlah());
+                String id_barang = vm.getDataByParameter("kode_barang = '" + detail_retur_beli.get(i).getKode_barang() + "'", "tb_barang", "id");
+                status = barangDAO.updateStockBarang(id_barang, 0, stok_keluar, "Pengurangan stok dari retur pembelian " + data_retur_beli[1]);
+                status = returDetailPenjualan(detail_retur_beli.get(i).getId_pembelian_detail(), stok_keluar);
+            }
+        }
+        return status;
+    }
+    
+    public int returDetailPenjualan(String id_pembelian, int jumlah_retur) throws Exception {
+        int jumlah_asal = Integer.parseInt(vm.getDataByParameter("id = " + id_pembelian, "tb_pembelian_detail", "jumlah"));
+        jumlah_asal += jumlah_retur;
+        String sql = "UPDATE tb_pembelian_detail SET jumlah = ? WHERE id = " + id_pembelian;
+        statement = koneksi.prepareStatement(sql);
+        statement.setString(1, String.valueOf(jumlah_asal));
+        return statement.executeUpdate();
     }
     
     public String dateIndo(String date){
