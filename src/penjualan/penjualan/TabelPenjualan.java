@@ -6,8 +6,10 @@
 package penjualan.penjualan;
 
 import dao.PenjualanDAO;
+import datatable.PenjualanDataTable;
 import java.util.Calendar;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import model.ViewPenjualan;
 import penjualan.ViewModel;
@@ -28,6 +30,7 @@ public class TabelPenjualan extends javax.swing.JFrame {
     
     public TabelPenjualan() {
         initComponents();
+        initTabelPenjualan();
         try {
             endDate.setDate(cal.getTime());
             cal.add(Calendar.MONTH, -1);
@@ -37,10 +40,34 @@ public class TabelPenjualan extends javax.swing.JFrame {
         }
     }
     
+    public void initTabelPenjualan(){
+        long start = startDate.getDate().getTime();
+        long end = endDate.getDate().getTime();
+        if (start > end) {
+            JOptionPane.showMessageDialog(null, "Pilih rentang tanggal dengan benar", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                listPenjualan = penjualanDAO.getListPenjualan(startDate.getDate(), endDate.getDate());
+                tablePenjualan.setModel(new PenjualanDataTable(listPenjualan));
+                txtGrandTotal.setText(String.valueOf(getTotalGrandTotal(listPenjualan)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
     public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
         for (int i = 0; i < columnSizes.length; i++){
             table.getColumnModel().getColumn(i).setPreferredWidth(columnSizes[i]);
         }
+    }
+    
+    public int getTotalGrandTotal(List<ViewPenjualan> lp) {
+        int total = 0;
+        for (int i = 0; i < lp.size(); i++) {
+            total += Integer.parseInt(lp.get(i).getGrand_total());
+        }
+        return total;
     }
 
     /**

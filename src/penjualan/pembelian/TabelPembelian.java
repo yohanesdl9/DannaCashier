@@ -6,8 +6,10 @@
 package penjualan.pembelian;
 
 import dao.PembelianDAO;
+import datatable.PembelianDataTable;
 import java.util.Calendar;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import model.ViewPembelian;
 import penjualan.ViewModel;
@@ -25,6 +27,7 @@ public class TabelPembelian extends javax.swing.JFrame {
     
     public TabelPembelian() {
         initComponents();
+        initTabelPembelian();
         try {
             endDate.setDate(cal.getTime());
             cal.add(Calendar.MONTH, -1);
@@ -35,7 +38,29 @@ public class TabelPembelian extends javax.swing.JFrame {
     }
     
     public void initTabelPembelian(){
-        
+        long start = startDate.getDate().getTime();
+        long end = endDate.getDate().getTime();
+        if (start > end) {
+            JOptionPane.showMessageDialog(null, "Pilih rentang tanggal dengan benar", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                listPembelian = pembelianDAO.getListPembelian(startDate.getDate(), endDate.getDate());
+                tablePembelian.setModel(new PembelianDataTable(listPembelian));
+                txtGrandTotal.setText(String.valueOf(getTotalGrandTotal(listPembelian)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        int[] size = {10, 30, 40, 40, 10, 40, 50, 70, 50, 50};
+        adjustTableColumnWidth(tablePembelian, size);
+    }
+    
+    public int getTotalGrandTotal(List<ViewPembelian> lp) {
+        int total = 0;
+        for (int i = 0; i < lp.size(); i++) {
+            total += Integer.parseInt(lp.get(i).getGrand_total());
+        }
+        return total;
     }
     
     public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
@@ -123,6 +148,18 @@ public class TabelPembelian extends javax.swing.JFrame {
         jLabel4.setText("Operator");
 
         jLabel5.setText("Total Grandtotal");
+
+        startDate.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                startDatePropertyChange(evt);
+            }
+        });
+
+        endDate.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                endDatePropertyChange(evt);
+            }
+        });
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -243,6 +280,16 @@ public class TabelPembelian extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_btnExitActionPerformed
+
+    private void startDatePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_startDatePropertyChange
+        // TODO add your handling code here:
+        initTabelPembelian();
+    }//GEN-LAST:event_startDatePropertyChange
+
+    private void endDatePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_endDatePropertyChange
+        // TODO add your handling code here:
+        initTabelPembelian();
+    }//GEN-LAST:event_endDatePropertyChange
 
     /**
      * @param args the command line arguments
