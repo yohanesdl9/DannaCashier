@@ -74,10 +74,9 @@ public class ReturPenjualanDAO extends Koneksi {
                 sql += ("('" + detail_retur_jual.get(i).getId() + "', '" + detail_retur_jual.get(i).getId_retur_penjualan() + 
                         "', '" + detail_retur_jual.get(i).getId_penjualan_detail() + "', '" + detail_retur_jual.get(i).getKode_barang() + 
                         "', '" + detail_retur_jual.get(i).getNama_barang() + "', '" + detail_retur_jual.get(i).getJumlah() + 
-                        "', '" + detail_retur_jual.get(i).getSatuan() + "', '" + detail_retur_jual.get(i).getIsi() + 
-                        "', '" + detail_retur_jual.get(i).getTotal_isi() + "', '" + detail_retur_jual.get(i).getHarga_beli() + 
+                        "', '" + detail_retur_jual.get(i).getSatuan() + "', '" + detail_retur_jual.get(i).getHarga_beli() + 
                         "', '" + detail_retur_jual.get(i).getTotal() + "')");
-                if ((i + 1) < 10) {
+                if ((i + 1) < detail_retur_jual.size()) {
                     sql += ", ";
                 } else {
                     sql += ";";

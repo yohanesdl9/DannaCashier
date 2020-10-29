@@ -72,15 +72,15 @@ public class ReturPembelianDAO extends Koneksi {
                 sql += ("('" + detail_retur_beli.get(i).getId() + "', '" + detail_retur_beli.get(i).getId_retur_pembelian() + 
                         "', '" + detail_retur_beli.get(i).getId_pembelian_detail() + "', '" + detail_retur_beli.get(i).getKode_barang() + 
                         "', '" + detail_retur_beli.get(i).getNama_barang() + "', '" + detail_retur_beli.get(i).getJumlah() + 
-                        "', '" + detail_retur_beli.get(i).getSatuan() + "', '" + detail_retur_beli.get(i).getIsi() + 
-                        "', '" + detail_retur_beli.get(i).getTotal_isi() + "', '" + detail_retur_beli.get(i).getHarga_beli() + 
+                        "', '" + detail_retur_beli.get(i).getSatuan() + "', '" + detail_retur_beli.get(i).getHarga_beli() + 
                         "', '" + detail_retur_beli.get(i).getTotal() + "')");
-                if ((i + 1) < 10) {
+                if ((i + 1) < detail_retur_beli.size()) {
                     sql += ", ";
                 } else {
                     sql += ";";
                 }
             }
+            System.out.println(sql);
             status = stmt.executeUpdate(sql);
             // Update stock barang
             for (int i = 0; i < detail_retur_beli.size(); i++) {

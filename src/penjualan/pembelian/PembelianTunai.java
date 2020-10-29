@@ -7,15 +7,19 @@ package penjualan.pembelian;
 
 import com.sun.glass.events.KeyEvent;
 import dao.BarangDAO;
+import dao.PembelianDAO;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import model.Barang;
+import model.PembelianDetail;
 import penjualan.CustomCombo;
 import penjualan.ViewModel;
 import static penjualan.pembelian.Pembeliantunai_frame.getDate;
@@ -29,10 +33,13 @@ public class PembelianTunai extends javax.swing.JFrame {
     /**
      * Creates new form PembelianTunai
      */
+    
+    int id;
     int totalPembelian = 0;
     DefaultTableModel model;
     Calendar cal = Calendar.getInstance();
     ViewModel vm = new ViewModel();
+    PembelianDAO pembelianDAO = PembelianDAO.getInstance();
     
     public PembelianTunai() {
         initComponents();
@@ -40,12 +47,22 @@ public class PembelianTunai extends javax.swing.JFrame {
         initDropdown(pilihSupplier, "tb_supplier", "nama");
         model = (DefaultTableModel) tblPembelian.getModel();
         try {
+            id = vm.getLatestId("id", "tb_pembelian");
             cal.setTimeZone(TimeZone.getTimeZone("GMT+7"));
             tanggalBeli.setDate(cal.getTime());
+            jatuhTempo.setText(new SimpleDateFormat("MMM dd, YYYY").format(tanggalBeli.getDate()));
             noFaktur.setText(vm.getLatestIdPembelian());
         } catch (Exception e){
             e.printStackTrace();
         }
+        jLabel5.setVisible(false);
+        jLabel6.setVisible(false);
+        jumlahHari.setVisible(false);
+        jatuhTempo.setVisible(false);
+        jLabel19.setVisible(true);
+        jLabel20.setVisible(true);
+        tunai.setVisible(true);
+        kembalian.setVisible(true);
     }
     
     public void initDropdown(JComboBox comboBox, String param, String table, String field) {
@@ -132,12 +149,95 @@ public class PembelianTunai extends javax.swing.JFrame {
         subtotal.setText("");
         diskonPersen.setText("");
         diskonNominal.setText("");
+        metodeBayar.setSelectedItem("TUNAI");
         grandtotal.setText("");
         tunai.setText("");
         kembalian.setText("");
         model.setRowCount(0);
+        try {
+            id = vm.getLatestId("id", "tb_penjualan");
+            noFaktur.setText(vm.getLatestIdPembelian());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        jLabel5.setVisible(false);
+        jLabel6.setVisible(false);
+        jumlahHari.setVisible(false);
+        jatuhTempo.setVisible(false);
+        jLabel19.setVisible(true);
+        jLabel20.setVisible(true);
+        tunai.setVisible(true);
+        kembalian.setVisible(true);
     }
 
+    public void hitungKembalian() {
+        if (grandtotal.getText().length() > 0) {
+            if (tunai.getText().length() > 0) {
+                int grand_total = Integer.parseInt(grandtotal.getText());
+                int uang_tunai = Integer.parseInt(tunai.getText());
+                kembalian.setText(String.valueOf(uang_tunai - grand_total));
+            } else {
+                kembalian.setText("");
+            }
+        }
+    }
+    
+    public boolean validateFormFilled(){
+        boolean is_invalid = false;
+        // First, check if supplier code has been filled
+        is_invalid = pilihSupplier.getSelectedIndex() == 0;
+        // Second, if user choose custom payment method, check if days has been filled
+        if (metodeBayar.getSelectedItem().toString().equals("Custom")) {
+            is_invalid = jumlahHari.getText().toString().equals("");
+        }
+        return is_invalid;
+    }
+    
+    public void checkout(){
+        try {
+            boolean isTunai = metodeBayar.getSelectedItem().toString().equals("TUNAI");
+            String[] data = {
+                String.valueOf(id),
+                new SimpleDateFormat("yyyy-MM-dd").format(tanggalBeli.getDate()),
+                noFaktur.getText(),
+                metodeBayar.getSelectedItem().toString(),
+                new SimpleDateFormat("yyyy-MM-dd").format(isTunai ? tanggalBeli.getDate() : new SimpleDateFormat("yyyy-MM-dd").parse(jatuhTempo.getText())),
+                vm.getDataByParameter("nama = '" + pilihSupplier.getSelectedItem().toString() + "'", "tb_supplier", "id"),
+                subtotal.getText(),
+                diskonPersen.getText().length() > 0 ? diskonPersen.getText() : "0" ,
+                diskonNominal.getText().length() > 0 ? diskonNominal.getText() : "0",
+                grandtotal.getText(),
+                isTunai ? tunai.getText() : null,
+                isTunai ? kembalian.getText() : null
+            };
+            ArrayList<PembelianDetail> detail_beli = new ArrayList<>();
+            int id_detail = vm.getLatestId("id", "tb_pembelian_detail");
+            for (int i = 0; i < tblPembelian.getRowCount(); i++){
+                PembelianDetail pd = new PembelianDetail();
+                pd.setId(String.valueOf(id_detail + i));
+                pd.setId_pembelian(String.valueOf(id));
+                pd.setId_barang(vm.getDataByParameter("kode = '" + tblPembelian.getValueAt(i, 0).toString() + "'", "tb_barang", "id"));
+                pd.setKode_barang(tblPembelian.getValueAt(i, 0).toString());
+                pd.setNama_barang(tblPembelian.getValueAt(i, 1).toString());
+                pd.setJumlah(tblPembelian.getValueAt(i, 2).toString());
+                pd.setSatuan(tblPembelian.getValueAt(i, 3).toString());
+                pd.setHarga_beli(tblPembelian.getValueAt(i, 4).toString());
+                pd.setTotal(tblPembelian.getValueAt(i, 5).toString());
+                pd.setHarga_jual(tblPembelian.getValueAt(i, 6).toString());
+                detail_beli.add(pd);
+            }
+            int status = pembelianDAO.insertPembelian(data, detail_beli);
+            if (status > 0) {
+                JOptionPane.showMessageDialog(null, "Transaksi berhasil diinputkan", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                resetAll();
+            } else {
+                JOptionPane.showMessageDialog(null, "Terjadi kesalahan yang tidak diketahui", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -158,7 +258,7 @@ public class PembelianTunai extends javax.swing.JFrame {
         jumlahHari = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        jatuhTempo = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         inputJumlah = new javax.swing.JTextField();
         inputHargaBeli = new javax.swing.JTextField();
@@ -206,16 +306,29 @@ public class PembelianTunai extends javax.swing.JFrame {
         noFaktur.setEditable(false);
 
         metodeBayar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TUNAI", "1 Minggu", "2 Minggu", "3 Minggu", "4 Minggu", "Custom" }));
+        metodeBayar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                metodeBayarActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Tunai/Kredit");
 
         jumlahHari.setEditable(false);
+        jumlahHari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jumlahHariKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jumlahHariKeyReleased(evt);
+            }
+        });
 
         jLabel5.setText("Hari");
 
         jLabel6.setText("Jatuh Tempo");
 
-        jLabel7.setText("24 Oktober 2020");
+        jatuhTempo.setText("24 Oktober 2020");
 
         jLabel8.setText("Kode Supplier");
 
@@ -276,6 +389,9 @@ public class PembelianTunai extends javax.swing.JFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 diskonPersenKeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                diskonPersenKeyReleased(evt);
+            }
         });
 
         diskonNominal.setEditable(false);
@@ -288,6 +404,9 @@ public class PembelianTunai extends javax.swing.JFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 tunaiKeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tunaiKeyReleased(evt);
+            }
         });
 
         jLabel19.setText("Tunai");
@@ -297,6 +416,11 @@ public class PembelianTunai extends javax.swing.JFrame {
         jLabel20.setText("Kembalian");
 
         btnSimpan.setText("Simpan");
+        btnSimpan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimpanActionPerformed(evt);
+            }
+        });
 
         btnPrint.setText("Cetak");
 
@@ -326,7 +450,7 @@ public class PembelianTunai extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel7)
+                        .addComponent(jatuhTempo)
                         .addGap(545, 547, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -439,7 +563,7 @@ public class PembelianTunai extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jLabel7))
+                    .addComponent(jatuhTempo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
@@ -554,6 +678,100 @@ public class PembelianTunai extends javax.swing.JFrame {
         tunai.setEditable((evt.getKeyChar() >= '0' && evt.getKeyChar() <= '9' || evt.getKeyCode() == 8));
     }//GEN-LAST:event_tunaiKeyPressed
 
+    private void jumlahHariKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jumlahHariKeyReleased
+        // TODO add your handling code here:
+        Date date = tanggalBeli.getDate();
+        if (jumlahHari.getText().length() > 0) {
+            int jumlah_hari = Integer.parseInt(jumlahHari.getText());
+            cal.setTime(date);
+            cal.add(Calendar.DATE, jumlah_hari);
+            jatuhTempo.setText(new SimpleDateFormat("MMM dd, YYYY").format(cal.getTime()));
+        } else {
+            jatuhTempo.setText(new SimpleDateFormat("MMM dd, YYYY").format(date));
+        }
+    }//GEN-LAST:event_jumlahHariKeyReleased
+
+    private void jumlahHariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jumlahHariKeyPressed
+        // TODO add your handling code here:
+        jumlahHari.setEditable((evt.getKeyChar() >= '0' && evt.getKeyChar() <= '9' || evt.getKeyCode() == 8));
+    }//GEN-LAST:event_jumlahHariKeyPressed
+
+    private void diskonPersenKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_diskonPersenKeyReleased
+        // TODO add your handling code here:
+        if (diskonPersen.getText().length() > 0) {
+            int diskon = Integer.parseInt(diskonPersen.getText());
+            if (diskon > 100 && diskon < 0) {
+                int sub_total = Integer.parseInt(subtotal.getText());
+                int diskon_nominal = sub_total * (100 - diskon) / 100;
+                diskonNominal.setText(String.valueOf(diskon_nominal));
+                grandtotal.setText(String.valueOf(sub_total - diskon_nominal));
+            } else {
+                JOptionPane.showMessageDialog(null, "Diskon harus berada di rentang 0-100%", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            grandtotal.setText(subtotal.getText());
+        }
+    }//GEN-LAST:event_diskonPersenKeyReleased
+
+    private void tunaiKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tunaiKeyReleased
+        // TODO add your handling code here:
+        hitungKembalian();
+    }//GEN-LAST:event_tunaiKeyReleased
+
+    private void metodeBayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_metodeBayarActionPerformed
+        // TODO add your handling code here:
+        Date date = tanggalBeli.getDate();
+        cal.setTime(date);
+        String metode = metodeBayar.getSelectedItem().toString();
+        jLabel19.setVisible(metode.equals("TUNAI"));
+        jLabel20.setVisible(metode.equals("TUNAI"));
+        tunai.setVisible(metode.equals("TUNAI"));
+        kembalian.setVisible(metode.equals("TUNAI"));
+        jLabel6.setVisible(!metode.equals("TUNAI"));
+        jatuhTempo.setVisible(!metode.equals("TUNAI"));
+        jumlahHari.setVisible(metode.equals("Custom"));
+        jumlahHari.setEditable(metode.equals("Custom"));
+        jLabel5.setVisible(metode.equals("Custom"));
+        if (metode.equals("TUNAI")) {
+            jumlahHari.setText("");
+            jatuhTempo.setText(new SimpleDateFormat("MMM dd, YYYY").format(date));
+        } else {
+            tunai.setText("");
+            kembalian.setText("");
+            if (metode.equals("1 Minggu")) {
+                cal.add(Calendar.DATE, 7);
+            } else if (metode.equals("2 Minggu")) {
+                cal.add(Calendar.DATE, 14);
+            } else if (metode.equals("3 Minggu")) {
+                cal.add(Calendar.DATE, 21);
+            } else if (metode.equals("4 Minggu")) {
+                cal.add(Calendar.DATE, 28);
+            }
+        }
+    }//GEN-LAST:event_metodeBayarActionPerformed
+
+    private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
+        // TODO add your handling code here:
+        if (tblPembelian.getRowCount() > 0) {            
+            if (validateFormFilled()) {
+                JOptionPane.showMessageDialog(null, "Harap masukkan data dengan benar!", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            } else {
+                if (metodeBayar.getSelectedItem().toString().equals("TUNAI")) {
+                    if (Integer.parseInt(kembalian.getText()) < 0 || kembalian.getText().length() == 0) {
+                        JOptionPane.showMessageDialog(null, "Uang tunai kurang", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        checkout();
+                    }
+                } else {
+                    checkout();
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Anda belum memilih barang satupun", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }//GEN-LAST:event_btnSimpanActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -618,11 +836,11 @@ public class PembelianTunai extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jatuhTempo;
     private javax.swing.JTextField jumlahHari;
     private javax.swing.JTextField kembalian;
     private javax.swing.JComboBox<String> metodeBayar;

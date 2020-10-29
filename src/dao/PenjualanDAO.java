@@ -69,6 +69,30 @@ public class PenjualanDAO extends Koneksi {
         return listPenjualan;
     }
     
+    public List<PenjualanDetail> getListPembelianDetail(String faktur) throws Exception {
+        List<PenjualanDetail> detail_jual = new ArrayList<>();
+        String sql = "SELECT tpd.* FROM tb_pembelian_detail AS tpd\n"
+                + "INNER JOIN tb_pembelian AS tp ON tpd.id_pembelian = tp.id\n"
+                + "WHERE tp.faktur = '" + faktur + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            PenjualanDetail pd = new PenjualanDetail();
+            pd.setId(rs.getString("id"));
+            pd.setId_penjualan(rs.getString("id_penjualan"));
+            pd.setId_barang(rs.getString("id_barang"));
+            pd.setKode_barang(rs.getString("kode_barang"));
+            pd.setNama_barang(rs.getString("nama_barang"));
+            pd.setJumlah(rs.getString("jumlah"));
+            pd.setSatuan(rs.getString("satuan"));
+            pd.setHarga_jual(rs.getString("harga_jual"));
+            pd.setDiskon(rs.getString("diskon"));
+            pd.setHarga_bersih(rs.getString("harga_bersih"));
+            pd.setTotal(rs.getString("total"));
+            detail_jual.add(pd);
+        }
+        return detail_jual;
+    }
+    
     public int insertPenjualan(String[] data_penjualan, ArrayList<PenjualanDetail> detail_penjualan) throws Exception {
         String sql = "INSERT INTO tb_penjualan VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);
@@ -85,7 +109,7 @@ public class PenjualanDAO extends Koneksi {
                         detail_penjualan.get(i).getNama_barang() + "', '" + detail_penjualan.get(i).getJumlah() + "', '" +
                         detail_penjualan.get(i).getSatuan() + "', '" + detail_penjualan.get(i).getHarga_jual() + "', '" + 
                         detail_penjualan.get(i).getDiskon() + "', '" + detail_penjualan.get(i).getHarga_bersih()+ "', '" + detail_penjualan.get(i).getTotal() + "')");
-                if ((i + 1) < 10) {
+                if ((i + 1) < detail_penjualan.size()) {
                     sql += ", ";
                 } else {
                     sql += ";";

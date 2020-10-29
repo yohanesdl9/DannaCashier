@@ -30,11 +30,11 @@ public class TabelPenjualan extends javax.swing.JFrame {
     
     public TabelPenjualan() {
         initComponents();
-        initTabelPenjualan();
         try {
             endDate.setDate(cal.getTime());
             cal.add(Calendar.MONTH, -1);
             startDate.setDate(cal.getTime());
+            initTabelPenjualan();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,6 +96,7 @@ public class TabelPenjualan extends javax.swing.JFrame {
         endDate = new com.toedter.calendar.JDateChooser();
         btnDelete = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
+        btnRefresh = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -151,6 +152,13 @@ public class TabelPenjualan extends javax.swing.JFrame {
 
         jLabel4.setText("Operator");
 
+        btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -183,13 +191,18 @@ public class TabelPenjualan extends javax.swing.JFrame {
                         .addComponent(btnTampilKasir)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnDetail)
-                        .addGap(59, 59, 59)
+                        .addGap(113, 113, 113)
                         .addComponent(btnDelete)
-                        .addGap(60, 60, 60)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(38, 38, 38)
                         .addComponent(btnExit)))
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addContainerGap(391, Short.MAX_VALUE)
+                    .addComponent(btnRefresh)
+                    .addContainerGap(391, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -224,6 +237,11 @@ public class TabelPenjualan extends javax.swing.JFrame {
                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnTampilKasir, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addContainerGap(606, Short.MAX_VALUE)
+                    .addComponent(btnRefresh)
+                    .addContainerGap()))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -246,6 +264,11 @@ public class TabelPenjualan extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_btnExitActionPerformed
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        // TODO add your handling code here:
+        initTabelPenjualan();
+    }//GEN-LAST:event_btnRefreshActionPerformed
 
     /**
      * @param args the command line arguments
@@ -286,6 +309,7 @@ public class TabelPenjualan extends javax.swing.JFrame {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnExit;
+    private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnTampilKasir;
     private com.toedter.calendar.JDateChooser endDate;
     private javax.swing.JComboBox<String> jComboBox2;

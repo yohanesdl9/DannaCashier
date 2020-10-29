@@ -11,7 +11,7 @@
  Target Server Version : 100411
  File Encoding         : 65001
 
- Date: 26/10/2020 21:16:36
+ Date: 29/10/2020 17:59:56
 */
 
 SET NAMES utf8mb4;
@@ -43,6 +43,20 @@ CREATE TABLE `tb_barang`  (
   CONSTRAINT `tb_barang_ibfk_2` FOREIGN KEY (`id_satuan`) REFERENCES `tb_general` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `tb_barang_ibfk_3` FOREIGN KEY (`id_supplier`) REFERENCES `tb_supplier` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of tb_barang
+-- ----------------------------
+INSERT INTO `tb_barang` VALUES (1, 'BRG0000001', 'Tango Wafer 104 gram', 1, 7, 100, 4800, 5200, 1, 1, NULL, '', NULL);
+INSERT INTO `tb_barang` VALUES (2, 'BRG0000002', 'Mintz Chewy Bag 125 gram', 3, 7, 100, 3000, 3600, 2, 2, NULL, NULL, NULL);
+INSERT INTO `tb_barang` VALUES (3, 'BRG0000003', 'Mr. Potato 60 gram', 1, 7, 100, 5000, 5400, 3, 1, NULL, NULL, NULL);
+INSERT INTO `tb_barang` VALUES (4, 'BRG0000004', 'Vita Pudding 108 gram', 1, 7, 100, 2000, 2550, 1, 1, NULL, NULL, NULL);
+INSERT INTO `tb_barang` VALUES (5, 'BRG0000005', 'TOP Coffee 20 x 25 gram', 4, 7, 100, 13600, 13900, 1, 2, NULL, NULL, NULL);
+INSERT INTO `tb_barang` VALUES (6, 'BRG0000006', 'Sari Wangi Green Tea 25 x 25 gram', 5, 9, 100, 5500, 5900, 3, 2, NULL, NULL, NULL);
+INSERT INTO `tb_barang` VALUES (7, 'BRG0000007', 'Sari Bunga Madu 650 mL', 6, 8, 100, 49000, 50000, 2, 1, '2021-04-27', NULL, NULL);
+INSERT INTO `tb_barang` VALUES (8, 'BRG0000008', 'Nusantara Madu Murni', 6, 8, 100, 61500, 63000, 2, 2, '2021-04-27', NULL, NULL);
+INSERT INTO `tb_barang` VALUES (9, 'BRG0000009', 'Teh Pucuk Harum 480 mL', 5, 8, 100, 3000, 3250, 1, 4, NULL, NULL, NULL);
+INSERT INTO `tb_barang` VALUES (10, 'BRG0000010', 'Coolant Botol 350 mL', 2, 8, 100, 3600, 4200, 3, 2, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for tb_general
@@ -196,6 +210,7 @@ DROP TABLE IF EXISTS `tb_retur_pembelian`;
 CREATE TABLE `tb_retur_pembelian`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `no_retur` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `tanggal` date NULL DEFAULT NULL,
   `id_pembelian` int(11) NULL DEFAULT NULL,
   `faktur` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `total_retur` int(11) NULL DEFAULT NULL,
@@ -217,8 +232,6 @@ CREATE TABLE `tb_retur_pembelian_detail`  (
   `nama_barang` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `jumlah` int(11) NULL DEFAULT NULL,
   `satuan` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `isi` int(11) NULL DEFAULT NULL,
-  `total_isi` int(11) NULL DEFAULT NULL,
   `harga_beli` int(11) NULL DEFAULT NULL,
   `total` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
@@ -236,6 +249,7 @@ CREATE TABLE `tb_retur_penjualan`  (
   `id` int(11) NOT NULL,
   `id_penjualan` int(11) NULL DEFAULT NULL,
   `no_retur` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `tanggal` date NULL DEFAULT NULL,
   `kode_penjualan` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `total_nilai` int(11) NULL DEFAULT NULL,
   `total_dibayar` int(11) NULL DEFAULT NULL,
@@ -258,8 +272,6 @@ CREATE TABLE `tb_retur_penjualan_detail`  (
   `nama_barang` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `jumlah` int(11) NULL DEFAULT NULL,
   `satuan` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `isi` int(11) NULL DEFAULT NULL,
-  `total_isi` int(11) NULL DEFAULT NULL,
   `harga_beli` int(11) NULL DEFAULT NULL,
   `total` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
@@ -294,6 +306,21 @@ INSERT INTO `tb_sales` VALUES (2, 'SALES00002', 'Adrian', 'Jl. Sunandar Priyosud
 INSERT INTO `tb_sales` VALUES (3, 'SALES00003', 'Ko Liem', 'Jl. Kelapa Sawit no. 77 A Malang', '082177468392', 'liem.ko@gmail.com', NULL, NULL, NULL);
 INSERT INTO `tb_sales` VALUES (4, 'SALES00004', 'Wahyu Deddy', 'Villa Bukit Cemara Tidar B-40 Malang', '082288947753', 'd.wahyu@gmail.com', NULL, NULL, NULL);
 INSERT INTO `tb_sales` VALUES (5, 'SALES00005', 'Daniel Budiman', 'Jl. Trisakti no. 11 A Malang', '081977568273', 'danibudi@gmail.com', NULL, NULL, NULL);
+
+-- ----------------------------
+-- Table structure for tb_stok_barang
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_stok_barang`;
+CREATE TABLE `tb_stok_barang`  (
+  `id` int(11) NOT NULL,
+  `id_barang` int(11) NULL DEFAULT NULL,
+  `stok_masuk` int(11) NULL DEFAULT NULL,
+  `stok_keluar` int(11) NULL DEFAULT NULL,
+  `keterangan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `id_barang`(`id_barang`) USING BTREE,
+  CONSTRAINT `tb_stok_barang_ibfk_1` FOREIGN KEY (`id_barang`) REFERENCES `tb_barang` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_stok_opname

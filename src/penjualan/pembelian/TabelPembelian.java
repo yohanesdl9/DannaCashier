@@ -5,9 +5,13 @@
  */
 package penjualan.pembelian;
 
+import com.toedter.calendar.JDateChooser;
 import dao.PembelianDAO;
 import datatable.PembelianDataTable;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -27,11 +31,11 @@ public class TabelPembelian extends javax.swing.JFrame {
     
     public TabelPembelian() {
         initComponents();
-        initTabelPembelian();
         try {
             endDate.setDate(cal.getTime());
             cal.add(Calendar.MONTH, -1);
             startDate.setDate(cal.getTime());
+            initTabelPembelian();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -98,6 +102,7 @@ public class TabelPembelian extends javax.swing.JFrame {
         btnLihatDetail = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -149,18 +154,6 @@ public class TabelPembelian extends javax.swing.JFrame {
 
         jLabel5.setText("Total Grandtotal");
 
-        startDate.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                startDatePropertyChange(evt);
-            }
-        });
-
-        endDate.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                endDatePropertyChange(evt);
-            }
-        });
-
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         btnTampilKasir.setText("Tampilkan di Kasir");
@@ -173,6 +166,13 @@ public class TabelPembelian extends javax.swing.JFrame {
         btnExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExitActionPerformed(evt);
+            }
+        });
+
+        btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
             }
         });
 
@@ -195,9 +195,9 @@ public class TabelPembelian extends javax.swing.JFrame {
                         .addComponent(endDate, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(operator, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addGap(376, 376, 376)
+                            .addComponent(jLabel4)
+                            .addComponent(operator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(372, 372, 372)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtGrandTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
@@ -206,9 +206,11 @@ public class TabelPembelian extends javax.swing.JFrame {
                         .addComponent(btnTampilKasir)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnLihatDetail)
-                        .addGap(59, 59, 59)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRefresh)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelete)
-                        .addGap(60, 60, 60)
+                        .addGap(18, 18, 18)
                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(38, 38, 38)
                         .addComponent(btnExit)))
@@ -251,7 +253,8 @@ public class TabelPembelian extends javax.swing.JFrame {
                         .addComponent(btnLihatDetail)
                         .addComponent(btnDelete)
                         .addComponent(btnExit)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnRefresh))
                     .addComponent(btnTampilKasir, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
@@ -281,15 +284,10 @@ public class TabelPembelian extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnExitActionPerformed
 
-    private void startDatePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_startDatePropertyChange
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
         // TODO add your handling code here:
         initTabelPembelian();
-    }//GEN-LAST:event_startDatePropertyChange
-
-    private void endDatePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_endDatePropertyChange
-        // TODO add your handling code here:
-        initTabelPembelian();
-    }//GEN-LAST:event_endDatePropertyChange
+    }//GEN-LAST:event_btnRefreshActionPerformed
 
     /**
      * @param args the command line arguments
@@ -330,6 +328,7 @@ public class TabelPembelian extends javax.swing.JFrame {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnLihatDetail;
+    private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnTampilKasir;
     private com.toedter.calendar.JDateChooser endDate;
     private javax.swing.JComboBox<String> jComboBox2;

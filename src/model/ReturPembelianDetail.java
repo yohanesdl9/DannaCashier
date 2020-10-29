@@ -17,8 +17,6 @@ public class ReturPembelianDetail {
     private String nama_barang;
     private String jumlah;
     private String satuan;
-    private String isi;
-    private String total_isi;
     private String harga_beli;
     private String total;
 
@@ -76,22 +74,6 @@ public class ReturPembelianDetail {
 
     public void setSatuan(String satuan) {
         this.satuan = satuan;
-    }
-
-    public String getIsi() {
-        return isi;
-    }
-
-    public void setIsi(String isi) {
-        this.isi = isi;
-    }
-
-    public String getTotal_isi() {
-        return total_isi;
-    }
-
-    public void setTotal_isi(String total_isi) {
-        this.total_isi = total_isi;
     }
 
     public String getHarga_beli() {

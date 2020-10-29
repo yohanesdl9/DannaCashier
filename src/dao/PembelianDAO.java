@@ -68,6 +68,29 @@ public class PembelianDAO extends Koneksi {
         return listPembelian;
     }
     
+    public List<PembelianDetail> getListPembelianDetail(String faktur) throws Exception {
+        List<PembelianDetail> detail_beli = new ArrayList<>();
+        String sql = "SELECT tpd.* FROM tb_pembelian_detail AS tpd\n"
+                + "INNER JOIN tb_pembelian AS tp ON tpd.id_pembelian = tp.id\n"
+                + "WHERE tp.faktur = '" + faktur + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            PembelianDetail pd = new PembelianDetail();
+            pd.setId(rs.getString("id"));
+            pd.setId_pembelian(rs.getString("id_pembelian"));
+            pd.setId_barang(rs.getString("id_barang"));
+            pd.setKode_barang(rs.getString("kode_barang"));
+            pd.setNama_barang(rs.getString("nama_barang"));
+            pd.setJumlah(rs.getString("jumlah"));
+            pd.setSatuan(rs.getString("satuan"));
+            pd.setHarga_beli(rs.getString("harga_beli"));
+            pd.setTotal(rs.getString("total"));
+            pd.setHarga_jual(rs.getString("harga_jual"));
+            detail_beli.add(pd);
+        }
+        return detail_beli;
+    }
+    
     public int insertPembelian(String[] data_pembelian, ArrayList<PembelianDetail> detail_pembelian) throws Exception {
         String sql = "INSERT INTO tb_pembelian VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);
@@ -84,12 +107,13 @@ public class PembelianDAO extends Koneksi {
                         detail_pembelian.get(i).getNama_barang() + "', '" + detail_pembelian.get(i).getJumlah() + "', '" +
                         detail_pembelian.get(i).getSatuan() + "', '" + detail_pembelian.get(i).getHarga_beli() + "', '" + 
                         detail_pembelian.get(i).getTotal() + "', '" + detail_pembelian.get(i).getHarga_jual() + "')");
-                if ((i + 1) < 10) {
+                if ((i + 1) < detail_pembelian.size()) {
                     sql += ", ";
                 } else {
                     sql += ";";
                 }
             }
+            System.out.println(sql);
             status = stmt.executeUpdate(sql);
             // Update stock barang
             for (int i = 0; i < detail_pembelian.size(); i++) {

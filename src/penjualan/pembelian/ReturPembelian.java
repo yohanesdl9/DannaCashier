@@ -41,7 +41,6 @@ public class ReturPembelian extends javax.swing.JFrame {
         tanggalBeli = new com.toedter.calendar.JDateChooser();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        noFaktur = new javax.swing.JTextField();
         noFaktur1 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -71,6 +70,7 @@ public class ReturPembelian extends javax.swing.JFrame {
         btnSimpan = new javax.swing.JButton();
         btnCetak = new javax.swing.JButton();
         btnBaru = new javax.swing.JButton();
+        noFaktur = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -94,11 +94,11 @@ public class ReturPembelian extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Kode", "Nama", "Jumlah", "Satuan", "Isi", "Total Isi", "Harga Bersih", "Total"
+                "Kode", "Nama", "Jumlah", "Satuan", "Harga Bersih", "Total"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, false, true, true, true
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -128,11 +128,11 @@ public class ReturPembelian extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Kode", "Nama", "Jumlah", "Satuan", "Isi", "Total Isi", "Harga Beli", "Total"
+                "Kode", "Nama", "Jumlah", "Satuan", "Harga Beli", "Total"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -168,6 +168,8 @@ public class ReturPembelian extends javax.swing.JFrame {
             }
         });
 
+        noFaktur.setEditable(true);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -188,9 +190,9 @@ public class ReturPembelian extends javax.swing.JFrame {
                                         .addComponent(jLabel3))
                                     .addGap(22, 22, 22)
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(noFaktur)
                                         .addComponent(tanggalBeli, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(noFaktur1)))
+                                        .addComponent(noFaktur1)
+                                        .addComponent(noFaktur, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel5)
@@ -255,10 +257,10 @@ public class ReturPembelian extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(noFaktur1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(noFaktur, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(14, 14, 14)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -312,17 +314,17 @@ public class ReturPembelian extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
+    private void btnBaruActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBaruActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSimpanActionPerformed
+    }//GEN-LAST:event_btnBaruActionPerformed
 
     private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCetakActionPerformed
 
-    private void btnBaruActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBaruActionPerformed
+    private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnBaruActionPerformed
+    }//GEN-LAST:event_btnSimpanActionPerformed
 
     /**
      * @param args the command line arguments
@@ -388,7 +390,7 @@ public class ReturPembelian extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField noFaktur;
+    private javax.swing.JComboBox<String> noFaktur;
     private javax.swing.JTextField noFaktur1;
     private javax.swing.JTable tabelPembelian;
     private javax.swing.JTable tabelReturPembelian;
