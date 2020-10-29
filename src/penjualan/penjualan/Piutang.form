@@ -82,10 +82,9 @@
                                       </Group>
                                   </Group>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="1" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
                                           <Component id="jLabel1" min="-2" pref="168" max="-2" attributes="0"/>
-                                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
@@ -101,16 +100,12 @@
                                           <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
                                               <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Group type="102" alignment="0" attributes="0">
-                                                  <Group type="103" groupAlignment="0" attributes="0">
-                                                      <Component id="jCheckBox2" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                      <Component id="jCheckBox1" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                  </Group>
-                                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                              </Group>
+                                              <Component id="jCheckBox2" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jCheckBox1" alignment="0" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
@@ -140,9 +135,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
@@ -209,19 +202,19 @@
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="13" rowCount="4">
-                    <Column editable="true" title="NO" type="java.lang.Object"/>
-                    <Column editable="true" title="FAKTUR" type="java.lang.Object"/>
-                    <Column editable="true" title="TANGGAL" type="java.lang.Object"/>
-                    <Column editable="true" title="TEMPO" type="java.lang.Object"/>
-                    <Column editable="true" title="JATUH TEMPO" type="java.lang.Object"/>
-                    <Column editable="true" title="KODE PELANGGAN" type="java.lang.Object"/>
-                    <Column editable="true" title="NAMA PELANGGAN" type="java.lang.Object"/>
-                    <Column editable="true" title="PIUTANG AWAL" type="java.lang.Object"/>
-                    <Column editable="true" title="TELAH DIBAYAR" type="java.lang.Object"/>
-                    <Column editable="true" title="SISA PIUTANG" type="java.lang.Object"/>
-                    <Column editable="true" title="KETERANGAN" type="java.lang.Object"/>
-                    <Column editable="true" title="OPERATOR" type="java.lang.Object"/>
-                    <Column editable="true" title="STATUS" type="java.lang.Object"/>
+                    <Column editable="false" title="No." type="java.lang.Object"/>
+                    <Column editable="false" title="Faktur" type="java.lang.Object"/>
+                    <Column editable="false" title="Tanggal" type="java.lang.Object"/>
+                    <Column editable="false" title="Tempo" type="java.lang.Object"/>
+                    <Column editable="false" title="Jatuh Tempo" type="java.lang.Object"/>
+                    <Column editable="false" title="Kode Pelanggan" type="java.lang.Object"/>
+                    <Column editable="false" title="Nama Pelanggan" type="java.lang.Object"/>
+                    <Column editable="false" title="Piutang Awal" type="java.lang.Object"/>
+                    <Column editable="false" title="Telah Dibayar" type="java.lang.Object"/>
+                    <Column editable="false" title="Sisa Piutang" type="java.lang.Object"/>
+                    <Column editable="false" title="Keterangan" type="java.lang.Object"/>
+                    <Column editable="false" title="Operator" type="java.lang.Object"/>
+                    <Column editable="false" title="Status" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
