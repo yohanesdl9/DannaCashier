@@ -77,13 +77,13 @@ public class BayarPiutang extends javax.swing.JFrame {
 
         inputKodeSupplier.setEditable(false);
 
-        jLabel4.setText("Kode Supplier");
+        jLabel4.setText("Kode Pelanggan");
 
         inputUtangAwal.setEditable(false);
 
         jLabel5.setText("Piutang Awal");
 
-        jLabel7.setText("Nama Supplier");
+        jLabel7.setText("Nama Pelanggan");
 
         inputNamaSupplier.setEditable(false);
 
