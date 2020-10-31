@@ -43,7 +43,6 @@ public class PembelianDAO extends Koneksi {
         ResultSet rs = stmt.executeQuery(sql);
         int i = 1;
         while (rs.next()) {
-            Date tanggal = new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString("tanggal"));
             ViewPembelian vp = new ViewPembelian();
             vp.setNo(String.valueOf(i));
             vp.setFaktur(rs.getString("faktur"));
@@ -53,26 +52,39 @@ public class PembelianDAO extends Koneksi {
             vp.setNama_supplier(rs.getString("nama"));
             vp.setGrand_total(rs.getString("grand_total"));
             vp.setOperator("danna");
-            if (rs.getString("jatuh_tempo") != null) {
-                Date jatuh_tempo = new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString("jatuh_tempo"));
-                long duration = (jatuh_tempo.getTime() - tanggal.getTime()) / (1000 * 60 * 60 * 24);
-                vp.setHari(String.valueOf(duration));
-                vp.setJatuh_tempo(dateIndo(rs.getString("jatuh_tempo")));
-            } else {
-                vp.setHari("");
-                vp.setJatuh_tempo("");
+            if (rs.getString("tunai_kredit").equals("TUNAI")) {
+                vp.setHari(rs.getString("tempo"));
             }
+            vp.setJatuh_tempo(dateIndo(rs.getString("jatuh_tempo")));
             listPembelian.add(vp);
             i++;
         }
         return listPembelian;
     }
     
+    public ViewPembelian getDataPembelian(String faktur) throws Exception {
+        ResultSet rs = vm.getDataByParameter("faktur = '" + faktur + "'", "tb_pembelian");
+        ViewPembelian vp = new ViewPembelian();
+        while (rs.next()) {
+            vp.setNo(rs.getString("id"));
+            vp.setFaktur(rs.getString("faktur"));
+            vp.setTanggal(dateIndo(rs.getString("tanggal")));
+            vp.setTunai_kredit(rs.getString("tunai_kredit"));
+            vp.setGrand_total(rs.getString("grand_total"));
+            vp.setOperator("danna");
+            if (rs.getString("tunai_kredit").equals("TUNAI")) {
+                vp.setHari(rs.getString("tempo"));
+            }
+            vp.setJatuh_tempo(dateIndo(rs.getString("jatuh_tempo")));
+        }
+        return vp;
+    }
+    
     public List<PembelianDetail> getListPembelianDetail(String faktur) throws Exception {
         List<PembelianDetail> detail_beli = new ArrayList<>();
         String sql = "SELECT tpd.* FROM tb_pembelian_detail AS tpd\n"
                 + "INNER JOIN tb_pembelian AS tp ON tpd.id_pembelian = tp.id\n"
-                + "WHERE tp.faktur = '" + faktur + "'";
+                + "WHERE tp.faktur = '" + faktur + "';";
         ResultSet rs = stmt.executeQuery(sql);
         while (rs.next()) {
             PembelianDetail pd = new PembelianDetail();
@@ -92,7 +104,7 @@ public class PembelianDAO extends Koneksi {
     }
     
     public int insertPembelian(String[] data_pembelian, ArrayList<PembelianDetail> detail_pembelian) throws Exception {
-        String sql = "INSERT INTO tb_pembelian VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO tb_pembelian VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);
         for (int i = 0; i < data_pembelian.length; i++){
             statement.setString(i + 1, data_pembelian[i]);
@@ -113,7 +125,6 @@ public class PembelianDAO extends Koneksi {
                     sql += ";";
                 }
             }
-            System.out.println(sql);
             status = stmt.executeUpdate(sql);
             // Update stock barang
             for (int i = 0; i < detail_pembelian.size(); i++) {

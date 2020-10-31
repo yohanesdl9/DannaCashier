@@ -79,12 +79,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnSales" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnHutang" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnPengaturan" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnRefreshAll" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="143" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -97,7 +95,6 @@
                           <Component id="btnSuplier" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnPelanggan" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnSales" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnHutang" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnPengaturan" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnRefreshAll" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -137,14 +134,6 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSalesActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="btnHutang">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="HUTANG / PIUTANG"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnHutangActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnPengaturan">

@@ -40,11 +40,13 @@ public class MenuUtama extends javax.swing.JFrame {
         smTbPembelian = new javax.swing.JMenuItem();
         smReturPembelian = new javax.swing.JMenuItem();
         smTbReturPembelian = new javax.swing.JMenuItem();
+        smUtang = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         smPenjualan = new javax.swing.JMenuItem();
         smTbPenjualan = new javax.swing.JMenuItem();
         smReturPenjualan = new javax.swing.JMenuItem();
         smTbReturPenjualan = new javax.swing.JMenuItem();
+        smPiutang = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -114,6 +116,14 @@ public class MenuUtama extends javax.swing.JFrame {
         });
         jMenu3.add(smTbReturPembelian);
 
+        smUtang.setText("Utang");
+        smUtang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                smUtangActionPerformed(evt);
+            }
+        });
+        jMenu3.add(smUtang);
+
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText("Transaksi Penjualan");
@@ -149,6 +159,14 @@ public class MenuUtama extends javax.swing.JFrame {
             }
         });
         jMenu4.add(smTbReturPenjualan);
+
+        smPiutang.setText("Piutang");
+        smPiutang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                smPiutangActionPerformed(evt);
+            }
+        });
+        jMenu4.add(smPiutang);
 
         jMenuBar1.add(jMenu4);
 
@@ -230,6 +248,16 @@ public class MenuUtama extends javax.swing.JFrame {
         new penjualan.kasir.Master().setVisible(true);
     }//GEN-LAST:event_smBukaKasirActionPerformed
 
+    private void smUtangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smUtangActionPerformed
+        // TODO add your handling code here:
+        new penjualan.pembelian.Hutang().setVisible(true);
+    }//GEN-LAST:event_smUtangActionPerformed
+
+    private void smPiutangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smPiutangActionPerformed
+        // TODO add your handling code here:
+        new penjualan.penjualan.Piutang().setVisible(true);
+    }//GEN-LAST:event_smPiutangActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -276,11 +304,13 @@ public class MenuUtama extends javax.swing.JFrame {
     private javax.swing.JMenuItem smLogout;
     private javax.swing.JMenuItem smPembelian;
     private javax.swing.JMenuItem smPenjualan;
+    private javax.swing.JMenuItem smPiutang;
     private javax.swing.JMenuItem smReturPembelian;
     private javax.swing.JMenuItem smReturPenjualan;
     private javax.swing.JMenuItem smTbPembelian;
     private javax.swing.JMenuItem smTbPenjualan;
     private javax.swing.JMenuItem smTbReturPembelian;
     private javax.swing.JMenuItem smTbReturPenjualan;
+    private javax.swing.JMenuItem smUtang;
     // End of variables declaration//GEN-END:variables
 }

@@ -66,4 +66,18 @@ public class ViewModel extends Koneksi {
         rs.next();
         return "PEMB" + new SimpleDateFormat("ddMMyy").format(cal.getTime()) + String.format("%05d", rs.getInt("id") + 1);
     }
+    
+    public String getLatestIdReturPenjualan() throws Exception {
+        String query = "SELECT COUNT(id) AS id FROM tb_retur_penjualan;";
+        ResultSet rs = stmt.executeQuery(query);
+        rs.next();
+        return "RTJ" + String.format("%07d", rs.getInt("id") + 1);
+    }
+    
+    public String getLatestIdReturPembelian() throws Exception {
+        String query = "SELECT COUNT(id) AS id FROM tb_retur_pembelian;";
+        ResultSet rs = stmt.executeQuery(query);
+        rs.next();
+        return "RTB" + String.format("%07d", rs.getInt("id") + 1);
+    }
 }

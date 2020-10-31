@@ -180,7 +180,6 @@ public class Master extends javax.swing.JFrame {
         btnSuplier = new javax.swing.JButton();
         btnPelanggan = new javax.swing.JButton();
         btnSales = new javax.swing.JButton();
-        btnHutang = new javax.swing.JButton();
         btnPengaturan = new javax.swing.JButton();
         btnRefreshAll = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
@@ -283,13 +282,6 @@ public class Master extends javax.swing.JFrame {
             }
         });
 
-        btnHutang.setText("HUTANG / PIUTANG");
-        btnHutang.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnHutangActionPerformed(evt);
-            }
-        });
-
         btnPengaturan.setText("PENGATURAN");
         btnPengaturan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -318,12 +310,10 @@ public class Master extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSales)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnHutang)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnPengaturan)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRefreshAll)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(143, Short.MAX_VALUE))
         );
         menuPanelLayout.setVerticalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -334,7 +324,6 @@ public class Master extends javax.swing.JFrame {
                     .addComponent(btnSuplier)
                     .addComponent(btnPelanggan)
                     .addComponent(btnSales)
-                    .addComponent(btnHutang)
                     .addComponent(btnPengaturan)
                     .addComponent(btnRefreshAll))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1257,18 +1246,6 @@ public class Master extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnPengaturanActionPerformed
 
-    private void btnHutangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHutangActionPerformed
-        // TODO add your handling code here:
-        mainPanel.removeAll();
-        mainPanel.repaint();
-        mainPanel.revalidate();
-        
-        //add panel
-        mainPanel.add(panelHutang);
-        mainPanel.repaint();
-        mainPanel.revalidate();
-    }//GEN-LAST:event_btnHutangActionPerformed
-
     private void btnSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalesActionPerformed
         // TODO add your handling code here:
         mainPanel.removeAll();
@@ -1681,7 +1658,6 @@ public class Master extends javax.swing.JFrame {
     private javax.swing.JPanel botNav3;
     private javax.swing.JPanel botNav4;
     private javax.swing.JButton btnBarang;
-    private javax.swing.JButton btnHutang;
     private javax.swing.JButton btnPelanggan;
     private javax.swing.JButton btnPengaturan;
     private javax.swing.JButton btnRefresh;

@@ -45,35 +45,46 @@ public class PenjualanDAO extends Koneksi {
         ResultSet rs = stmt.executeQuery(sql);
         int i = 1;
         while (rs.next()) {
-            Date tanggal = new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString("tanggal"));
             ViewPenjualan vp = new ViewPenjualan();
             vp.setNo(String.valueOf(i));
-            vp.setFaktur(rs.getString("faktur"));
+            vp.setFaktur(rs.getString("kode"));
             vp.setTanggal(dateIndo(rs.getString("tanggal")));
             vp.setTunai_kredit(rs.getString("tunai_kredit"));
             vp.setGrand_total(rs.getString("grand_total"));
             vp.setSales(rs.getString("nama_sales"));
             vp.setPelanggan(rs.getString("pelanggan"));
-            if (rs.getString("jatuh_tempo") != null) {
-                Date jatuh_tempo = new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString("jatuh_tempo"));
-                long duration = (jatuh_tempo.getTime() - tanggal.getTime()) / (1000 * 60 * 60 * 24);
-                vp.setHari(String.valueOf(duration));
-                vp.setJatuh_tempo(dateIndo(rs.getString("jatuh_tempo")));
-            } else {
-                vp.setHari("");
-                vp.setJatuh_tempo("");
+            if (rs.getString("tunai_kredit").equals("TUNAI")) {
+                vp.setHari(rs.getString("tempo"));
             }
+            vp.setJatuh_tempo(dateIndo(rs.getString("jatuh_tempo")));
             listPenjualan.add(vp);
             i++;
         }
         return listPenjualan;
     }
     
+    public ViewPenjualan getDataPenjualan(String faktur) throws Exception {
+        ViewPenjualan vp = new ViewPenjualan();
+        ResultSet rs = vm.getDataByParameter("kode = '" + faktur + "'", "tb_penjualan");
+        while (rs.next()) {
+            vp.setNo(rs.getString("id"));
+            vp.setFaktur(rs.getString("kode"));
+            vp.setTanggal(dateIndo(rs.getString("tanggal")));
+            vp.setTunai_kredit(rs.getString("tunai_kredit"));
+            vp.setGrand_total(rs.getString("grand_total"));
+            if (rs.getString("tunai_kredit").equals("TUNAI")) {
+                vp.setHari(rs.getString("tempo"));
+            }
+            vp.setJatuh_tempo(dateIndo(rs.getString("jatuh_tempo")));
+        }
+        return vp;
+    }
+     
     public List<PenjualanDetail> getListPembelianDetail(String faktur) throws Exception {
         List<PenjualanDetail> detail_jual = new ArrayList<>();
-        String sql = "SELECT tpd.* FROM tb_pembelian_detail AS tpd\n"
-                + "INNER JOIN tb_pembelian AS tp ON tpd.id_pembelian = tp.id\n"
-                + "WHERE tp.faktur = '" + faktur + "'";
+        String sql = "SELECT tpd.* FROM tb_penjualan_detail AS tpd\n"
+                + "INNER JOIN tb_penjualan AS tp ON tpd.id_penjualan = tp.id\n"
+                + "WHERE tp.kode = '" + faktur + "'";
         ResultSet rs = stmt.executeQuery(sql);
         while (rs.next()) {
             PenjualanDetail pd = new PenjualanDetail();
@@ -94,7 +105,7 @@ public class PenjualanDAO extends Koneksi {
     }
     
     public int insertPenjualan(String[] data_penjualan, ArrayList<PenjualanDetail> detail_penjualan) throws Exception {
-        String sql = "INSERT INTO tb_penjualan VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO tb_penjualan VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);
         for (int i = 0; i < data_penjualan.length; i++){
             statement.setString(i + 1, data_penjualan[i]);

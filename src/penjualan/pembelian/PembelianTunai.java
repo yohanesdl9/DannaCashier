@@ -34,6 +34,7 @@ public class PembelianTunai extends javax.swing.JFrame {
      * Creates new form PembelianTunai
      */
     
+    String hari;
     int id;
     int totalPembelian = 0;
     DefaultTableModel model;
@@ -201,7 +202,8 @@ public class PembelianTunai extends javax.swing.JFrame {
                 new SimpleDateFormat("yyyy-MM-dd").format(tanggalBeli.getDate()),
                 noFaktur.getText(),
                 metodeBayar.getSelectedItem().toString(),
-                new SimpleDateFormat("yyyy-MM-dd").format(isTunai ? tanggalBeli.getDate() : new SimpleDateFormat("yyyy-MM-dd").parse(jatuhTempo.getText())),
+                isTunai ? null : hari,
+                isTunai ? new SimpleDateFormat("yyyy-MM-dd").format(tanggalBeli.getDate()) : jatuhTempo.getText(),
                 vm.getDataByParameter("nama = '" + pilihSupplier.getSelectedItem().toString() + "'", "tb_supplier", "id"),
                 subtotal.getText(),
                 diskonPersen.getText().length() > 0 ? diskonPersen.getText() : "0" ,
@@ -685,8 +687,10 @@ public class PembelianTunai extends javax.swing.JFrame {
             int jumlah_hari = Integer.parseInt(jumlahHari.getText());
             cal.setTime(date);
             cal.add(Calendar.DATE, jumlah_hari);
+            hari = jumlahHari.getText();
             jatuhTempo.setText(new SimpleDateFormat("MMM dd, YYYY").format(cal.getTime()));
         } else {
+            hari = null;
             jatuhTempo.setText(new SimpleDateFormat("MMM dd, YYYY").format(date));
         }
     }//GEN-LAST:event_jumlahHariKeyReleased
@@ -740,13 +744,18 @@ public class PembelianTunai extends javax.swing.JFrame {
             kembalian.setText("");
             if (metode.equals("1 Minggu")) {
                 cal.add(Calendar.DATE, 7);
+                hari = "7";
             } else if (metode.equals("2 Minggu")) {
+                hari = "14";
                 cal.add(Calendar.DATE, 14);
             } else if (metode.equals("3 Minggu")) {
+                hari = "21";
                 cal.add(Calendar.DATE, 21);
             } else if (metode.equals("4 Minggu")) {
+                hari = "28";
                 cal.add(Calendar.DATE, 28);
             }
+            jatuhTempo.setText(new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime()));
         }
     }//GEN-LAST:event_metodeBayarActionPerformed
 
