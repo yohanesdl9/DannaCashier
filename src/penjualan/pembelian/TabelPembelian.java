@@ -151,6 +151,11 @@ public class TabelPembelian extends javax.swing.JFrame {
         jLabel5.setText("Total Grandtotal");
 
         btnTampilKasir.setText("Tampilkan di Kasir");
+        btnTampilKasir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTampilKasirActionPerformed(evt);
+            }
+        });
 
         btnLihatDetail.setText("Lihat Detail");
 
@@ -283,6 +288,17 @@ public class TabelPembelian extends javax.swing.JFrame {
         // TODO add your handling code here:
         initTabelPembelian();
     }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void btnTampilKasirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTampilKasirActionPerformed
+        // TODO add your handling code here:
+        if (tablePembelian.getSelectedRow() > -1) {
+            ViewKasirPembelian.faktur_penjualan = tablePembelian.getValueAt(tablePembelian.getSelectedRow(), 1).toString();
+            ViewKasirPembelian.supplier = tablePembelian.getValueAt(tablePembelian.getSelectedRow(), 7).toString();
+            new ViewKasirPembelian().setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih dahulu faktur pembelian yang akan ditampilkan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnTampilKasirActionPerformed
 
     /**
      * @param args the command line arguments

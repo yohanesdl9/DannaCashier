@@ -52,8 +52,8 @@ public class PenjualanDAO extends Koneksi {
             vp.setTunai_kredit(rs.getString("tunai_kredit"));
             vp.setGrand_total(rs.getString("grand_total"));
             vp.setSales(rs.getString("nama_sales"));
-            vp.setPelanggan(rs.getString("pelanggan"));
-            if (rs.getString("tunai_kredit").equals("TUNAI")) {
+            vp.setPelanggan(rs.getString("nama_pelanggan"));
+            if (!rs.getString("tunai_kredit").equals("TUNAI")) {
                 vp.setHari(rs.getString("tempo"));
             }
             vp.setJatuh_tempo(dateIndo(rs.getString("jatuh_tempo")));

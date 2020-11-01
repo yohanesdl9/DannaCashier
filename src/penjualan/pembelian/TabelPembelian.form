@@ -314,6 +314,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Tampilkan di Kasir"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTampilKasirActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnLihatDetail">
           <Properties>

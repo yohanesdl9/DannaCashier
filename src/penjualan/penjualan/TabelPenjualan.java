@@ -143,6 +143,11 @@ public class TabelPenjualan extends javax.swing.JFrame {
         jLabel3.setText("s.d.");
 
         btnTampilKasir.setText("Tampilkan di Kasir");
+        btnTampilKasir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTampilKasirActionPerformed(evt);
+            }
+        });
 
         btnDetail.setText("Lihat Detail");
 
@@ -164,6 +169,7 @@ public class TabelPenjualan extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -183,15 +189,12 @@ public class TabelPenjualan extends javax.swing.JFrame {
                                     .addComponent(jLabel5)))
                             .addComponent(jLabel4)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 833, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnTampilKasir)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnDetail)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelete)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                         .addComponent(inputSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnRefresh)
@@ -261,6 +264,18 @@ public class TabelPenjualan extends javax.swing.JFrame {
         // TODO add your handling code here:
         initTabelPenjualan();
     }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void btnTampilKasirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTampilKasirActionPerformed
+        // TODO add your handling code here:
+        if (tablePenjualan.getSelectedRow() > -1) {
+            ViewKasirPenjualan.kode_penjualan = tablePenjualan.getValueAt(tablePenjualan.getSelectedRow(), 1).toString();
+            ViewKasirPenjualan.sales = tablePenjualan.getValueAt(tablePenjualan.getSelectedRow(), 7).toString();
+            ViewKasirPenjualan.pelanggan = tablePenjualan.getValueAt(tablePenjualan.getSelectedRow(), 8).toString();
+            new ViewKasirPenjualan().setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih dahulu faktur pembelian yang akan ditampilkan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnTampilKasirActionPerformed
 
     /**
      * @param args the command line arguments

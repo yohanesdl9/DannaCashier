@@ -8,11 +8,13 @@ package penjualan.penjualan;
 import com.sun.glass.events.KeyEvent;
 import dao.BarangDAO;
 import dao.PenjualanDAO;
+import datatable.DetailPenjualanDataTable;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -20,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import model.Barang;
 import model.PenjualanDetail;
+import model.ViewPenjualan;
 import penjualan.CustomCombo;
 import penjualan.ViewModel;
 
@@ -27,14 +30,55 @@ import penjualan.ViewModel;
  *
  * @author Yohanes Dwi Listio
  */
-public class ViewPenjualan extends javax.swing.JFrame {
+public class ViewKasirPenjualan extends javax.swing.JFrame {
 
     ViewModel vm = new ViewModel();
+    static String kode_penjualan, pelanggan, sales;
+    List<PenjualanDetail> penjualanDetail;
+    PenjualanDAO penjualanDAO = PenjualanDAO.getInstance();
     
-    public ViewPenjualan() {
+    public ViewKasirPenjualan() {
         initComponents();
         initDropdown(selectPelanggan, "tb_pelanggan", "nama");
         initDropdown(selectSales, "tb_sales", "nama");
+        try {
+            penjualanDetail = penjualanDAO.getListPembelianDetail(kode_penjualan);
+            tblPenjualan.setModel(new DetailPenjualanDataTable(penjualanDetail));
+            ResultSet rs1 = vm.getDataByParameter("kode = '" + kode_penjualan + "'", "tb_penjualan");
+            while (rs1.next()) {
+                tanggal.setText(dateIndo(rs1.getString("tanggal")));
+                metodeBayar.setSelectedItem(rs1.getString("tunai_kredit"));
+                jLabel5.setVisible(rs1.getString("tunai_kredit").equals("Custom"));
+                jumlahHari.setVisible(rs1.getString("tunai_kredit").equals("Custom"));
+                jLabel6.setVisible(!rs1.getString("tunai_kredit").equals("TUNAI"));
+                jatuhTempo.setVisible(!rs1.getString("tunai_kredit").equals("TUNAI"));
+                tunai.setVisible(rs1.getString("tunai_kredit").equals("TUNAI"));
+                kembalian.setVisible(rs1.getString("tunai_kredit").equals("TUNAI"));
+                jLabel20.setVisible(rs1.getString("tunai_kredit").equals("TUNAI"));
+                jLabel21.setVisible(rs1.getString("tunai_kredit").equals("TUNAI"));
+                if (!rs1.getString("tunai_kredit").equals("TUNAI")) {
+                    jatuhTempo.setText(dateIndo(rs1.getString("jatuh_tempo")));
+                    if (rs1.getString("tunai_kredit").equals("Custom")) jumlahHari.setText(rs1.getString("tempo"));
+                } else {
+                    tunai.setText(rs1.getString("tunai"));
+                    kembalian.setText(rs1.getString("kembali"));
+                }
+                inputSubTotal.setText(rs1.getString("subtotal"));
+                inputPembulatan.setText(rs1.getString("pembulatan"));
+                inputNominalDiskon.setText(rs1.getString("diskon_persen"));
+                inputGrandTotal.setText(rs1.getString("grand_total"));
+                selectPelanggan.setSelectedItem(pelanggan);
+                selectSales.setSelectedItem(sales);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public String dateIndo(String date){
+        String[] dates = date.split("-");
+        String[] bulan = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"};
+        return Integer.parseInt(dates[2]) + " " + bulan[Integer.parseInt(dates[1]) - 1] + " " + Integer.parseInt(dates[0]);
     }
     
     public void initDropdown(JComboBox comboBox, String param, String table, String field) {
@@ -117,6 +161,7 @@ public class ViewPenjualan extends javax.swing.JFrame {
         jLabel4.setText("Tunai/Kredit");
 
         metodeBayar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TUNAI", "1 Minggu", "2 Minggu", "3 Minggu", "4 Minggu", "Custom" }));
+        metodeBayar.setEnabled(false);
 
         jLabel5.setText("Hari");
 
@@ -127,17 +172,18 @@ public class ViewPenjualan extends javax.swing.JFrame {
         jLabel3.setText("Pelanggan");
 
         selectPelanggan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih Pelanggan" }));
+        selectPelanggan.setEnabled(false);
 
         tblPenjualan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Kode", "Nama", "Jumlah", "Satuan", "Harga", "Diskon", "Netto", "Total"
+                "Kode", "Nama", "Jumlah", "Satuan", "Harga Bersih", "Total"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, true, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -174,6 +220,7 @@ public class ViewPenjualan extends javax.swing.JFrame {
         jLabel7.setText("Sales");
 
         selectSales.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih Sales" }));
+        selectSales.setEnabled(false);
 
         tanggal.setText("24 Oktober 2020");
 
@@ -196,27 +243,28 @@ public class ViewPenjualan extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 715, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel15)
-                                .addGap(60, 60, 60)
-                                .addComponent(inputSubTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel19)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel16)
-                                .addGap(44, 44, 44)
-                                .addComponent(inputPembulatan, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel18)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(inputNominalDiskon, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel20)
                                     .addComponent(jLabel21))
                                 .addGap(52, 52, 52)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(inputGrandTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
-                                    .addComponent(tunai)
-                                    .addComponent(kembalian)))))
+                                    .addComponent(tunai, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                                    .addComponent(kembalian)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel16)
+                                    .addComponent(jLabel19)
+                                    .addComponent(jLabel15))
+                                .addGap(44, 44, 44)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(inputSubTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(inputPembulatan, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel18)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(inputNominalDiskon, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(inputGrandTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addGap(18, 18, 18)
@@ -296,7 +344,7 @@ public class ViewPenjualan extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel21)
                         .addGap(4, 4, 4)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -307,7 +355,7 @@ public class ViewPenjualan extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -330,21 +378,23 @@ public class ViewPenjualan extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ViewPenjualan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ViewKasirPenjualan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ViewPenjualan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ViewKasirPenjualan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ViewPenjualan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ViewKasirPenjualan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ViewPenjualan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ViewKasirPenjualan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ViewPenjualan().setVisible(true);
+                new ViewKasirPenjualan().setVisible(true);
             }
         });
     }

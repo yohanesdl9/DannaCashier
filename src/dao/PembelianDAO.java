@@ -52,7 +52,7 @@ public class PembelianDAO extends Koneksi {
             vp.setNama_supplier(rs.getString("nama"));
             vp.setGrand_total(rs.getString("grand_total"));
             vp.setOperator("danna");
-            if (rs.getString("tunai_kredit").equals("TUNAI")) {
+            if (!rs.getString("tunai_kredit").equals("TUNAI")) {
                 vp.setHari(rs.getString("tempo"));
             }
             vp.setJatuh_tempo(dateIndo(rs.getString("jatuh_tempo")));

@@ -8,11 +8,13 @@ package penjualan.pembelian;
 import com.sun.glass.events.KeyEvent;
 import dao.BarangDAO;
 import dao.PembelianDAO;
+import datatable.DetailPembelianDataTable;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -20,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import model.Barang;
 import model.PembelianDetail;
+import model.ViewPembelian;
 import penjualan.CustomCombo;
 import penjualan.ViewModel;
 
@@ -27,14 +30,54 @@ import penjualan.ViewModel;
  *
  * @author Yohanes Dwi Listio
  */
-public class ViewPembelian extends javax.swing.JFrame {
+public class ViewKasirPembelian extends javax.swing.JFrame {
 
     ViewModel vm = new ViewModel();
+    static String faktur_penjualan, supplier;
+    List<PembelianDetail> penjualanDetail;
+    PembelianDAO pembelianDAO = PembelianDAO.getInstance();
     
-    
-    public ViewPembelian() {
+    public ViewKasirPembelian() {
         initComponents();
         initDropdown(pilihSupplier, "tb_supplier", "nama");
+        try {
+            penjualanDetail = pembelianDAO.getListPembelianDetail(faktur_penjualan);
+            tblPembelian.setModel(new DetailPembelianDataTable(penjualanDetail));
+            ResultSet rs1 = vm.getDataByParameter("faktur = '" + faktur_penjualan + "'", "tb_pembelian");
+            while (rs1.next()) {
+                tanggal.setText(dateIndo(rs1.getString("tanggal")));
+                noFaktur.setText(rs1.getString("faktur"));
+                metodeBayar.setSelectedItem(rs1.getString("tunai_kredit"));
+                jLabel5.setVisible(rs1.getString("tunai_kredit").equals("Custom"));
+                jumlahHari.setVisible(rs1.getString("tunai_kredit").equals("Custom"));
+                jLabel6.setVisible(!rs1.getString("tunai_kredit").equals("TUNAI"));
+                jatuhTempo.setVisible(!rs1.getString("tunai_kredit").equals("TUNAI"));
+                tunai.setVisible(rs1.getString("tunai_kredit").equals("TUNAI"));
+                kembalian.setVisible(rs1.getString("tunai_kredit").equals("TUNAI"));
+                jLabel19.setVisible(rs1.getString("tunai_kredit").equals("TUNAI"));
+                jLabel20.setVisible(rs1.getString("tunai_kredit").equals("TUNAI"));
+                if (!rs1.getString("tunai_kredit").equals("TUNAI")) {
+                    jatuhTempo.setText(dateIndo(rs1.getString("jatuh_tempo")));
+                    if (rs1.getString("tunai_kredit").equals("Custom")) jumlahHari.setText(rs1.getString("tempo"));
+                } else {
+                    tunai.setText(rs1.getString("tunai"));
+                    kembalian.setText(rs1.getString("kembali"));
+                }
+                subtotal.setText(rs1.getString("subtotal"));
+                diskonPersen.setText(rs1.getString("diskon_persen"));
+                diskonNominal.setText(rs1.getString("diskon_nominal"));
+                grandtotal.setText(rs1.getString("grand_total"));
+                pilihSupplier.setSelectedItem(supplier);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public String dateIndo(String date){
+        String[] dates = date.split("-");
+        String[] bulan = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"};
+        return Integer.parseInt(dates[2]) + " " + bulan[Integer.parseInt(dates[1]) - 1] + " " + Integer.parseInt(dates[0]);
     }
     
     public void initDropdown(JComboBox comboBox, String param, String table, String field) {
@@ -112,6 +155,7 @@ public class ViewPembelian extends javax.swing.JFrame {
         noFaktur.setEditable(false);
 
         metodeBayar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TUNAI", "1 Minggu", "2 Minggu", "3 Minggu", "4 Minggu", "Custom" }));
+        metodeBayar.setEnabled(false);
 
         jLabel4.setText("Tunai/Kredit");
 
@@ -162,6 +206,7 @@ public class ViewPembelian extends javax.swing.JFrame {
         jLabel20.setText("Kembalian");
 
         pilihSupplier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih Supplier" }));
+        pilihSupplier.setEnabled(false);
 
         tanggal.setText("24 Oktober 2020");
 
@@ -318,21 +363,23 @@ public class ViewPembelian extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ViewPembelian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ViewKasirPembelian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ViewPembelian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ViewKasirPembelian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ViewPembelian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ViewKasirPembelian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ViewPembelian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ViewKasirPembelian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ViewPembelian().setVisible(true);
+                new ViewKasirPembelian().setVisible(true);
             }
         });
     }
