@@ -286,7 +286,6 @@ public class PembelianTunai extends javax.swing.JFrame {
         kembalian = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
         btnSimpan = new javax.swing.JButton();
-        btnPrint = new javax.swing.JButton();
         btnBaru = new javax.swing.JButton();
         inputBarcode = new javax.swing.JComboBox<>();
         pilihSupplier = new javax.swing.JComboBox<>();
@@ -423,8 +422,6 @@ public class PembelianTunai extends javax.swing.JFrame {
             }
         });
 
-        btnPrint.setText("Cetak");
-
         btnBaru.setText("Baru");
         btnBaru.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -480,12 +477,10 @@ public class PembelianTunai extends javax.swing.JFrame {
                                         .addComponent(jLabel16)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(subtotal, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(74, 74, 74)
+                                .addGap(350, 350, 350)
                                 .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnPrint, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(173, 173, 173)
-                                .addComponent(btnBaru, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnBaru))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
@@ -605,8 +600,7 @@ public class PembelianTunai extends javax.swing.JFrame {
                     .addComponent(kembalian, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel20)
                     .addComponent(btnSimpan)
-                    .addComponent(btnBaru)
-                    .addComponent(btnPrint))
+                    .addComponent(btnBaru))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -817,7 +811,6 @@ public class PembelianTunai extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBaru;
-    private javax.swing.JButton btnPrint;
     private javax.swing.JButton btnSimpan;
     private javax.swing.JTextField diskonNominal;
     private javax.swing.JTextField diskonPersen;
