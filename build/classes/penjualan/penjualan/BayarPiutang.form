@@ -64,10 +64,10 @@
                               <EmptySpace type="separate" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="tanggalCicilan" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="inputFakturUtang" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="inputUtangAwal" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="inputNamaSupplier" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="inputKodeSupplier" alignment="1" pref="283" max="32767" attributes="0"/>
+                                  <Component id="inputFakturPiutang" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="inputPiutangAwal" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="inputNamaPelanggan" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="inputKodePelanggan" alignment="1" pref="283" max="32767" attributes="0"/>
                                   <Component id="inputFakturPembayaran" alignment="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -86,8 +86,8 @@
                                       </Group>
                                       <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="inputSisaUtang" alignment="1" min="-2" pref="283" max="-2" attributes="0"/>
-                                          <Component id="inputSisaUtangSekarang" alignment="1" min="-2" pref="283" max="-2" attributes="0"/>
+                                          <Component id="inputSisaPiutang" alignment="1" min="-2" pref="283" max="-2" attributes="0"/>
+                                          <Component id="inputSisaPiutangSekarang" alignment="1" min="-2" pref="283" max="-2" attributes="0"/>
                                           <Component id="inputPembayaranTunai" alignment="0" min="-2" pref="283" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
@@ -123,22 +123,22 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="inputFakturUtang" min="-2" max="-2" attributes="0"/>
+                          <Component id="inputFakturPiutang" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="inputKodeSupplier" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="inputKodePelanggan" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="inputNamaSupplier" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="inputNamaPelanggan" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="inputUtangAwal" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="inputPiutangAwal" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -148,7 +148,7 @@
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="inputSisaUtang" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="inputSisaPiutang" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -158,7 +158,7 @@
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="inputSisaUtangSekarang" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="inputSisaPiutangSekarang" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -176,6 +176,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Simpan"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSimpanActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
@@ -193,6 +196,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Keluar"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnKeluarActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
@@ -216,12 +222,12 @@
             <Property name="text" type="java.lang.String" value="Faktur Piutang"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="inputFakturUtang">
+        <Component class="javax.swing.JTextField" name="inputFakturPiutang">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="inputKodeSupplier">
+        <Component class="javax.swing.JTextField" name="inputKodePelanggan">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
@@ -231,7 +237,7 @@
             <Property name="text" type="java.lang.String" value="Kode Pelanggan"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="inputUtangAwal">
+        <Component class="javax.swing.JTextField" name="inputPiutangAwal">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
@@ -246,12 +252,12 @@
             <Property name="text" type="java.lang.String" value="Nama Pelanggan"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="inputNamaSupplier">
+        <Component class="javax.swing.JTextField" name="inputNamaPelanggan">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="inputSisaUtangSekarang">
+        <Component class="javax.swing.JTextField" name="inputSisaPiutangSekarang">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
@@ -267,13 +273,17 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="inputPembayaranTunai">
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="inputPembayaranTunaiKeyPressed"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="inputPembayaranTunaiKeyReleased"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel10">
           <Properties>
             <Property name="text" type="java.lang.String" value="Sisa Piutang"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="inputSisaUtang">
+        <Component class="javax.swing.JTextField" name="inputSisaPiutang">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>

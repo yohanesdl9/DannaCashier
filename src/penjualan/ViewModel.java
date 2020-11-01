@@ -80,4 +80,24 @@ public class ViewModel extends Koneksi {
         rs.next();
         return "RTB" + String.format("%07d", rs.getInt("id") + 1);
     }
+    
+    public String getLatestIdUtang(String faktur_penjualan) throws Exception{
+        String query = "SELECT Count(th.id) AS id\n" +
+            "FROM tb_hutang AS th\n" +
+            "INNER JOIN tb_pembelian AS tp ON th.id_pembelian = tp.id\n" +
+            "WHERE tp.faktur = '" + faktur_penjualan + "'";
+        ResultSet rs = stmt.executeQuery(query);
+        rs.next();
+        return "FU" + faktur_penjualan.substring(4) + String.format("%05d", rs.getInt("id") + 1);
+    }
+    
+    public String getLatestIdPiutang(String faktur_penjualan) throws Exception{
+        String query = "SELECT Count(tp.id) AS id\n" +
+            "FROM tb_piutang AS tp\n" +
+            "INNER JOIN tb_penjualan AS tj ON tp.id_penjualan = tj.id\n" +
+            "WHERE tj.kode = '" + faktur_penjualan + "'";
+        ResultSet rs = stmt.executeQuery(query);
+        rs.next();
+        return "FP" + faktur_penjualan.substring(4) + String.format("%05d", rs.getInt("id") + 1);
+    }
 }

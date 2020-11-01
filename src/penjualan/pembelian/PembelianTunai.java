@@ -22,7 +22,6 @@ import model.Barang;
 import model.PembelianDetail;
 import penjualan.CustomCombo;
 import penjualan.ViewModel;
-import static penjualan.pembelian.Pembeliantunai_frame.getDate;
 
 /**
  *

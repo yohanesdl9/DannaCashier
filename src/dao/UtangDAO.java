@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import model.ViewAngsuranUtang;
 import model.ViewUtang;
 import penjualan.Koneksi;
 import penjualan.ViewModel;
@@ -25,6 +26,7 @@ public class UtangDAO extends Koneksi {
     private PreparedStatement statement;
     ViewModel vm = new ViewModel();
     List<ViewUtang> listUtang;
+    List<ViewAngsuranUtang> listAngsuranUtang;
     
     public static UtangDAO getInstance(){
         if (instance == null) instance = new UtangDAO();
@@ -64,6 +66,43 @@ public class UtangDAO extends Koneksi {
             i++;
         }
         return listUtang;
+    }
+    
+    public List<ViewAngsuranUtang> getListAngsuranUtang(Date start, Date end, String supplier) throws Exception {
+        String dateStart = new SimpleDateFormat("yyyy-MM-dd").format(start);
+        String dateEnd = new SimpleDateFormat("yyyy-MM-dd").format(end);
+        listAngsuranUtang = new ArrayList<>();
+        String sql = "SELECT th.id, tp.faktur, th.tanggal, th.faktur_hutang, ts.kode AS kode_supplier, ts.nama AS nama_supplier, th.tunai\n" +
+            "FROM tb_hutang AS th\n" +
+            "INNER JOIN tb_pembelian AS tp ON th.id_pembelian = tp.id\n" +
+            "INNER JOIN tb_supplier AS ts ON tp.id_supplier = ts.id\n" +
+            "WHERE th.tanggal BETWEEN '" + dateStart + "' AND '" + dateEnd + "'";
+        if (!supplier.equals("Semua Supplier")) sql += "\nAND ts.nama = '" + supplier + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+        int i = 1;
+        while (rs.next()) {
+            ViewAngsuranUtang vu = new ViewAngsuranUtang();
+            vu.setNo(String.valueOf(i));
+            vu.setFaktur(rs.getString("faktur"));
+            vu.setTanggal(dateIndo(rs.getString("tanggal")));
+            vu.setFaktur_utang(rs.getString("faktur_hutang"));
+            vu.setKode_supplier(rs.getString("kode_supplier"));
+            vu.setNama_supplier(rs.getString("nama_supplier"));
+            vu.setTunai(rs.getString("tunai"));
+            vu.setOperator("danna");
+            listAngsuranUtang.add(vu);
+            i++;
+        }
+        return listAngsuranUtang;
+    }
+    
+    public int bayarUtang(String[] data) throws Exception {
+        String sql = "INSERT INTO tb_hutang VALUES (?, ?, ?, ?, ?)";
+        statement = koneksi.prepareStatement(sql);
+        for (int i = 0; i < data.length; i++) {
+            statement.setString(i + 1, data[i]);
+        }
+        return statement.executeUpdate();
     }
     
     public String dateIndo(String date){
