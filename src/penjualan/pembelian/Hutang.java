@@ -119,11 +119,10 @@ public class Hutang extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         cbBelumJatuhTempo = new javax.swing.JCheckBox();
         cbJatuhTempo = new javax.swing.JCheckBox();
-        txtSearch = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         btnRefresh = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(0, 153, 255));
 
@@ -207,6 +206,11 @@ public class Hutang extends javax.swing.JFrame {
         jLabel4.setText("Pilih Supplier");
 
         btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -243,7 +247,7 @@ public class Hutang extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel7)
                                     .addComponent(jLabel8))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel9)
                                     .addComponent(cbJatuhTempo)
@@ -253,8 +257,6 @@ public class Hutang extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnDaftarAngsuran)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 496, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRefresh)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnKeluar, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -294,7 +296,6 @@ public class Hutang extends javax.swing.JFrame {
                             .addComponent(btnBayar)
                             .addComponent(btnDaftarAngsuran)
                             .addComponent(btnKeluar)
-                            .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnRefresh))
                         .addGap(21, 21, 21))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -353,6 +354,11 @@ public class Hutang extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbJatuhTempoActionPerformed
 
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        // TODO add your handling code here:
+        initTabelUtang();
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -409,6 +415,5 @@ public class Hutang extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> pilihSupplier;
     private com.toedter.calendar.JDateChooser startDate;
     private javax.swing.JTable tblUtang;
-    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

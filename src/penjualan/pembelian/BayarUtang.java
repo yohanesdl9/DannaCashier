@@ -5,6 +5,8 @@
  */
 package penjualan.pembelian;
 
+import dao.UtangDAO;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
 import model.ViewUtang;
@@ -22,10 +24,10 @@ public class BayarUtang extends javax.swing.JFrame {
     static ViewUtang utang;
     Calendar cal = Calendar.getInstance();
     ViewModel vm = new ViewModel();
+    UtangDAO utangDAO = UtangDAO.getInstance();
     
     public BayarUtang() {
         initComponents();
-        // 29102000001
         try {
             inputFakturUtang.setText(vm.getLatestIdUtang(utang.getFaktur()));
             tanggalCicilan.setDate(cal.getTime());
@@ -40,6 +42,27 @@ public class BayarUtang extends javax.swing.JFrame {
             inputTelahTerbayar.setText(utang.getTelah_dibayar());
             inputSisaUtang.setText(utang.getSisa_utang());
             inputSisaUtangSekarang.setText(utang.getSisa_utang());
+        }
+    }
+    
+    public void prosesPembayaran(){
+        try {
+            String[] data = {
+                String.valueOf(vm.getLatestId("id", "tb_hutang")),
+                inputFakturUtang.getText(),
+                vm.getDataByParameter("faktur = '" + utang.getFaktur() + "'", "tb_pembelian", "id"),
+                new SimpleDateFormat("yyyy-MM-dd").format(tanggalCicilan.getDate()),
+                inputPembayaranTunai.getText()
+            };
+            int status = utangDAO.bayarUtang(data);
+            if (status > 0) {
+                JOptionPane.showMessageDialog(null, "Berhasil melakukan pembayaran utang", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Terjadi kesalahan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -288,7 +311,7 @@ public class BayarUtang extends javax.swing.JFrame {
         if (inputPembayaranTunai.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Harap masukkan data dengan benar!", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         } else {
-            
+            prosesPembayaran();
         }
     }//GEN-LAST:event_btnSimpanActionPerformed
 

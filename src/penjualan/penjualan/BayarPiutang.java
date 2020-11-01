@@ -5,6 +5,8 @@
  */
 package penjualan.penjualan;
 
+import dao.PiutangDAO;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
 import model.ViewPiutang;
@@ -23,6 +25,7 @@ public class BayarPiutang extends javax.swing.JFrame {
     static ViewPiutang piutang;
     Calendar cal = Calendar.getInstance();
     ViewModel vm = new ViewModel();
+    PiutangDAO piutangDAO = PiutangDAO.getInstance();
     
     public BayarPiutang() {
         initComponents();
@@ -40,6 +43,27 @@ public class BayarPiutang extends javax.swing.JFrame {
             inputTelahTerbayar.setText(piutang.getTelah_dibayar());
             inputSisaPiutang.setText(piutang.getSisa_piutang());
             inputSisaPiutangSekarang.setText(piutang.getSisa_piutang());
+        }
+    }
+    
+    public void prosesPembayaran(){
+        try {
+            String[] data = {
+                String.valueOf(vm.getLatestId("id", "tb_piutang")),
+                inputFakturPiutang.getText(),
+                vm.getDataByParameter("kode = '" + piutang.getFaktur() + "'", "tb_penjualan", "id"),
+                new SimpleDateFormat("yyyy-MM-dd").format(tanggalCicilan.getDate()),
+                inputPembayaranTunai.getText()
+            };
+            int status = piutangDAO.bayarPiutang(data);
+            if (status > 0) {
+                JOptionPane.showMessageDialog(null, "Berhasil melakukan pembayaran utang", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Terjadi kesalahan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -288,7 +312,7 @@ public class BayarPiutang extends javax.swing.JFrame {
         if (inputPembayaranTunai.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Harap masukkan data dengan benar!", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         } else {
-            
+            prosesPembayaran();
         }
     }//GEN-LAST:event_btnSimpanActionPerformed
 

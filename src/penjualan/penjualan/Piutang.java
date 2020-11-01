@@ -116,11 +116,10 @@ public class Piutang extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         cbBelumJatuhTempo = new javax.swing.JCheckBox();
         cbSudahJatuhTempo = new javax.swing.JCheckBox();
-        txtSearch = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         btnRefresh = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(0, 153, 255));
 
@@ -199,6 +198,11 @@ public class Piutang extends javax.swing.JFrame {
         jLabel4.setText("Pilih Pelanggan");
 
         btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -213,11 +217,9 @@ public class Piutang extends javax.swing.JFrame {
                             .addComponent(btnBayar)
                             .addGap(18, 18, 18)
                             .addComponent(btnDaftarAngsuran1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(txtSearch)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnRefresh)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(btnKeluar))
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -289,7 +291,6 @@ public class Piutang extends javax.swing.JFrame {
                     .addComponent(btnBayar)
                     .addComponent(btnDaftarAngsuran1)
                     .addComponent(btnKeluar)
-                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRefresh))
                 .addGap(227, 227, 227))
         );
@@ -338,6 +339,11 @@ public class Piutang extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Pilih faktur penjualan yang akan dibayar piutangnya.", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnBayarActionPerformed
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        // TODO add your handling code here:
+        initTabelPiutang();
+    }//GEN-LAST:event_btnRefreshActionPerformed
 
     /**
      * @param args the command line arguments
@@ -395,6 +401,5 @@ public class Piutang extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> pilihPelanggan;
     private com.toedter.calendar.JDateChooser startDate;
     private javax.swing.JTable tblPiutang;
-    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }
