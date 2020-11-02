@@ -29,6 +29,9 @@ public class MenuUtama extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuBar2 = new javax.swing.JMenuBar();
+        jMenu2 = new javax.swing.JMenu();
+        jMenu5 = new javax.swing.JMenu();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         smLogout = new javax.swing.JMenuItem();
@@ -40,13 +43,20 @@ public class MenuUtama extends javax.swing.JFrame {
         smTbPembelian = new javax.swing.JMenuItem();
         smReturPembelian = new javax.swing.JMenuItem();
         smTbReturPembelian = new javax.swing.JMenuItem();
-        smUtang = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         smPenjualan = new javax.swing.JMenuItem();
         smTbPenjualan = new javax.swing.JMenuItem();
         smReturPenjualan = new javax.swing.JMenuItem();
         smTbReturPenjualan = new javax.swing.JMenuItem();
+        jMenu6 = new javax.swing.JMenu();
+        smUtang = new javax.swing.JMenuItem();
         smPiutang = new javax.swing.JMenuItem();
+
+        jMenu2.setText("File");
+        jMenuBar2.add(jMenu2);
+
+        jMenu5.setText("Edit");
+        jMenuBar2.add(jMenu5);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -116,14 +126,6 @@ public class MenuUtama extends javax.swing.JFrame {
         });
         jMenu3.add(smTbReturPembelian);
 
-        smUtang.setText("Utang");
-        smUtang.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                smUtangActionPerformed(evt);
-            }
-        });
-        jMenu3.add(smUtang);
-
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText("Transaksi Penjualan");
@@ -160,15 +162,27 @@ public class MenuUtama extends javax.swing.JFrame {
         });
         jMenu4.add(smTbReturPenjualan);
 
+        jMenuBar1.add(jMenu4);
+
+        jMenu6.setText("Utang/Piutang");
+
+        smUtang.setText("Utang");
+        smUtang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                smUtangActionPerformed(evt);
+            }
+        });
+        jMenu6.add(smUtang);
+
         smPiutang.setText("Piutang");
         smPiutang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 smPiutangActionPerformed(evt);
             }
         });
-        jMenu4.add(smPiutang);
+        jMenu6.add(smPiutang);
 
-        jMenuBar1.add(jMenu4);
+        jMenuBar1.add(jMenu6);
 
         setJMenuBar(jMenuBar1);
 
@@ -295,9 +309,13 @@ public class MenuUtama extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JMenu menuKasir;
     private javax.swing.JMenuItem smBukaKasir;
     private javax.swing.JMenuItem smKeluarApl;
