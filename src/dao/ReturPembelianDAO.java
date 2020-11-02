@@ -96,7 +96,7 @@ public class ReturPembelianDAO extends Koneksi {
     
     public int returDetailPenjualan(String id_pembelian, int jumlah_retur) throws Exception {
         int jumlah_asal = Integer.parseInt(vm.getDataByParameter("id = " + id_pembelian, "tb_pembelian_detail", "jumlah"));
-        jumlah_asal += jumlah_retur;
+        jumlah_asal -= jumlah_retur;
         String sql = "UPDATE tb_pembelian_detail SET jumlah = ? WHERE id = " + id_pembelian;
         statement = koneksi.prepareStatement(sql);
         statement.setString(1, String.valueOf(jumlah_asal));

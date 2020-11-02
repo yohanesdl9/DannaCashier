@@ -189,7 +189,7 @@ public class ReturPenjualan extends javax.swing.JFrame {
         try {
             String id_pembelian = vm.getDataByParameter("kode = '" + noFaktur.getSelectedItem().toString() + "'", "tb_penjualan", "id");
             boolean is_piutang = vm.getDataByParameter("kode = '" + noFaktur.getSelectedItem().toString() + "'", "tb_penjualan", "tunai_kredit").equals("TUNAI") ? false : true;
-            String id_retur_pembelian = String.valueOf(vm.getLatestId("id", "tb_retur_pembelian"));
+            String id_retur_pembelian = String.valueOf(vm.getLatestId("id", "tb_retur_penjualan"));
             String[] data = {
                 id_retur_pembelian,
                 id_pembelian,
@@ -218,7 +218,7 @@ public class ReturPenjualan extends javax.swing.JFrame {
             }
             int status = returPenjualanDAO.insertReturPenjualan(data, detail_retur);
             if (status > 0) {
-                JOptionPane.showMessageDialog(null, "Sukses memasukkan retur pembelian", "Berhasil", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Sukses memasukkan retur penjualan", "Berhasil", JOptionPane.INFORMATION_MESSAGE);
                 resetAll();
             } else {
                 JOptionPane.showMessageDialog(null, "Terjadi Kesalahan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
