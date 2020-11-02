@@ -46,20 +46,21 @@ public class ReturPembelianDAO extends Koneksi {
         while (rs.next()) {
             ViewReturPembelian vrp = new ViewReturPembelian();
             vrp.setNo(String.valueOf(i));
+            vrp.setNo_retur(rs.getString("no_retur"));
             vrp.setFaktur(rs.getString("faktur"));
             vrp.setTanggal(dateIndo(rs.getString("tanggal")));
             vrp.setKode_supplier(rs.getString("kode_supplier"));
             vrp.setNama_supplier(rs.getString("nama_supplier"));
-            vrp.setTotal_nilai_retur(rs.getString("total_nilai_retur"));
+            vrp.setTotal_nilai_retur(rs.getString("total_retur"));
             vrp.setTotal_dibayar(rs.getString("total_dibayar"));
-            vrp.setTotal_mengurangi_hutang("0");
+            vrp.setTotal_mengurangi_hutang(rs.getString("total_kurang_hutang"));
             listReturPembelian.add(vrp);
         }
         return listReturPembelian;
     }
     
-        public int insertReturPenjualan(String[] data_retur_beli, ArrayList<ReturPembelianDetail> detail_retur_beli) throws Exception {
-        String sql = "INSERT INTO tb_retur_pembelian VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public int insertReturPembelian(String[] data_retur_beli, ArrayList<ReturPembelianDetail> detail_retur_beli) throws Exception {
+        String sql = "INSERT INTO tb_retur_pembelian VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);
         for (int i = 0; i < data_retur_beli.length; i++){
             statement.setString(i + 1, data_retur_beli[i]);
@@ -67,7 +68,7 @@ public class ReturPembelianDAO extends Koneksi {
         int status = statement.executeUpdate();
         if (status > 0) {
             int id_detail = vm.getLatestId("id", "tb_pembelian_detail");
-            sql = "INSERT INTO tb_penjualan_detail VALUES ";
+            sql = "INSERT INTO tb_retur_pembelian_detail VALUES ";
             for (int i = 0; i < detail_retur_beli.size(); i++){
                 sql += ("('" + detail_retur_beli.get(i).getId() + "', '" + detail_retur_beli.get(i).getId_retur_pembelian() + 
                         "', '" + detail_retur_beli.get(i).getId_pembelian_detail() + "', '" + detail_retur_beli.get(i).getKode_barang() + 
@@ -85,7 +86,7 @@ public class ReturPembelianDAO extends Koneksi {
             // Update stock barang
             for (int i = 0; i < detail_retur_beli.size(); i++) {
                 int stok_keluar = Integer.parseInt(detail_retur_beli.get(i).getJumlah());
-                String id_barang = vm.getDataByParameter("kode_barang = '" + detail_retur_beli.get(i).getKode_barang() + "'", "tb_barang", "id");
+                String id_barang = vm.getDataByParameter("kode = '" + detail_retur_beli.get(i).getKode_barang() + "'", "tb_barang", "id");
                 status = barangDAO.updateStockBarang(id_barang, 0, stok_keluar, "Pengurangan stok dari retur pembelian " + data_retur_beli[1]);
                 status = returDetailPenjualan(detail_retur_beli.get(i).getId_pembelian_detail(), stok_keluar);
             }

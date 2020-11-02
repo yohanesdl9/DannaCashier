@@ -49,13 +49,14 @@ public class ReturPenjualanDAO extends Koneksi {
             vrp.setNo(String.valueOf(i));
             listReturPenjualan.add(vrp);
             vrp.setNo(String.valueOf(i));
-            vrp.setFaktur(rs.getString("faktur"));
+            vrp.setFaktur(rs.getString("kode_penjualan"));
             vrp.setTanggal(dateIndo(rs.getString("tanggal")));
             vrp.setKode_pelanggan(rs.getString("kode_pelanggan"));
             vrp.setNama_pelanggan(rs.getString("nama_pelanggan"));
-            vrp.setTotal_nilai_retur(rs.getString("total_nilai_retur"));
+            vrp.setTotal_nilai_retur(rs.getString("total_nilai"));
             vrp.setTotal_dibayar(rs.getString("total_dibayar"));
             vrp.setTotal_mengurangi_piutang(rs.getString("total_kurang_piutang"));
+            vrp.setOperator("danna");
         }
         return listReturPenjualan;
     }
@@ -69,7 +70,7 @@ public class ReturPenjualanDAO extends Koneksi {
         int status = statement.executeUpdate();
         if (status > 0) {
             int id_detail = vm.getLatestId("id", "tb_pembelian_detail");
-            sql = "INSERT INTO tb_penjualan_detail VALUES ";
+            sql = "INSERT INTO tb_retur_penjualan_detail VALUES ";
             for (int i = 0; i < detail_retur_jual.size(); i++){
                 sql += ("('" + detail_retur_jual.get(i).getId() + "', '" + detail_retur_jual.get(i).getId_retur_penjualan() + 
                         "', '" + detail_retur_jual.get(i).getId_penjualan_detail() + "', '" + detail_retur_jual.get(i).getKode_barang() + 
@@ -86,7 +87,7 @@ public class ReturPenjualanDAO extends Koneksi {
             // Update stock barang
             for (int i = 0; i < detail_retur_jual.size(); i++) {
                 int stok_masuk = Integer.parseInt(detail_retur_jual.get(i).getJumlah());
-                String id_barang = vm.getDataByParameter("kode_barang = '" + detail_retur_jual.get(i).getKode_barang() + "'", "tb_barang", "id");
+                String id_barang = vm.getDataByParameter("kode = '" + detail_retur_jual.get(i).getKode_barang() + "'", "tb_barang", "id");
                 status = barangDAO.updateStockBarang(id_barang, stok_masuk, 0, "Penambahan stok dari retur penjualan " + data_retur_jual[2]);
                 status = returDetailPenjualan(detail_retur_jual.get(i).getId_penjualan_detail(), stok_masuk);
             }

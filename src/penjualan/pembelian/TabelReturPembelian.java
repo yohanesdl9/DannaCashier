@@ -5,8 +5,14 @@
  */
 package penjualan.pembelian;
 
+import dao.ReturPembelianDAO;
+import datatable.ReturPembelianDataTable;
 import java.util.Calendar;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import model.ViewReturPembelian;
+import penjualan.ViewModel;
 
 /**
  *
@@ -14,11 +20,57 @@ import javax.swing.JTable;
  */
 public class TabelReturPembelian extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TabelReturPembelian
-     */
+    ReturPembelianDAO returPembelianDAO = ReturPembelianDAO.getInstance();
+    List<ViewReturPembelian> listReturPembelian;
+    Calendar cal = Calendar.getInstance();
+    ViewModel vm = new ViewModel();
+    
     public TabelReturPembelian() {
         initComponents();
+        try {
+            endDate.setDate(cal.getTime());
+            cal.add(Calendar.MONTH, -1);
+            startDate.setDate(cal.getTime());
+            initTabelReturPembelian();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void initTabelReturPembelian(){
+        try {
+            long start = startDate.getDate().getTime();
+            long end = endDate.getDate().getTime();
+            if (start > end) {
+                JOptionPane.showMessageDialog(null, "Pilih rentang tanggal dengan benar", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            } else {
+                try {
+                    listReturPembelian = returPembelianDAO.getListReturPembelian(startDate.getDate(), endDate.getDate());
+                    tableRetur.setModel(new ReturPembelianDataTable(listReturPembelian));
+                    txtTotalNilaiRetur.setText(String.valueOf(getTotal(listReturPembelian, "total_retur")));
+                    txtTotalDibayar.setText(String.valueOf(getTotal(listReturPembelian, "total_bayar")));
+                    txtTotalKurangHutang.setText(String.valueOf(getTotal(listReturPembelian, "total_kurang_utang")));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public int getTotal(List<ViewReturPembelian> lp, String field) {
+        int total = 0;
+        for (int i = 0; i < lp.size(); i++) {
+            if (field.equals("total_retur")) {
+                total += Integer.parseInt(lp.get(i).getTotal_nilai_retur());
+            } else if (field.equals("total_bayar")) {
+                total += Integer.parseInt(lp.get(i).getTotal_dibayar());
+            } else if (field.equals("total_kurang_utang")) {
+                total += Integer.parseInt(lp.get(i).getTotal_mengurangi_hutang());
+            }
+        }
+        return total;
     }
     
     public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
@@ -26,7 +78,7 @@ public class TabelReturPembelian extends javax.swing.JFrame {
             table.getColumnModel().getColumn(i).setPreferredWidth(columnSizes[i]);
         }
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -51,6 +103,7 @@ public class TabelReturPembelian extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableRetur = new javax.swing.JTable();
         btnExit = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -102,6 +155,13 @@ public class TabelReturPembelian extends javax.swing.JFrame {
             }
         });
 
+        btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -113,9 +173,12 @@ public class TabelReturPembelian extends javax.swing.JFrame {
                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(btnExit)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnRefresh)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnExit))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel2)
@@ -134,8 +197,8 @@ public class TabelReturPembelian extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(txtTotalNilaiRetur)
                                         .addComponent(txtTotalDibayar)
-                                        .addComponent(txtTotalKurangHutang, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 858, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txtTotalKurangHutang, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 858, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 16, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -167,7 +230,9 @@ public class TabelReturPembelian extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnExit)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnExit)
+                    .addComponent(btnRefresh))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -189,6 +254,11 @@ public class TabelReturPembelian extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_btnExitActionPerformed
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        // TODO add your handling code here:
+        initTabelReturPembelian();
+    }//GEN-LAST:event_btnRefreshActionPerformed
 
     /**
      * @param args the command line arguments
@@ -227,6 +297,7 @@ public class TabelReturPembelian extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExit;
+    private javax.swing.JButton btnRefresh;
     private com.toedter.calendar.JDateChooser endDate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

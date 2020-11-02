@@ -21,6 +21,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import model.PembelianDetail;
+import model.ReturPembelianDetail;
 import model.ViewPembelian;
 import penjualan.CustomCombo;
 import penjualan.ViewModel;
@@ -157,9 +158,9 @@ public class ReturPembelian extends javax.swing.JFrame {
 
                 if (!totalBayar.getText().equals("")) {
                     int total_bayar = Integer.parseInt(totalBayar.getText());
-                    if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangUtang.setText(String.valueOf(total_bayar - total_retur));
+                    if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangUtang.setText(String.valueOf(total_retur - total_bayar));
                 } else {
-                    if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangUtang.setText(String.valueOf(0 - total_retur));
+                    if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangUtang.setText(String.valueOf("0"));
                 }
             }
         } else {
@@ -170,9 +171,9 @@ public class ReturPembelian extends javax.swing.JFrame {
 
             if (!totalBayar.getText().equals("")) {
                 int total_bayar = Integer.parseInt(totalBayar.getText());
-                if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangUtang.setText(String.valueOf(total_bayar - total_retur));
+                if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangUtang.setText(String.valueOf(total_retur - total_bayar));
             } else {
-                if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangUtang.setText(String.valueOf(0 - total_retur));
+                if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangUtang.setText(String.valueOf("0"));
             }
         }
 
@@ -182,6 +183,53 @@ public class ReturPembelian extends javax.swing.JFrame {
         inputJumlah.setText("");
         inputHargaBersih.setText("");
         inputTotal.setText("");
+    }
+    
+    public void doReturPembelian(){
+        try {
+            String id_pembelian = vm.getDataByParameter("faktur = '" + noFaktur.getSelectedItem().toString() + "'", "tb_pembelian", "id");
+            boolean is_hutang = vm.getDataByParameter("faktur = '" + noFaktur.getSelectedItem().toString() + "'", "tb_pembelian", "tunai_kredit").equals("TUNAI") ? false : true;
+            String id_retur_pembelian = String.valueOf(vm.getLatestId("id", "tb_retur_pembelian"));
+            String[] data = {
+                id_retur_pembelian,
+                noRetur.getText(),
+                new SimpleDateFormat("yyyy-MM-dd").format(tanggalReturBeli.getDate()),
+                id_pembelian,
+                noFaktur.getSelectedItem().toString(),
+                totalRetur.getText(),
+                totalBayar.getText(),
+                is_hutang ? totalKurangUtang.getText() : "0"
+            };
+            ArrayList<ReturPembelianDetail> detail_retur = new ArrayList<>();
+            for (int i = 0; i < tabelReturPembelian.getRowCount(); i++) {
+                int id = vm.getLatestId("id", "tb_retur_pembelian_detail") + i;
+                String id_dp = vm.getDataByParameter("kode_barang = '" + tabelReturPembelian.getValueAt(i, 0).toString() + "' AND id_pembelian = '" + id_pembelian + "'", "tb_pembelian_detail", "id");
+                ReturPembelianDetail rpd = new ReturPembelianDetail();
+                rpd.setId(String.valueOf(id));
+                rpd.setId_retur_pembelian(id_retur_pembelian);
+                rpd.setId_pembelian_detail(id_dp);
+                rpd.setKode_barang(tabelReturPembelian.getValueAt(i, 0).toString());
+                rpd.setNama_barang(tabelReturPembelian.getValueAt(i, 1).toString());
+                rpd.setJumlah(tabelReturPembelian.getValueAt(i, 2).toString());
+                rpd.setSatuan(tabelReturPembelian.getValueAt(i, 3).toString());
+                rpd.setHarga_beli(tabelReturPembelian.getValueAt(i, 4).toString());
+                rpd.setTotal(tabelReturPembelian.getValueAt(i, 5).toString());
+                detail_retur.add(rpd);
+            }
+            int status = returPembelianDAO.insertReturPembelian(data, detail_retur);
+            if (status > 0) {
+                JOptionPane.showMessageDialog(null, "Sukses memasukkan retur pembelian", "Berhasil", JOptionPane.INFORMATION_MESSAGE);
+                resetAll();
+            } else {
+                JOptionPane.showMessageDialog(null, "Terjadi Kesalahan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public boolean verifyFormFilled(){
+        return noFaktur.getSelectedItem() == null || tabelReturPembelian.getRowCount() == 0 || totalBayar.getText().equals("");
     }
 
     /**
@@ -221,7 +269,6 @@ public class ReturPembelian extends javax.swing.JFrame {
         totalBayar = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         btnSimpan = new javax.swing.JButton();
-        btnCetak = new javax.swing.JButton();
         btnBaru = new javax.swing.JButton();
         noFaktur = new javax.swing.JComboBox<>();
         totalKurangUtang = new javax.swing.JTextField();
@@ -338,13 +385,6 @@ public class ReturPembelian extends javax.swing.JFrame {
             }
         });
 
-        btnCetak.setText("Cetak");
-        btnCetak.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCetakActionPerformed(evt);
-            }
-        });
-
         btnBaru.setText("Baru");
         btnBaru.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -425,9 +465,7 @@ public class ReturPembelian extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(btnSimpan)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(btnCetak, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(156, 156, 156)
+                            .addGap(233, 233, 233)
                             .addComponent(btnBaru))
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 663, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -487,8 +525,7 @@ public class ReturPembelian extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSimpan)
-                    .addComponent(btnBaru)
-                    .addComponent(btnCetak))
+                    .addComponent(btnBaru))
                 .addContainerGap())
         );
 
@@ -511,12 +548,13 @@ public class ReturPembelian extends javax.swing.JFrame {
         resetAll();
     }//GEN-LAST:event_btnBaruActionPerformed
 
-    private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnCetakActionPerformed
-
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
         // TODO add your handling code here:
+        if (verifyFormFilled()) {
+            JOptionPane.showMessageDialog(null, "Harap masukkan data dengan benar!", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        } else {
+            doReturPembelian();
+        }
     }//GEN-LAST:event_btnSimpanActionPerformed
 
     private void noFakturActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noFakturActionPerformed
@@ -593,9 +631,9 @@ public class ReturPembelian extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (!totalBayar.getText().equals("")) {
             int total_bayar = Integer.parseInt(totalBayar.getText());
-            if (vp != null && !vp.getTunai_kredit().equals("TUNAI")) totalKurangUtang.setText(String.valueOf(total_bayar - total_retur));
+            if (vp != null && !vp.getTunai_kredit().equals("TUNAI")) totalKurangUtang.setText(String.valueOf(total_retur - total_bayar));
         } else {
-            if (vp != null && !vp.getTunai_kredit().equals("TUNAI")) totalKurangUtang.setText(String.valueOf(0 - total_retur));
+            if (vp != null && !vp.getTunai_kredit().equals("TUNAI")) totalKurangUtang.setText(String.valueOf(total_retur));
         }
     }//GEN-LAST:event_totalBayarKeyReleased
 
@@ -636,7 +674,6 @@ public class ReturPembelian extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBaru;
-    private javax.swing.JButton btnCetak;
     private javax.swing.JButton btnSimpan;
     private javax.swing.JTextField inputBarcode;
     private javax.swing.JTextField inputHargaBersih;

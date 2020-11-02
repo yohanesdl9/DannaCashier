@@ -235,12 +235,12 @@ public class MenuUtama extends javax.swing.JFrame {
 
     private void smReturPenjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smReturPenjualanActionPerformed
         // TODO add your handling code here:
-        new penjualan.penjualan.ReturPenjualan().setVisible(true);
+        new penjualan.penjualan.TabelReturPenjualan().setVisible(true);
     }//GEN-LAST:event_smReturPenjualanActionPerformed
 
     private void smTbReturPenjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smTbReturPenjualanActionPerformed
         // TODO add your handling code here:
-        new penjualan.penjualan.TabelReturPenjualan().setVisible(true);
+        new penjualan.penjualan.ReturPenjualan().setVisible(true);
     }//GEN-LAST:event_smTbReturPenjualanActionPerformed
 
     private void smBukaKasirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smBukaKasirActionPerformed

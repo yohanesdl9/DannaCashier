@@ -11,7 +11,7 @@
  Target Server Version : 100411
  File Encoding         : 65001
 
- Date: 01/11/2020 21:35:51
+ Date: 02/11/2020 21:18:30
 */
 
 SET NAMES utf8mb4;
@@ -48,10 +48,10 @@ CREATE TABLE `tb_barang`  (
 -- Records of tb_barang
 -- ----------------------------
 INSERT INTO `tb_barang` VALUES (1, 'BRG0000001', 'Tango Wafer 104 gram', 1, 7, 95, 4800, 5200, 1, 1, NULL, '', NULL);
-INSERT INTO `tb_barang` VALUES (2, 'BRG0000002', 'Mintz Chewy Bag 125 gram', 3, 7, 296, 3000, 3600, 2, 2, NULL, NULL, NULL);
+INSERT INTO `tb_barang` VALUES (2, 'BRG0000002', 'Mintz Chewy Bag 125 gram', 3, 7, 247, 3000, 3600, 2, 2, NULL, NULL, NULL);
 INSERT INTO `tb_barang` VALUES (3, 'BRG0000003', 'Mr. Potato 60 gram', 1, 7, 196, 5000, 5400, 3, 1, NULL, NULL, NULL);
-INSERT INTO `tb_barang` VALUES (4, 'BRG0000004', 'Vita Pudding 108 gram', 1, 7, 98, 2000, 2550, 1, 1, NULL, NULL, NULL);
-INSERT INTO `tb_barang` VALUES (5, 'BRG0000005', 'TOP Coffee 20 x 25 gram', 4, 7, 248, 13600, 13900, 1, 2, NULL, NULL, NULL);
+INSERT INTO `tb_barang` VALUES (4, 'BRG0000004', 'Vita Pudding 108 gram', 1, 7, 99, 2000, 2550, 1, 1, NULL, NULL, NULL);
+INSERT INTO `tb_barang` VALUES (5, 'BRG0000005', 'TOP Coffee 20 x 25 gram', 4, 7, 199, 13600, 13900, 1, 2, NULL, NULL, NULL);
 INSERT INTO `tb_barang` VALUES (6, 'BRG0000006', 'Sari Wangi Green Tea 25 x 25 gram', 5, 9, 150, 5500, 5900, 3, 2, NULL, NULL, NULL);
 INSERT INTO `tb_barang` VALUES (7, 'BRG0000007', 'Sari Bunga Madu 650 mL', 6, 8, 120, 49000, 50000, 2, 1, '2021-04-27', NULL, NULL);
 INSERT INTO `tb_barang` VALUES (8, 'BRG0000008', 'Nusantara Madu Murni', 6, 8, 120, 61500, 63000, 2, 2, '2021-04-27', NULL, NULL);
@@ -190,8 +190,8 @@ INSERT INTO `tb_pembelian_detail` VALUES (1, 1, 2, 'BRG0000002', 'Mintz Chewy Ba
 INSERT INTO `tb_pembelian_detail` VALUES (2, 1, 3, 'BRG0000003', 'Mr. Potato 60 gram', 50, 'Bungkus', 5000, 250000, 5400);
 INSERT INTO `tb_pembelian_detail` VALUES (3, 1, 6, 'BRG0000006', 'Sari Wangi Green Tea 25 x 25 gram', 50, 'Box', 5500, 275000, 5900);
 INSERT INTO `tb_pembelian_detail` VALUES (4, 1, 9, 'BRG0000009', 'Teh Pucuk Harum 480 mL', 50, 'Botol', 3000, 150000, 3250);
-INSERT INTO `tb_pembelian_detail` VALUES (5, 2, 2, 'BRG0000002', 'Mintz Chewy Bag 125 gram', 100, 'Bungkus', 3000, 300000, 3600);
-INSERT INTO `tb_pembelian_detail` VALUES (6, 2, 5, 'BRG0000005', 'TOP Coffee 20 x 25 gram', 100, 'Bungkus', 13600, 1360000, 13900);
+INSERT INTO `tb_pembelian_detail` VALUES (5, 2, 2, 'BRG0000002', 'Mintz Chewy Bag 125 gram', 150, 'Bungkus', 3000, 300000, 3600);
+INSERT INTO `tb_pembelian_detail` VALUES (6, 2, 5, 'BRG0000005', 'TOP Coffee 20 x 25 gram', 150, 'Bungkus', 13600, 1360000, 13900);
 INSERT INTO `tb_pembelian_detail` VALUES (7, 2, 7, 'BRG0000007', 'Sari Bunga Madu 650 mL', 20, 'Botol', 49000, 980000, 50000);
 INSERT INTO `tb_pembelian_detail` VALUES (8, 2, 8, 'BRG0000008', 'Nusantara Madu Murni', 20, 'Botol', 61500, 1230000, 63000);
 INSERT INTO `tb_pembelian_detail` VALUES (9, 3, 2, 'BRG0000002', 'Mintz Chewy Bag 125 gram', 50, 'Bungkus', 3000, 150000, 3600);
@@ -260,9 +260,9 @@ CREATE TABLE `tb_penjualan_detail`  (
 INSERT INTO `tb_penjualan_detail` VALUES (1, 1, 1, 'BRG0000001', 'Tango Wafer 104 gram', 5, 'Bungkus', 5200, 0, 5200, 26000);
 INSERT INTO `tb_penjualan_detail` VALUES (2, 2, 2, 'BRG0000002', 'Mintz Chewy Bag 125 gram', 2, 'Bungkus', 3600, 0, 3600, 7200);
 INSERT INTO `tb_penjualan_detail` VALUES (3, 2, 3, 'BRG0000003', 'Mr. Potato 60 gram', 4, 'Bungkus', 5400, 0, 5400, 21600);
-INSERT INTO `tb_penjualan_detail` VALUES (4, 3, 2, 'BRG0000002', 'Mintz Chewy Bag 125 gram', 2, 'Bungkus', 3600, 0, 3600, 7200);
-INSERT INTO `tb_penjualan_detail` VALUES (5, 3, 4, 'BRG0000004', 'Vita Pudding 108 gram', 2, 'Bungkus', 2550, 0, 2550, 5100);
-INSERT INTO `tb_penjualan_detail` VALUES (6, 3, 5, 'BRG0000005', 'TOP Coffee 20 x 25 gram', 2, 'Bungkus', 13900, 0, 13900, 27800);
+INSERT INTO `tb_penjualan_detail` VALUES (4, 3, 2, 'BRG0000002', 'Mintz Chewy Bag 125 gram', 1, 'Bungkus', 3600, 0, 3600, 7200);
+INSERT INTO `tb_penjualan_detail` VALUES (5, 3, 4, 'BRG0000004', 'Vita Pudding 108 gram', 1, 'Bungkus', 2550, 0, 2550, 5100);
+INSERT INTO `tb_penjualan_detail` VALUES (6, 3, 5, 'BRG0000005', 'TOP Coffee 20 x 25 gram', 1, 'Bungkus', 13900, 0, 13900, 27800);
 
 -- ----------------------------
 -- Table structure for tb_piutang
@@ -300,7 +300,12 @@ CREATE TABLE `tb_retur_pembelian`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `id_pembelian`(`id_pembelian`) USING BTREE,
   CONSTRAINT `tb_retur_pembelian_ibfk_1` FOREIGN KEY (`id_pembelian`) REFERENCES `tb_pembelian` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of tb_retur_pembelian
+-- ----------------------------
+INSERT INTO `tb_retur_pembelian` VALUES (1, 'RTB0000001', '2020-11-02', 2, 'PEMB29102000002', 830000, 830000, 0);
 
 -- ----------------------------
 -- Table structure for tb_retur_pembelian_detail
@@ -321,7 +326,13 @@ CREATE TABLE `tb_retur_pembelian_detail`  (
   INDEX `id_pembelian_detail`(`id_pembelian_detail`) USING BTREE,
   CONSTRAINT `tb_retur_pembelian_detail_ibfk_1` FOREIGN KEY (`id_retur_pembelian`) REFERENCES `tb_retur_pembelian` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tb_retur_pembelian_detail_ibfk_2` FOREIGN KEY (`id_pembelian_detail`) REFERENCES `tb_pembelian_detail` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of tb_retur_pembelian_detail
+-- ----------------------------
+INSERT INTO `tb_retur_pembelian_detail` VALUES (1, 1, 6, 'BRG0000005', 'TOP Coffee 20 x 25 gram', 50, 'Bungkus', 13600, 680000);
+INSERT INTO `tb_retur_pembelian_detail` VALUES (2, 1, 5, 'BRG0000002', 'Mintz Chewy Bag 125 gram', 50, 'Bungkus', 3000, 150000);
 
 -- ----------------------------
 -- Table structure for tb_retur_penjualan
@@ -343,6 +354,11 @@ CREATE TABLE `tb_retur_penjualan`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of tb_retur_penjualan
+-- ----------------------------
+INSERT INTO `tb_retur_penjualan` VALUES (2, 3, 'RTJ0000001', '2020-11-02', 'PENJ01112000001', 20050, 20050, 0, 0);
+
+-- ----------------------------
 -- Table structure for tb_retur_penjualan_detail
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_retur_penjualan_detail`;
@@ -361,7 +377,14 @@ CREATE TABLE `tb_retur_penjualan_detail`  (
   INDEX `id_pembelian_detail`(`id_penjualan_detail`) USING BTREE,
   CONSTRAINT `tb_retur_penjualan_detail_ibfk_1` FOREIGN KEY (`id_retur_penjualan`) REFERENCES `tb_retur_penjualan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tb_retur_penjualan_detail_ibfk_2` FOREIGN KEY (`id_penjualan_detail`) REFERENCES `tb_penjualan_detail` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of tb_retur_penjualan_detail
+-- ----------------------------
+INSERT INTO `tb_retur_penjualan_detail` VALUES (1, 2, 4, 'BRG0000002', 'Mintz Chewy Bag 125 gram', 1, 'Bungkus', 3600, 3600);
+INSERT INTO `tb_retur_penjualan_detail` VALUES (2, 2, 5, 'BRG0000004', 'Vita Pudding 108 gram', 1, 'Bungkus', 2550, 2550);
+INSERT INTO `tb_retur_penjualan_detail` VALUES (3, 2, 6, 'BRG0000005', 'TOP Coffee 20 x 25 gram', 1, 'Bungkus', 13900, 13900);
 
 -- ----------------------------
 -- Table structure for tb_sales
@@ -424,6 +447,11 @@ INSERT INTO `tb_stok_barang` VALUES (14, 5, 50, 0, 'Penambahan stok dari transak
 INSERT INTO `tb_stok_barang` VALUES (15, 2, 0, 2, 'Pengurangan stok dari transaksi penjualan 2020-11-01');
 INSERT INTO `tb_stok_barang` VALUES (16, 4, 0, 2, 'Pengurangan stok dari transaksi penjualan 2020-11-01');
 INSERT INTO `tb_stok_barang` VALUES (17, 5, 0, 2, 'Pengurangan stok dari transaksi penjualan 2020-11-01');
+INSERT INTO `tb_stok_barang` VALUES (18, 5, 0, 50, 'Pengurangan stok dari retur pembelian RTB0000001');
+INSERT INTO `tb_stok_barang` VALUES (19, 2, 0, 50, 'Pengurangan stok dari retur pembelian RTB0000001');
+INSERT INTO `tb_stok_barang` VALUES (20, 2, 1, 0, 'Penambahan stok dari retur penjualan RTJ0000001');
+INSERT INTO `tb_stok_barang` VALUES (21, 4, 1, 0, 'Penambahan stok dari retur penjualan RTJ0000001');
+INSERT INTO `tb_stok_barang` VALUES (22, 5, 1, 0, 'Penambahan stok dari retur penjualan RTJ0000001');
 
 -- ----------------------------
 -- Table structure for tb_stok_opname

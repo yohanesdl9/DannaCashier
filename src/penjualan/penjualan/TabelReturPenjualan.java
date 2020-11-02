@@ -5,8 +5,14 @@
  */
 package penjualan.penjualan;
 
+import dao.ReturPenjualanDAO;
+import datatable.ReturPenjualanDataTable;
 import java.util.Calendar;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import model.ViewReturPenjualan;
+import penjualan.ViewModel;
 
 /**
  *
@@ -14,11 +20,57 @@ import javax.swing.JTable;
  */
 public class TabelReturPenjualan extends javax.swing.JFrame {
 
-    /**
-     * Creates new form ReturPenjualan
-     */
+    ReturPenjualanDAO returPenjualanDAO = ReturPenjualanDAO.getInstance();
+    List<ViewReturPenjualan> listReturPenjualan;
+    Calendar cal = Calendar.getInstance();
+    ViewModel vm = new ViewModel();
+    
     public TabelReturPenjualan() {
         initComponents();
+        try {
+            endDate.setDate(cal.getTime());
+            cal.add(Calendar.MONTH, -1);
+            startDate.setDate(cal.getTime());
+            initTabelReturPenjualan();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void initTabelReturPenjualan(){
+        try {
+            long start = startDate.getDate().getTime();
+            long end = endDate.getDate().getTime();
+            if (start > end) {
+                JOptionPane.showMessageDialog(null, "Pilih rentang tanggal dengan benar", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            } else {
+                try {
+                    listReturPenjualan = returPenjualanDAO.getListReturPenjualan(startDate.getDate(), endDate.getDate());
+                    tablePenjualan.setModel(new ReturPenjualanDataTable(listReturPenjualan));
+                    txtTotalNilaiRetur.setText(String.valueOf(getTotal(listReturPenjualan, "total_retur")));
+                    txtTotalDibayar.setText(String.valueOf(getTotal(listReturPenjualan, "total_bayar")));
+                    txtTotalKurangHutang.setText(String.valueOf(getTotal(listReturPenjualan, "total_kurang_utang")));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public int getTotal(List<ViewReturPenjualan> lp, String field) {
+        int total = 0;
+        for (int i = 0; i < lp.size(); i++) {
+            if (field.equals("total_retur")) {
+                total += Integer.parseInt(lp.get(i).getTotal_nilai_retur());
+            } else if (field.equals("total_bayar")) {
+                total += Integer.parseInt(lp.get(i).getTotal_dibayar());
+            } else if (field.equals("total_kurang_utang")) {
+                total += Integer.parseInt(lp.get(i).getTotal_mengurangi_piutang());
+            }
+        }
+        return total;
     }
     
     public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
@@ -39,9 +91,9 @@ public class TabelReturPenjualan extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        startDate = new com.toedter.calendar.JDateChooser();
         jLabel3 = new javax.swing.JLabel();
-        jDateChooser2 = new com.toedter.calendar.JDateChooser();
+        endDate = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablePenjualan = new javax.swing.JTable();
         txtTotalNilaiRetur = new javax.swing.JTextField();
@@ -51,6 +103,7 @@ public class TabelReturPenjualan extends javax.swing.JFrame {
         txtTotalKurangHutang = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         btnExit = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -83,9 +136,15 @@ public class TabelReturPenjualan extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tablePenjualan);
 
+        txtTotalNilaiRetur.setEditable(false);
+
         jLabel6.setText("Total Nilai Retur");
 
         jLabel7.setText("Total Dibayar");
+
+        txtTotalDibayar.setEditable(false);
+
+        txtTotalKurangHutang.setEditable(false);
 
         jLabel8.setText("Total Mengurangi Piutang");
 
@@ -93,6 +152,13 @@ public class TabelReturPenjualan extends javax.swing.JFrame {
         btnExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExitActionPerformed(evt);
+            }
+        });
+
+        btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
             }
         });
 
@@ -108,11 +174,11 @@ public class TabelReturPenjualan extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(startDate, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(endDate, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
@@ -127,7 +193,8 @@ public class TabelReturPenjualan extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 833, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnRefresh)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnExit)))
                 .addContainerGap())
         );
@@ -142,8 +209,8 @@ public class TabelReturPenjualan extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jDateChooser2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(startDate, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(endDate, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(27, 27, 27)
@@ -161,7 +228,9 @@ public class TabelReturPenjualan extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnExit)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnExit)
+                    .addComponent(btnRefresh))
                 .addContainerGap())
         );
 
@@ -185,6 +254,11 @@ public class TabelReturPenjualan extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_btnExitActionPerformed
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnRefreshActionPerformed
 
     /**
      * @param args the command line arguments
@@ -226,8 +300,8 @@ public class TabelReturPenjualan extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExit;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private com.toedter.calendar.JDateChooser jDateChooser2;
+    private javax.swing.JButton btnRefresh;
+    private com.toedter.calendar.JDateChooser endDate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -236,6 +310,7 @@ public class TabelReturPenjualan extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private com.toedter.calendar.JDateChooser startDate;
     private javax.swing.JTable tablePenjualan;
     private javax.swing.JTextField txtTotalDibayar;
     private javax.swing.JTextField txtTotalKurangHutang;

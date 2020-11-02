@@ -10,6 +10,7 @@ import dao.PenjualanDAO;
 import dao.ReturPenjualanDAO;
 import datatable.DetailPenjualanDataTable;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -20,6 +21,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import model.PenjualanDetail;
+import model.ReturPenjualanDetail;
 import model.ViewPenjualan;
 import penjualan.CustomCombo;
 import penjualan.ViewModel;
@@ -32,7 +34,7 @@ public class ReturPenjualan extends javax.swing.JFrame {
 
     ViewModel vm = new ViewModel();
     PenjualanDAO penjualanDAO = PenjualanDAO.getInstance();
-    ReturPenjualanDAO returPembelianDAO = ReturPenjualanDAO.getInstance();
+    ReturPenjualanDAO returPenjualanDAO = ReturPenjualanDAO.getInstance();
     DefaultTableModel model;
     List<PenjualanDetail> penjualanDetail;
     ViewPenjualan vp;
@@ -156,9 +158,9 @@ public class ReturPenjualan extends javax.swing.JFrame {
 
                 if (!totalBayar.getText().equals("")) {
                     int total_bayar = Integer.parseInt(totalBayar.getText());
-                    if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangPiutang.setText(String.valueOf(total_bayar - total_retur));
+                    if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangPiutang.setText(String.valueOf(total_retur - total_bayar));
                 } else {
-                    if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangPiutang.setText(String.valueOf(0 - total_retur));
+                    if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangPiutang.setText(String.valueOf("0"));
                 }
             }
         } else {
@@ -169,9 +171,9 @@ public class ReturPenjualan extends javax.swing.JFrame {
 
             if (!totalBayar.getText().equals("")) {
                 int total_bayar = Integer.parseInt(totalBayar.getText());
-                if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangPiutang.setText(String.valueOf(total_bayar - total_retur));
+                if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangPiutang.setText(String.valueOf(total_retur - total_bayar));
             } else {
-                if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangPiutang.setText(String.valueOf(0 - total_retur));
+                if (!vp.getTunai_kredit().equals("TUNAI")) totalKurangPiutang.setText("0");
             }
         }
         
@@ -181,6 +183,53 @@ public class ReturPenjualan extends javax.swing.JFrame {
         inputJumlah.setText("");
         inputHargaBersih.setText("");
         inputTotal.setText("");
+    }
+    
+    public void doReturPenjualan(){
+        try {
+            String id_pembelian = vm.getDataByParameter("kode = '" + noFaktur.getSelectedItem().toString() + "'", "tb_penjualan", "id");
+            boolean is_piutang = vm.getDataByParameter("kode = '" + noFaktur.getSelectedItem().toString() + "'", "tb_penjualan", "tunai_kredit").equals("TUNAI") ? false : true;
+            String id_retur_pembelian = String.valueOf(vm.getLatestId("id", "tb_retur_pembelian"));
+            String[] data = {
+                id_retur_pembelian,
+                id_pembelian,
+                noRetur.getText(),
+                new SimpleDateFormat("yyyy-MM-dd").format(tanggalReturJual.getDate()),
+                noFaktur.getSelectedItem().toString(),
+                totalRetur.getText(),
+                totalBayar.getText(),
+                is_piutang ? totalKurangPiutang.getText() : "0", "0"
+            };
+            ArrayList<ReturPenjualanDetail> detail_retur = new ArrayList<>();
+            for (int i = 0; i < tabelReturPenjualan.getRowCount(); i++) {
+                int id = vm.getLatestId("id", "tb_retur_penjualan_detail") + i;
+                String id_dp = vm.getDataByParameter("kode_barang = '" + tabelReturPenjualan.getValueAt(i, 0).toString() + "' AND id_penjualan = '" + id_pembelian + "'", "tb_penjualan_detail", "id");
+                ReturPenjualanDetail rpd = new ReturPenjualanDetail();
+                rpd.setId(String.valueOf(id));
+                rpd.setId_retur_penjualan(id_retur_pembelian);
+                rpd.setId_penjualan_detail(id_dp);
+                rpd.setKode_barang(tabelReturPenjualan.getValueAt(i, 0).toString());
+                rpd.setNama_barang(tabelReturPenjualan.getValueAt(i, 1).toString());
+                rpd.setJumlah(tabelReturPenjualan.getValueAt(i, 2).toString());
+                rpd.setSatuan(tabelReturPenjualan.getValueAt(i, 3).toString());
+                rpd.setHarga_beli(tabelReturPenjualan.getValueAt(i, 4).toString());
+                rpd.setTotal(tabelReturPenjualan.getValueAt(i, 5).toString());
+                detail_retur.add(rpd);
+            }
+            int status = returPenjualanDAO.insertReturPenjualan(data, detail_retur);
+            if (status > 0) {
+                JOptionPane.showMessageDialog(null, "Sukses memasukkan retur pembelian", "Berhasil", JOptionPane.INFORMATION_MESSAGE);
+                resetAll();
+            } else {
+                JOptionPane.showMessageDialog(null, "Terjadi Kesalahan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public boolean verifyFormFilled(){
+        return noFaktur.getSelectedItem() == null || tabelReturPenjualan.getRowCount() == 0 || totalBayar.getText().equals("");
     }
 
     /**
@@ -211,7 +260,6 @@ public class ReturPenjualan extends javax.swing.JFrame {
         inputBarcode = new javax.swing.JTextField();
         btnSimpan = new javax.swing.JButton();
         inputNama = new javax.swing.JTextField();
-        btnCetak = new javax.swing.JButton();
         inputJumlah = new javax.swing.JTextField();
         btnBaru = new javax.swing.JButton();
         inputHargaBersih = new javax.swing.JTextField();
@@ -312,13 +360,6 @@ public class ReturPenjualan extends javax.swing.JFrame {
 
         inputNama.setEditable(false);
 
-        btnCetak.setText("Cetak");
-        btnCetak.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCetakActionPerformed(evt);
-            }
-        });
-
         inputJumlah.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 inputJumlahKeyPressed(evt);
@@ -379,9 +420,7 @@ public class ReturPenjualan extends javax.swing.JFrame {
                             .addComponent(totalRetur, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(btnSimpan)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnCetak, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(115, 115, 115)
+                        .addGap(192, 192, 192)
                         .addComponent(btnBaru, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -478,8 +517,7 @@ public class ReturPenjualan extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSimpan)
-                    .addComponent(btnBaru)
-                    .addComponent(btnCetak))
+                    .addComponent(btnBaru))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -499,11 +537,12 @@ public class ReturPenjualan extends javax.swing.JFrame {
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
         // TODO add your handling code here:
+        if (verifyFormFilled()) {
+            JOptionPane.showMessageDialog(null, "Harap masukkan data dengan benar!", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        } else {
+            doReturPenjualan();
+        }
     }//GEN-LAST:event_btnSimpanActionPerformed
-
-    private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnCetakActionPerformed
 
     private void btnBaruActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBaruActionPerformed
         // TODO add your handling code here:
@@ -584,9 +623,9 @@ public class ReturPenjualan extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (!totalBayar.getText().equals("")) {
             int total_bayar = Integer.parseInt(totalBayar.getText());
-            if (vp != null && !vp.getTunai_kredit().equals("TUNAI")) totalKurangPiutang.setText(String.valueOf(total_bayar - total_retur));
+            if (vp != null && !vp.getTunai_kredit().equals("TUNAI")) totalKurangPiutang.setText(String.valueOf(total_retur - total_bayar));
         } else {
-            if (vp != null && !vp.getTunai_kredit().equals("TUNAI")) totalKurangPiutang.setText(String.valueOf(0 - total_retur));
+            if (vp != null && !vp.getTunai_kredit().equals("TUNAI")) totalKurangPiutang.setText(String.valueOf("0"));
         }
     }//GEN-LAST:event_totalBayarKeyReleased
 
@@ -628,7 +667,6 @@ public class ReturPenjualan extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBaru;
-    private javax.swing.JButton btnCetak;
     private javax.swing.JButton btnSimpan;
     private javax.swing.JTextField inputBarcode;
     private javax.swing.JTextField inputHargaBersih;
