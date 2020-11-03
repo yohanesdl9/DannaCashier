@@ -33,7 +33,7 @@ public class PenjualanDAO extends Koneksi {
         return instance;
     }
     
-    public List<ViewPenjualan> getListPenjualan(Date start, Date end) throws Exception {
+    public List<ViewPenjualan> getListPenjualan(Date start, Date end, String pelanggan, String sales) throws Exception {
         String dateStart = new SimpleDateFormat("yyyy-MM-dd").format(start);
         String dateEnd = new SimpleDateFormat("yyyy-MM-dd").format(end);
         listPenjualan = new ArrayList<>();
@@ -42,6 +42,8 @@ public class PenjualanDAO extends Koneksi {
             "INNER JOIN tb_sales AS ts ON tp.id_sales = ts.id\n" +
             "INNER JOIN tb_pelanggan AS tpel ON tp.id_pelanggan = tpel.id\n" +
             "WHERE tp.tanggal BETWEEN '" + dateStart + "' AND '" + dateEnd + "'";
+        if (!pelanggan.equals("Semua Pelanggan")) sql += " AND tpel.nama = '" + pelanggan + "'";
+        if (!sales.equals("Semua Sales")) sql += " AND ts.nama = '" + sales + "'";
         ResultSet rs = stmt.executeQuery(sql);
         int i = 1;
         while (rs.next()) {

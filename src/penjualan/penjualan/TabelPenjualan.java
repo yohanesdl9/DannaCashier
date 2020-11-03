@@ -7,8 +7,10 @@ package penjualan.penjualan;
 
 import dao.PenjualanDAO;
 import datatable.PenjualanDataTable;
+import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.List;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import model.ViewPenjualan;
@@ -30,6 +32,8 @@ public class TabelPenjualan extends javax.swing.JFrame {
     
     public TabelPenjualan() {
         initComponents();
+        initDropdown(selectPelanggan, "tb_pelanggan", "nama");
+        initDropdown(selectSales, "tb_sales", "nama");
         try {
             endDate.setDate(cal.getTime());
             cal.add(Calendar.MONTH, -1);
@@ -47,7 +51,7 @@ public class TabelPenjualan extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Pilih rentang tanggal dengan benar", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         } else {
             try {
-                listPenjualan = penjualanDAO.getListPenjualan(startDate.getDate(), endDate.getDate());
+                listPenjualan = penjualanDAO.getListPenjualan(startDate.getDate(), endDate.getDate(), selectPelanggan.getSelectedItem().toString(), selectSales.getSelectedItem().toString());
                 tablePenjualan.setModel(new PenjualanDataTable(listPenjualan));
                 txtGrandTotal.setText(String.valueOf(getTotalGrandTotal(listPenjualan)));
             } catch (Exception e) {
@@ -59,6 +63,28 @@ public class TabelPenjualan extends javax.swing.JFrame {
     public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
         for (int i = 0; i < columnSizes.length; i++){
             table.getColumnModel().getColumn(i).setPreferredWidth(columnSizes[i]);
+        }
+    }
+    
+    public void initDropdown(JComboBox comboBox, String param, String table, String field) {
+        try {
+            ResultSet rs = vm.getDataByParameter(param, table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void initDropdown(JComboBox comboBox, String table, String field) {
+        try {
+            ResultSet rs = vm.getAllDataFromTable(table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     
@@ -80,7 +106,7 @@ public class TabelPenjualan extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        operator = new javax.swing.JComboBox<>();
+        selectPelanggan = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         txtGrandTotal = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -91,18 +117,23 @@ public class TabelPenjualan extends javax.swing.JFrame {
         startDate = new com.toedter.calendar.JDateChooser();
         jLabel3 = new javax.swing.JLabel();
         btnTampilKasir = new javax.swing.JButton();
-        btnDetail = new javax.swing.JButton();
         endDate = new com.toedter.calendar.JDateChooser();
-        btnDelete = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         btnRefresh = new javax.swing.JButton();
         inputSearch = new javax.swing.JTextField();
+        selectSales = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(0, 135, 255));
 
-        operator.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua Operator" }));
+        selectPelanggan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua Pelanggan" }));
+        selectPelanggan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectPelangganActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Total Grandtotal");
 
@@ -149,11 +180,7 @@ public class TabelPenjualan extends javax.swing.JFrame {
             }
         });
 
-        btnDetail.setText("Lihat Detail");
-
-        btnDelete.setText("Hapus");
-
-        jLabel4.setText("Operator");
+        jLabel4.setText("Pelanggan");
 
         btnRefresh.setText("Refresh");
         btnRefresh.addActionListener(new java.awt.event.ActionListener() {
@@ -161,6 +188,15 @@ public class TabelPenjualan extends javax.swing.JFrame {
                 btnRefreshActionPerformed(evt);
             }
         });
+
+        selectSales.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua Sales" }));
+        selectSales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectSalesActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Sales");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -181,22 +217,21 @@ public class TabelPenjualan extends javax.swing.JFrame {
                         .addComponent(endDate, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(operator, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(76, 76, 76)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtGrandTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel5)))
-                            .addComponent(jLabel4)))
+                            .addComponent(selectPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addGap(8, 8, 8)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(selectSales, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtGrandTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnTampilKasir)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnDetail)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDelete)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
                         .addComponent(inputSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(89, 89, 89)
                         .addComponent(btnRefresh)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnExit)))
@@ -207,7 +242,7 @@ public class TabelPenjualan extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -217,13 +252,17 @@ public class TabelPenjualan extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(endDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
+                        .addComponent(jLabel5)
                         .addGap(13, 13, 13)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtGrandTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(operator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(txtGrandTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(13, 13, 13)
+                        .addComponent(selectPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(13, 13, 13)
+                        .addComponent(selectSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -233,8 +272,6 @@ public class TabelPenjualan extends javax.swing.JFrame {
                         .addComponent(btnRefresh))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnTampilKasir)
-                        .addComponent(btnDetail)
-                        .addComponent(btnDelete)
                         .addComponent(inputSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -277,6 +314,16 @@ public class TabelPenjualan extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnTampilKasirActionPerformed
 
+    private void selectPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectPelangganActionPerformed
+        // TODO add your handling code here:
+        initTabelPenjualan();
+    }//GEN-LAST:event_selectPelangganActionPerformed
+
+    private void selectSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectSalesActionPerformed
+        // TODO add your handling code here:
+        initTabelPenjualan();
+    }//GEN-LAST:event_selectSalesActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -313,8 +360,6 @@ public class TabelPenjualan extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnTampilKasir;
@@ -325,9 +370,11 @@ public class TabelPenjualan extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JComboBox<String> operator;
+    private javax.swing.JComboBox<String> selectPelanggan;
+    private javax.swing.JComboBox<String> selectSales;
     private com.toedter.calendar.JDateChooser startDate;
     private javax.swing.JTable tablePenjualan;
     private javax.swing.JTextField txtGrandTotal;

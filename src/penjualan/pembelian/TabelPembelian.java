@@ -7,8 +7,10 @@ package penjualan.pembelian;
 
 import dao.PembelianDAO;
 import datatable.PembelianDataTable;
+import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.List;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import model.ViewPembelian;
@@ -27,6 +29,7 @@ public class TabelPembelian extends javax.swing.JFrame {
     
     public TabelPembelian() {
         initComponents();
+        initDropdown(selectSupplier, "tb_supplier", "nama");
         try {
             endDate.setDate(cal.getTime());
             cal.add(Calendar.MONTH, -1);
@@ -44,7 +47,7 @@ public class TabelPembelian extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Pilih rentang tanggal dengan benar", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         } else {
             try {
-                listPembelian = pembelianDAO.getListPembelian(startDate.getDate(), endDate.getDate());
+                listPembelian = pembelianDAO.getListPembelian(startDate.getDate(), endDate.getDate(), selectSupplier.getSelectedItem().toString());
                 tablePembelian.setModel(new PembelianDataTable(listPembelian));
                 txtGrandTotal.setText(String.valueOf(getTotalGrandTotal(listPembelian)));
             } catch (Exception e) {
@@ -61,6 +64,28 @@ public class TabelPembelian extends javax.swing.JFrame {
             total += Integer.parseInt(lp.get(i).getGrand_total());
         }
         return total;
+    }
+    
+    public void initDropdown(JComboBox comboBox, String param, String table, String field) {
+        try {
+            ResultSet rs = vm.getDataByParameter(param, table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void initDropdown(JComboBox comboBox, String table, String field) {
+        try {
+            ResultSet rs = vm.getAllDataFromTable(table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public void adjustTableColumnWidth(JTable table, int[] columnSizes) {
@@ -85,7 +110,7 @@ public class TabelPembelian extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablePembelian = new javax.swing.JTable();
-        operator = new javax.swing.JComboBox<>();
+        selectSupplier = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         txtGrandTotal = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -94,8 +119,6 @@ public class TabelPembelian extends javax.swing.JFrame {
         startDate = new com.toedter.calendar.JDateChooser();
         endDate = new com.toedter.calendar.JDateChooser();
         btnTampilKasir = new javax.swing.JButton();
-        btnLihatDetail = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
         btnRefresh = new javax.swing.JButton();
         inputSearch = new javax.swing.JTextField();
@@ -133,10 +156,10 @@ public class TabelPembelian extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tablePembelian);
 
-        operator.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua Operator" }));
-        operator.addActionListener(new java.awt.event.ActionListener() {
+        selectSupplier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua Supplier" }));
+        selectSupplier.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                operatorActionPerformed(evt);
+                selectSupplierActionPerformed(evt);
             }
         });
 
@@ -146,7 +169,7 @@ public class TabelPembelian extends javax.swing.JFrame {
 
         jLabel3.setText("s.d.");
 
-        jLabel4.setText("Operator");
+        jLabel4.setText("Supplier");
 
         jLabel5.setText("Total Grandtotal");
 
@@ -156,10 +179,6 @@ public class TabelPembelian extends javax.swing.JFrame {
                 btnTampilKasirActionPerformed(evt);
             }
         });
-
-        btnLihatDetail.setText("Lihat Detail");
-
-        btnDelete.setText("Hapus");
 
         btnExit.setText("Keluar");
         btnExit.addActionListener(new java.awt.event.ActionListener() {
@@ -195,7 +214,7 @@ public class TabelPembelian extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
-                            .addComponent(operator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(selectSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(372, 372, 372)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtGrandTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -203,13 +222,9 @@ public class TabelPembelian extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnTampilKasir)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnLihatDetail)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDelete)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(86, 86, 86)
                         .addComponent(inputSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(90, 90, 90)
                         .addComponent(btnRefresh)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnExit)))
@@ -242,7 +257,7 @@ public class TabelPembelian extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(operator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(selectSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(endDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
@@ -253,8 +268,6 @@ public class TabelPembelian extends javax.swing.JFrame {
                         .addComponent(btnRefresh))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnTampilKasir)
-                        .addComponent(btnLihatDetail)
-                        .addComponent(btnDelete)
                         .addComponent(inputSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -275,9 +288,10 @@ public class TabelPembelian extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void operatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_operatorActionPerformed
+    private void selectSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectSupplierActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_operatorActionPerformed
+        initTabelPembelian();
+    }//GEN-LAST:event_selectSupplierActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         // TODO add your handling code here:
@@ -336,9 +350,7 @@ public class TabelPembelian extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExit;
-    private javax.swing.JButton btnLihatDetail;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnTampilKasir;
     private com.toedter.calendar.JDateChooser endDate;
@@ -353,7 +365,7 @@ public class TabelPembelian extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JComboBox<String> operator;
+    private javax.swing.JComboBox<String> selectSupplier;
     private com.toedter.calendar.JDateChooser startDate;
     private javax.swing.JTable tablePembelian;
     private javax.swing.JTextField txtGrandTotal;

@@ -33,13 +33,14 @@ public class PembelianDAO extends Koneksi {
         return instance;
     }
     
-    public List<ViewPembelian> getListPembelian(Date start, Date end) throws Exception {
+    public List<ViewPembelian> getListPembelian(Date start, Date end, String supplier) throws Exception {
         String dateStart = new SimpleDateFormat("yyyy-MM-dd").format(start);
         String dateEnd = new SimpleDateFormat("yyyy-MM-dd").format(end);
         listPembelian = new ArrayList<>();
         String sql = "SELECT tp.*, ts.kode, ts.nama FROM tb_pembelian AS tp\n" +
             "INNER JOIN tb_supplier AS ts ON tp.id_supplier = ts.id\n" +
             "WHERE tp.tanggal BETWEEN '" + dateStart + "' AND '" + dateEnd + "'";
+        if (!supplier.equals("Semua Supplier")) sql += " AND ts.nama = '" + supplier + "'";
         ResultSet rs = stmt.executeQuery(sql);
         int i = 1;
         while (rs.next()) {

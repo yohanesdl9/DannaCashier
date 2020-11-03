@@ -83,7 +83,7 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                              <Component id="operator" min="-2" max="-2" attributes="0"/>
+                              <Component id="selectSupplier" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="372" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -94,13 +94,9 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btnTampilKasir" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="btnLihatDetail" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnDelete" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="86" max="-2" attributes="0"/>
                           <Component id="inputSearch" max="32767" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
                           <Component id="btnRefresh" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="btnExit" min="-2" max="-2" attributes="0"/>
@@ -143,7 +139,7 @@
                               <Group type="102" attributes="0">
                                   <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="operator" min="-2" max="-2" attributes="0"/>
+                                  <Component id="selectSupplier" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="endDate" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -159,8 +155,6 @@
                       </Group>
                       <Group type="103" alignment="1" groupAlignment="3" attributes="0">
                           <Component id="btnTampilKasir" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnLihatDetail" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnDelete" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="inputSearch" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -266,16 +260,16 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JComboBox" name="operator">
+        <Component class="javax.swing.JComboBox" name="selectSupplier">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="1">
-                <StringItem index="0" value="Semua Operator"/>
+                <StringItem index="0" value="Semua Supplier"/>
               </StringArray>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="operatorActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="selectSupplierActionPerformed"/>
           </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
@@ -298,7 +292,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel4">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Operator"/>
+            <Property name="text" type="java.lang.String" value="Supplier"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
@@ -317,16 +311,6 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTampilKasirActionPerformed"/>
           </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="btnLihatDetail">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Lihat Detail"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="btnDelete">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Hapus"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnExit">
           <Properties>
