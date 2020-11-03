@@ -106,6 +106,32 @@ public class PenjualanDAO extends Koneksi {
         return detail_jual;
     }
     
+    public List<PenjualanDetail> getListPembelianDetailRetur(String faktur) throws Exception {
+        List<PenjualanDetail> detail_jual = new ArrayList<>();
+        String sql = "SELECT tpd.*, IFNULL(SUM(trpd.jumlah), 0) AS jumlah_retur FROM tb_penjualan_detail AS tpd\n"
+                + "INNER JOIN tb_penjualan AS tp ON tpd.id_penjualan = tp.id\n"
+                + "LEFT JOIN tb_retur_penjualan_detail AS trpd ON trpd.id_penjualan_detail = tpd.id\n"
+                + "WHERE tp.kode = '" + faktur + "'\n"
+                + "GROUP BY tpd.id;";
+        ResultSet rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            PenjualanDetail pd = new PenjualanDetail();
+            pd.setId(rs.getString("id"));
+            pd.setId_penjualan(rs.getString("id_penjualan"));
+            pd.setId_barang(rs.getString("id_barang"));
+            pd.setKode_barang(rs.getString("kode_barang"));
+            pd.setNama_barang(rs.getString("nama_barang"));
+            pd.setJumlah(rs.getString("jumlah") + (rs.getString("jumlah_retur").equals("0") ? " (retur. " + rs.getString("jumlah_retur") + ")" : ""));
+            pd.setSatuan(rs.getString("satuan"));
+            pd.setHarga_jual(rs.getString("harga_jual"));
+            pd.setDiskon(rs.getString("diskon"));
+            pd.setHarga_bersih(rs.getString("harga_bersih"));
+            pd.setTotal(rs.getString("total"));
+            detail_jual.add(pd);
+        }
+        return detail_jual;
+    }
+    
     public int insertPenjualan(String[] data_penjualan, ArrayList<PenjualanDetail> detail_penjualan) throws Exception {
         String sql = "INSERT INTO tb_penjualan VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);

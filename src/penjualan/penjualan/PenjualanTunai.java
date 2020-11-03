@@ -759,9 +759,9 @@ public class PenjualanTunai extends javax.swing.JFrame {
             cal.setTime(date);
             cal.add(Calendar.DATE, jumlah_hari);
             hari = jumlahHari.getText();
-            jatuhTempo.setText(new SimpleDateFormat("MMM dd, YYYY").format(cal.getTime()));
+            jatuhTempo.setText(new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime()));
         } else {
-            jatuhTempo.setText(new SimpleDateFormat("MMM dd, YYYY").format(date));
+            jatuhTempo.setText(new SimpleDateFormat("yyyy-MM-dd").format(date));
         }
     }//GEN-LAST:event_jumlahHariKeyReleased
 
