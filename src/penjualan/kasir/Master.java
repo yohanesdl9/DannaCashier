@@ -197,7 +197,6 @@ public class Master extends javax.swing.JFrame {
         listSuplier = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         listSatuan = new javax.swing.JComboBox<>();
-        btnRefresh = new javax.swing.JButton();
         scrollTableBarang = new javax.swing.JScrollPane();
         tabelBarang = new javax.swing.JTable();
         panelSuplier = new javax.swing.JPanel();
@@ -421,8 +420,6 @@ public class Master extends javax.swing.JFrame {
             }
         });
 
-        btnRefresh.setText("Refresh");
-
         tabelBarang.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null, null},
@@ -488,11 +485,8 @@ public class Master extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
-                    .addGroup(contentLayout.createSequentialGroup()
-                        .addComponent(listSatuan, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnRefresh)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(listSatuan, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(924, Short.MAX_VALUE))
             .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(contentLayout.createSequentialGroup()
                     .addContainerGap()
@@ -513,8 +507,7 @@ public class Master extends javax.swing.JFrame {
                             .addComponent(labelbarang)
                             .addComponent(listKategori, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(listSuplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(listSatuan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnRefresh))))
+                            .addComponent(listSatuan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(363, Short.MAX_VALUE))
             .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(contentLayout.createSequentialGroup()
@@ -1614,7 +1607,6 @@ public class Master extends javax.swing.JFrame {
     private javax.swing.JPanel botNav4;
     private javax.swing.JButton btnBarang;
     private javax.swing.JButton btnPelanggan;
-    private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnRefreshAll;
     private javax.swing.JButton btnSales;
     private javax.swing.JButton btnSuplier;

@@ -80,9 +80,9 @@ public class MenuUtama extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        menuKasir.setText("Kasir");
+        menuKasir.setText("Master");
 
-        smBukaKasir.setText("Buka Menu Kasir");
+        smBukaKasir.setText("Buka Menu Master");
         smBukaKasir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 smBukaKasirActionPerformed(evt);

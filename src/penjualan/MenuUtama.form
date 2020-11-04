@@ -47,12 +47,12 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="menuKasir">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Kasir"/>
+            <Property name="text" type="java.lang.String" value="Master"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="smBukaKasir">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Buka Menu Kasir"/>
+                <Property name="text" type="java.lang.String" value="Buka Menu Master"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="smBukaKasirActionPerformed"/>

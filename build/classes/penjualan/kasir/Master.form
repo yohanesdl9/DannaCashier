@@ -303,13 +303,9 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="listSatuan" min="-2" pref="74" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="btnRefresh" min="-2" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="listSatuan" alignment="0" min="-2" pref="74" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="924" max="32767" attributes="0"/>
                           </Group>
                           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
@@ -336,7 +332,6 @@
                                           <Component id="listKategori" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="listSuplier" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="listSatuan" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          <Component id="btnRefresh" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -432,11 +427,6 @@
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                       </AuxValues>
-                    </Component>
-                    <Component class="javax.swing.JButton" name="btnRefresh">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Refresh"/>
-                      </Properties>
                     </Component>
                     <Container class="javax.swing.JScrollPane" name="scrollTableBarang">
                       <AccessibilityProperties>
