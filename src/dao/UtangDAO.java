@@ -30,11 +30,13 @@ public class UtangDAO extends Koneksi {
     List<ViewUtang> listUtang;
     List<ViewAngsuranUtang> listAngsuranUtang;
     
+    /* Ekivalen dengan UtangDAO [nama_variabel] = new UtangDAO(); */
     public static UtangDAO getInstance(){
         if (instance == null) instance = new UtangDAO();
         return instance;
     }
     
+    /* Mendaptakan list utang ke supplier berdasarkan rentang waktu transaksi pembelian yang belum lunas */
     public List<ViewUtang> getListUtang(Date start, Date end) throws Exception {
         String dateStart = new SimpleDateFormat("yyyy-MM-dd").format(start);
         String dateEnd = new SimpleDateFormat("yyyy-MM-dd").format(end);
@@ -70,6 +72,7 @@ public class UtangDAO extends Koneksi {
         return listUtang;
     }
     
+    /* Mendapatkan list angsuran utang ke supplier */
     public List<ViewAngsuranUtang> getListAngsuranUtang(Date start, Date end, String supplier) throws Exception {
         String dateStart = new SimpleDateFormat("yyyy-MM-dd").format(start);
         String dateEnd = new SimpleDateFormat("yyyy-MM-dd").format(end);
@@ -98,6 +101,7 @@ public class UtangDAO extends Koneksi {
         return listAngsuranUtang;
     }
     
+    /* Melakukan insert data ke database tb_utang untuk melunasi utang */
     public int bayarUtang(String[] data) throws Exception {
         String sql = "INSERT INTO tb_hutang VALUES (?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);

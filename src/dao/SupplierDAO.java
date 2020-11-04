@@ -18,16 +18,21 @@ import penjualan.ViewModel;
  * @author Yohanes Dwi Listio
  */
 public class SupplierDAO extends Koneksi {
+    
+    /* Meng-handle semua proses CRUD di database yang berkaitan dengan tabel tb_supplier */
+    
     static SupplierDAO instance;
     private PreparedStatement statement;
     List<Supplier> listSupplier;
     ViewModel vm = new ViewModel();
     
+    /* Ekivalen dengan SupplierDAO [nama_variabel] = new SupplierDAO(); */
     public static SupplierDAO getInstance(){
         if (instance == null) instance = new SupplierDAO();
         return instance;
     }
     
+    /* Mendapatkan list semua supplier */
     public List<Supplier> getListSupplier() throws Exception{
         listSupplier = new ArrayList<>();
         ResultSet rs = vm.getAllDataFromTable("tb_supplier");
@@ -48,6 +53,7 @@ public class SupplierDAO extends Koneksi {
         return listSupplier;
     }
     
+    /* Mendapatkan list supplier berdasarkan keyword nama supplier */
     public List<Supplier> getListSupplier(String keyword) throws Exception{
         listSupplier = new ArrayList<>();
         ResultSet rs = vm.getDataByParameter("nama LIKE '%" + keyword + "%'", "tb_supplier");
@@ -68,6 +74,7 @@ public class SupplierDAO extends Koneksi {
         return listSupplier;
     }
     
+    /* Insert data supplier */
     public int insertSupplier(String[] data) throws Exception {
         String sql = "INSERT INTO tb_supplier VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);
@@ -77,6 +84,7 @@ public class SupplierDAO extends Koneksi {
         return statement.executeUpdate();
     }
     
+    /* Update data supplier */
     public int updateSupplier(String id, String[] data) throws Exception{
         String sql = "UPDATE tb_supplier SET kode = ?, nama = ?, alamat = ?, telepon = ?, email = ?, contact_person = ?, rekening = ?, keterangan = ? WHERE id = " + id;
         statement = koneksi.prepareStatement(sql);
