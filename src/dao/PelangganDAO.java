@@ -19,16 +19,21 @@ import penjualan.ViewModel;
  * @author Yohanes Dwi Listio
  */
 public class PelangganDAO extends Koneksi {
+    
+    /* Class untuk meng-handle proses CRUD di database yang berkaitan dengan tabel tb_pelanggan */
+    
     static PelangganDAO instance;
     private PreparedStatement statement;
     List<Pelanggan> listPelanggan;
     ViewModel vm = new ViewModel();
     
+    /* Ekivalen dengan PelangganDAO [nama_variabel] = new PelangganDAO(); */
     public static PelangganDAO getInstance(){
         if (instance == null) instance = new PelangganDAO();
         return instance;
     }
     
+    /* Mendapatkan data pelanggan, dimasukkan ke dalam array list Pelanggan */
     public List<Pelanggan> getListPelanggan() throws Exception{
         listPelanggan = new ArrayList<>();
         ResultSet rs = vm.getAllDataFromTable("tb_pelanggan");
@@ -47,6 +52,7 @@ public class PelangganDAO extends Koneksi {
         return listPelanggan;
     }
     
+    /* Mendapatkan list semua pelanggan dengan mengetikkan keyword di form pencarian */
     public List<Pelanggan> getListPelanggan(String keyword) throws Exception{
         listPelanggan = new ArrayList<>();
         ResultSet rs = vm.getDataByParameter("nama LIKE '%" + keyword + "%'", "tb_pelanggan");

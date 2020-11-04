@@ -22,17 +22,23 @@ import penjualan.ViewModel;
  * @author Yohanes Dwi Listio
  */
 public class PembelianDAO extends Koneksi {
+    
+    /* Class untuk meng-handle proses CRUD di database yang berkaitan dengan tabel tb_pembelian dan tb_pembelian_detail */
+    
     static PembelianDAO instance;
     BarangDAO barangDAO = BarangDAO.getInstance();
     private PreparedStatement statement;
     ViewModel vm = new ViewModel();
     List<ViewPembelian> listPembelian;
     
+    /* Ekivalen dengan PembelianDAO [nama_variabel] = new PembelianDAO(); */
     public static PembelianDAO getInstance(){
         if (instance == null) instance = new PembelianDAO();
         return instance;
     }
     
+    /* Mendapatkan data riwayat transaksi pembelian dari supplier yang di-filter berdasarkan rentang tanggal
+    pembelian dan supplier tempat pembelian */
     public List<ViewPembelian> getListPembelian(Date start, Date end, String supplier) throws Exception {
         String dateStart = new SimpleDateFormat("yyyy-MM-dd").format(start);
         String dateEnd = new SimpleDateFormat("yyyy-MM-dd").format(end);
@@ -63,6 +69,8 @@ public class PembelianDAO extends Koneksi {
         return listPembelian;
     }
     
+    /* Mendapatkan data pembelian secara detail (data pembelian seperti subtotal, diskon, total,
+    dan detail pembelian (barang yang dipesan, jumlah dan total harganya) berdasarkan nomor faktur yang dipilih */
     public ViewPembelian getDataPembelian(String faktur) throws Exception {
         ResultSet rs = vm.getDataByParameter("faktur = '" + faktur + "'", "tb_pembelian");
         ViewPembelian vp = new ViewPembelian();
@@ -81,6 +89,8 @@ public class PembelianDAO extends Koneksi {
         return vp;
     }
     
+    /* Mendapatkan data detail pembelian berdasarkan nomor faktur pembelian (list barang yang dipesan,
+    jumlah dan total harganya) */
     public List<PembelianDetail> getListPembelianDetail(String faktur) throws Exception {
         List<PembelianDetail> detail_beli = new ArrayList<>();
         String sql = "SELECT tpd.* FROM tb_pembelian_detail AS tpd\n"
@@ -104,6 +114,8 @@ public class PembelianDAO extends Koneksi {
         return detail_beli;
     }
     
+    /* Sama seperti fungsi getListPembelianDetail() hanya saja pada jumlah, ditambahkan data kuantitas barang
+    yang di-retur jika ada */
     public List<PembelianDetail> getListPembelianDetailRetur(String faktur) throws Exception {
         List<PembelianDetail> detail_beli = new ArrayList<>();
         String sql = "SELECT tpd.*, IFNULL(SUM(trpd.jumlah), 0) AS jumlah_retur FROM tb_pembelian_detail AS tpd\n"
@@ -129,6 +141,13 @@ public class PembelianDAO extends Koneksi {
         return detail_beli;
     }
     
+    /* Melakukan insert data ke tb_pembelian, tb_pembelian_detail, hingga tb_stok_barang dan update tb_barang 
+    Tahapan prosesnya adalah :
+    1. Insert data ke tabel tb_pembelian untuk data pembelian
+    2. Insert data ke tabel tb_pembelian_detail untuk detail pembelian
+    3. Insert data ke tabel tb_stok_barang untuk menambahkan riwayat penambahan stok barang
+    4. Update data ke tabel tb_barang untuk update stok barang
+    */
     public int insertPembelian(String[] data_pembelian, ArrayList<PembelianDetail> detail_pembelian) throws Exception {
         String sql = "INSERT INTO tb_pembelian VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);
@@ -161,6 +180,7 @@ public class PembelianDAO extends Koneksi {
         return status;
     }
     
+    /* Mengubah format tanggal dari database MySQL (yyyy-mm-dd) ke bentuk tanggal bahasa Indonesia */
     public String dateIndo(String date){
         String[] dates = date.split("-");
         String[] bulan = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"};

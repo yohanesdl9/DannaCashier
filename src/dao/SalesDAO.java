@@ -18,6 +18,9 @@ import penjualan.ViewModel;
  * @author Yohanes Dwi Listio
  */
 public class SalesDAO extends Koneksi {
+    
+    /* Meng-handle semua proses CRUD di database berkaitan dengan tabel tb_sales */
+    
     static SalesDAO instance;
     private PreparedStatement statement;
     List<Sales> listSales;

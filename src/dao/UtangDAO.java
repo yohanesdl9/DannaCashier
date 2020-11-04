@@ -22,6 +22,8 @@ import penjualan.ViewModel;
  */
 public class UtangDAO extends Koneksi {
     
+    /* Meng-handle semua proses CRUD di database yang berkaitan dengan tabel tb_utang */
+    
     static UtangDAO instance;
     private PreparedStatement statement;
     ViewModel vm = new ViewModel();

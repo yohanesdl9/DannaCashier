@@ -23,6 +23,8 @@ import penjualan.ViewModel;
  */
 public class PiutangDAO extends Koneksi {
     
+    /* Class untuk meng-handle proses CRUD di database yang berkaitan dengan tabel tb_piutang */
+    
     static PiutangDAO instance;
     private PreparedStatement statement;
     ViewModel vm = new ViewModel();
@@ -34,6 +36,7 @@ public class PiutangDAO extends Koneksi {
         return instance;
     }
     
+    /* Mendapatkan list piutang dari rentang tanggal penjualan tertentu yang belum lunas */
     public List<ViewPiutang> getListPiutang(Date start, Date end) throws Exception {
         String dateStart = new SimpleDateFormat("yyyy-MM-dd").format(start);
         String dateEnd = new SimpleDateFormat("yyyy-MM-dd").format(end);
@@ -69,6 +72,7 @@ public class PiutangDAO extends Koneksi {
         return listPiutang;
     }
     
+    /* Mendapatkan list dari angsuran piutang yang dibayarkan oleh pelanggan */
     public List<ViewAngsuranPiutang> getListAngsuranPiutang(Date start, Date end, String pelanggan) throws Exception {
         String dateStart = new SimpleDateFormat("yyyy-MM-dd").format(start);
         String dateEnd = new SimpleDateFormat("yyyy-MM-dd").format(end);
@@ -97,6 +101,7 @@ public class PiutangDAO extends Koneksi {
         return listAngsuranPiutang;
     }
     
+    /* Melakukan insert data ke tb_piutang untuk membayar piutang */
     public int bayarPiutang(String[] data) throws Exception {
         String sql = "INSERT INTO tb_piutang VALUES (?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);

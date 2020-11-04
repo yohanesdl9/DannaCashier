@@ -22,17 +22,22 @@ import penjualan.ViewModel;
  * @author Yohanes Dwi Listio
  */
 public class PenjualanDAO extends Koneksi {
+    
+    /* Class untuk meng-handle proses CRUD di database yang berkaitan dengan tabel tb_penjualan dan tb_penjualan_detail */
+    
     static PenjualanDAO instance;
     private PreparedStatement statement;
     ViewModel vm = new ViewModel();
     List<ViewPenjualan> listPenjualan;
     BarangDAO barangDAO = BarangDAO.getInstance();
     
+    /* Ekivalen dengan PenjualanDAO [nama_variabel] = new PenjualanDAO(); */
     public static PenjualanDAO getInstance(){
         if (instance == null) instance = new PenjualanDAO();
         return instance;
     }
     
+    /* Mendapatkan list penjualan berdasarkan rentang waktu penjualan, pelanggan dan sales tertentu */
     public List<ViewPenjualan> getListPenjualan(Date start, Date end, String pelanggan, String sales) throws Exception {
         String dateStart = new SimpleDateFormat("yyyy-MM-dd").format(start);
         String dateEnd = new SimpleDateFormat("yyyy-MM-dd").format(end);
@@ -65,6 +70,7 @@ public class PenjualanDAO extends Koneksi {
         return listPenjualan;
     }
     
+    /* Mendapatkan data penjualan berdasarkan kode penjualan seperti tanggal, grand total, pembayaran dan jatuh tempo */
     public ViewPenjualan getDataPenjualan(String faktur) throws Exception {
         ViewPenjualan vp = new ViewPenjualan();
         ResultSet rs = vm.getDataByParameter("kode = '" + faktur + "'", "tb_penjualan");
@@ -81,7 +87,8 @@ public class PenjualanDAO extends Koneksi {
         }
         return vp;
     }
-     
+    
+    /* Mendapatkan data detail penjualan berdasarkan kode penjualan, seperti nama barang, jumlah dibeli, dan total harga */
     public List<PenjualanDetail> getListPembelianDetail(String faktur) throws Exception {
         List<PenjualanDetail> detail_jual = new ArrayList<>();
         String sql = "SELECT tpd.* FROM tb_penjualan_detail AS tpd\n"
@@ -106,6 +113,7 @@ public class PenjualanDAO extends Koneksi {
         return detail_jual;
     }
     
+    /* Sama seperti getListPembelianDetail() namun ditambahkan data jumlah barang yang di-retur jika ada */
     public List<PenjualanDetail> getListPembelianDetailRetur(String faktur) throws Exception {
         List<PenjualanDetail> detail_jual = new ArrayList<>();
         String sql = "SELECT tpd.*, IFNULL(SUM(trpd.jumlah), 0) AS jumlah_retur FROM tb_penjualan_detail AS tpd\n"
@@ -132,6 +140,13 @@ public class PenjualanDAO extends Koneksi {
         return detail_jual;
     }
     
+    /* Melakukan insert data ke tb_penjualan, tb_penjualan_detail, hingga tb_stok_barang dan update tb_barang 
+    Tahapan prosesnya adalah :
+    1. Insert data ke tabel tb_penjualan untuk data penjualan
+    2. Insert data ke tabel tb_penjualan_detail untuk detail penjualan
+    3. Insert data ke tabel tb_stok_barang untuk menambahkan riwayat pengurangan stok barang
+    4. Update data ke tabel tb_barang untuk update stok barang
+    */
     public int insertPenjualan(String[] data_penjualan, ArrayList<PenjualanDetail> detail_penjualan) throws Exception {
         String sql = "INSERT INTO tb_penjualan VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);

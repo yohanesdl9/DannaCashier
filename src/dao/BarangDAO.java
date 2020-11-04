@@ -21,16 +21,25 @@ import penjualan.ViewModel;
  * @author Yohanes Dwi Listio
  */
 public class BarangDAO extends Koneksi {
+    
+    /* Class untuk meng-handle proses CRUD di database yang berkaitan dengan tabel tb_barang */
+    
     static BarangDAO instance;
     private PreparedStatement statement;
     List<ViewBarang> listBarang;
     ViewModel vm = new ViewModel();
     
+    /* Function ini ekivalen dengan BarangDAO [nama_variabel] = new BarangDAO(); */
     public static BarangDAO getInstance(){
         if (instance == null) instance = new BarangDAO();
         return instance;
     }
     
+    /* Mengambil data barang dengan parameter bebas (dispesifikkan melalui variabel where
+    misalnya where = "ts.id = 2"
+    Hasil data query akan menjadi nilai dari masing-masing atribut dari objek kelas Barang
+    yang menajdi return value
+    */
     public Barang getBarang(String where) throws Exception {
         Barang vb = new Barang();
         String sql = "SELECT tb.*, ts.nama AS supplier, kategori.keterangan AS kategori, satuan.keterangan AS satuan\n" +
@@ -61,6 +70,8 @@ public class BarangDAO extends Koneksi {
 
     }
     
+    /* Mendapatkan semua list Barang dari tb_barang yang ada di database. Hasil query akan dimasukkan ke
+    dalam sebuah arraylist bertipe data kelas Barang */
     public List<ViewBarang> getListBarang() throws Exception {
         listBarang = new ArrayList<>();
         String sql = "SELECT tb.*, ts.nama AS supplier, kategori.keterangan AS kategori, satuan.keterangan AS satuan\n" +
@@ -88,6 +99,8 @@ public class BarangDAO extends Koneksi {
         return listBarang;
     }
     
+    /* Sama dengan function getListBarang() tetapi terdapat parameter-parameter tertentu yang dispesifikkan
+    di nilai variabel where */
     public List<ViewBarang> getListBarang(String where) throws Exception {
         listBarang = new ArrayList<>();
         String sql = "SELECT tb.*, ts.nama AS supplier, kategori.keterangan AS kategori, satuan.keterangan AS satuan\n" +
@@ -115,6 +128,7 @@ public class BarangDAO extends Koneksi {
         return listBarang;
     }
     
+    /* Melakukan insert data ke tabel tb_barang */
     public int insertBarang(String[] data) throws Exception {
         String sql = "INSERT INTO tb_barang VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);
@@ -124,6 +138,7 @@ public class BarangDAO extends Koneksi {
         return statement.executeUpdate();
     }
     
+    /* Melakukan update data ke tabel tb_barang */
     public int updateBarang(String id, String[] data) throws Exception {
         String sql = "UPDATE tb_barang SET kode = ?, nama = ?, id_kategori = ?, id_satuan = ?, stok = ?, "
                 + "harga_beli = ?, harga_jual = ?, id_supplier = ?, stok_minimal = ?, tgl_expired = ?, "
@@ -135,6 +150,7 @@ public class BarangDAO extends Koneksi {
         return statement.executeUpdate();
     }
     
+    /* Menghapus data di tabel tb_barang */
     public int deleteBarang(String id) throws Exception {
         String sql = "DELETE FROM tb_barang WHERE id = " + id;
         statement = koneksi.prepareStatement(sql);
@@ -149,6 +165,9 @@ public class BarangDAO extends Koneksi {
         return formatter.format(number);
     }
     
+    /* Fungsi untuk melakukan update stock barang di tb_barang dan menambahkan riwayat keluar-masuk
+    stok barang di tb_stok_barang. Fungsi ini biasanya dipanggil pada proses transaksi pembelian, penjualan,
+    serta retur pembelian dan retur penjualan */
     public int updateStockBarang(String id_barang, int stock_masuk, int stock_keluar, String keterangan) throws Exception {
         String sql = "INSERT INTO tb_stok_barang VALUES (?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);

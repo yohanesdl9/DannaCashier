@@ -21,17 +21,22 @@ import penjualan.ViewModel;
  * @author Yohanes Dwi Listio
  */
 public class ReturPembelianDAO extends Koneksi {
+    
+    /* Meng-handle semua proses CRUD di database yang berkaitan dengan tb_retur_pembelian dan tb_retur_pembelian_detail */
+    
     BarangDAO barangDAO = BarangDAO.getInstance();
     private PreparedStatement statement;
     static ReturPembelianDAO instance;
     List<ViewReturPembelian> listReturPembelian;
     ViewModel vm = new ViewModel();
     
+    /* Ekivalen dengan ReturPembelianDAO [nama_variabel] = new ReturPembelianDAO(); */
     public static ReturPembelianDAO getInstance(){
         if (instance == null) instance = new ReturPembelianDAO();
         return instance;
     }
     
+    /* Mendapatkan list retur pembelian berdasarkan rentang tanggal retur pembelian tertentu */
     public List<ViewReturPembelian> getListReturPembelian(Date start, Date end) throws Exception {
         String dateStart = new SimpleDateFormat("yyyy-MM-dd").format(start);
         String dateEnd = new SimpleDateFormat("yyyy-MM-dd").format(end);
@@ -59,6 +64,7 @@ public class ReturPembelianDAO extends Koneksi {
         return listReturPembelian;
     }
     
+    /* Melakukan insert data retur pembelian */
     public int insertReturPembelian(String[] data_retur_beli, ArrayList<ReturPembelianDetail> detail_retur_beli) throws Exception {
         String sql = "INSERT INTO tb_retur_pembelian VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         statement = koneksi.prepareStatement(sql);
@@ -94,6 +100,7 @@ public class ReturPembelianDAO extends Koneksi {
         return status;
     }
     
+    /* Saat proses retur pembelian, jumlah kuantitas barang di tb_pembelian_detail dikurangi */
     public int returDetailPenjualan(String id_pembelian, int jumlah_retur) throws Exception {
         int jumlah_asal = Integer.parseInt(vm.getDataByParameter("id = " + id_pembelian, "tb_pembelian_detail", "jumlah"));
         jumlah_asal -= jumlah_retur;
