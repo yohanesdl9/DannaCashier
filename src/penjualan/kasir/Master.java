@@ -180,7 +180,6 @@ public class Master extends javax.swing.JFrame {
         btnSuplier = new javax.swing.JButton();
         btnPelanggan = new javax.swing.JButton();
         btnSales = new javax.swing.JButton();
-        btnPengaturan = new javax.swing.JButton();
         btnRefreshAll = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         panelBarang = new javax.swing.JPanel();
@@ -199,10 +198,6 @@ public class Master extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         listSatuan = new javax.swing.JComboBox<>();
         btnRefresh = new javax.swing.JButton();
-        importExcel = new javax.swing.JButton();
-        eksportExcel = new javax.swing.JButton();
-        copyBarcode = new javax.swing.JButton();
-        cetakBarcode = new javax.swing.JButton();
         scrollTableBarang = new javax.swing.JScrollPane();
         tabelBarang = new javax.swing.JTable();
         panelSuplier = new javax.swing.JPanel();
@@ -282,13 +277,6 @@ public class Master extends javax.swing.JFrame {
             }
         });
 
-        btnPengaturan.setText("PENGATURAN");
-        btnPengaturan.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPengaturanActionPerformed(evt);
-            }
-        });
-
         btnRefreshAll.setText("REFRESH DATA");
         btnRefreshAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -310,10 +298,8 @@ public class Master extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSales)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnPengaturan)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRefreshAll)
-                .addContainerGap(143, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         menuPanelLayout.setVerticalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -324,7 +310,6 @@ public class Master extends javax.swing.JFrame {
                     .addComponent(btnSuplier)
                     .addComponent(btnPelanggan)
                     .addComponent(btnSales)
-                    .addComponent(btnPengaturan)
                     .addComponent(btnRefreshAll))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -438,14 +423,6 @@ public class Master extends javax.swing.JFrame {
 
         btnRefresh.setText("Refresh");
 
-        importExcel.setText("Import dari Excel");
-
-        eksportExcel.setText("Eksport dari Excel");
-
-        copyBarcode.setText("Copy Barcode");
-
-        cetakBarcode.setText("Cetak Barcode");
-
         tabelBarang.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null, null},
@@ -515,14 +492,6 @@ public class Master extends javax.swing.JFrame {
                         .addComponent(listSatuan, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnRefresh)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(eksportExcel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cetakBarcode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(copyBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(contentLayout.createSequentialGroup()
@@ -540,21 +509,12 @@ public class Master extends javax.swing.JFrame {
                         .addComponent(jLabel4))
                     .addGroup(contentLayout.createSequentialGroup()
                         .addGap(7, 7, 7)
-                        .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(contentLayout.createSequentialGroup()
-                                .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(copyBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(7, 7, 7)
-                                .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(eksportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cetakBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(labelbarang)
-                                .addComponent(listKategori, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(listSuplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(listSatuan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnRefresh)))))
+                        .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelbarang)
+                            .addComponent(listKategori, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(listSuplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(listSatuan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRefresh))))
                 .addContainerGap(363, Short.MAX_VALUE))
             .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(contentLayout.createSequentialGroup()
@@ -1241,11 +1201,6 @@ public class Master extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnPengaturanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPengaturanActionPerformed
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_btnPengaturanActionPerformed
-
     private void btnSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalesActionPerformed
         // TODO add your handling code here:
         mainPanel.removeAll();
@@ -1659,24 +1614,20 @@ public class Master extends javax.swing.JFrame {
     private javax.swing.JPanel botNav4;
     private javax.swing.JButton btnBarang;
     private javax.swing.JButton btnPelanggan;
-    private javax.swing.JButton btnPengaturan;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnRefreshAll;
     private javax.swing.JButton btnSales;
     private javax.swing.JButton btnSuplier;
-    private javax.swing.JButton cetakBarcode;
     private javax.swing.JPanel content;
     private javax.swing.JPanel content1;
     private javax.swing.JPanel content2;
     private javax.swing.JPanel content3;
     private javax.swing.JPanel content4;
-    private javax.swing.JButton copyBarcode;
     private javax.swing.JButton editBarang;
     private javax.swing.JButton editHutang;
     private javax.swing.JButton editPelanggan;
     private javax.swing.JButton editSales;
     private javax.swing.JButton editSuplier;
-    private javax.swing.JButton eksportExcel;
     private javax.swing.JButton exit;
     private javax.swing.JButton exit1;
     private javax.swing.JButton exit2;
@@ -1687,7 +1638,6 @@ public class Master extends javax.swing.JFrame {
     private javax.swing.JButton hapusPelanggan;
     private javax.swing.JButton hapusSales;
     private javax.swing.JButton hapusSuplier;
-    private javax.swing.JButton importExcel;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
