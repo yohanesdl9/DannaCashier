@@ -2,8 +2,10 @@ package penjualan.penjualan;
 
 import dao.PiutangDAO;
 import datatable.PiutangDataTable;
+import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.List;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import model.ViewPiutang;
@@ -35,6 +37,7 @@ public class Piutang extends javax.swing.JFrame {
             endDate.setDate(cal.getTime());
             cal.add(Calendar.MONTH, -1);
             startDate.setDate(cal.getTime());
+            initDropdown(pilihPelanggan, "tb_pelanggan", "nama");
             initTabelPiutang();
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,8 +50,14 @@ public class Piutang extends javax.swing.JFrame {
         if (start > end) {
             JOptionPane.showMessageDialog(null, "Pilih rentang tanggal dengan benar", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         } else {
+            String flag = "belum-sudah";
+            if (cbBelumJatuhTempo.isSelected()) {
+                flag = "belum";
+            } else if (cbSudahJatuhTempo.isSelected()) {
+                flag = "sudah";
+            }
             try {
-                listPiutang = piutangDAO.getListPiutang(startDate.getDate(), endDate.getDate());
+                listPiutang = piutangDAO.getListPiutang(startDate.getDate(), endDate.getDate(), flag, pilihPelanggan.getSelectedItem().toString());
                 tblPiutang.setModel(new PiutangDataTable(listPiutang));
                 jLabel7.setText("Utang Awal : " + String.valueOf(getTotal(listPiutang, "utang_awal")));
                 jLabel8.setText("Telah Dibayar : " + String.valueOf(getTotal(listPiutang, "telah_dibayar")));
@@ -56,6 +65,28 @@ public class Piutang extends javax.swing.JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+    
+    public void initDropdown(JComboBox comboBox, String param, String table, String field) {
+        try {
+            ResultSet rs = vm.getDataByParameter(param, table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void initDropdown(JComboBox comboBox, String table, String field) {
+        try {
+            ResultSet rs = vm.getAllDataFromTable(table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     
@@ -194,6 +225,11 @@ public class Piutang extends javax.swing.JFrame {
 
         cbSudahJatuhTempo.setText("sudah jatuh tempo / belum lunas");
         cbSudahJatuhTempo.setOpaque(false);
+        cbSudahJatuhTempo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbSudahJatuhTempoActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Pilih Pelanggan");
 
@@ -313,10 +349,12 @@ public class Piutang extends javax.swing.JFrame {
 
     private void cbBelumJatuhTempoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbBelumJatuhTempoActionPerformed
         // TODO add your handling code here:
+        initTabelPiutang();
     }//GEN-LAST:event_cbBelumJatuhTempoActionPerformed
 
     private void pilihPelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pilihPelangganActionPerformed
         // TODO add your handling code here:
+        initTabelPiutang();
     }//GEN-LAST:event_pilihPelangganActionPerformed
 
     private void btnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKeluarActionPerformed
@@ -344,6 +382,11 @@ public class Piutang extends javax.swing.JFrame {
         // TODO add your handling code here:
         initTabelPiutang();
     }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void cbSudahJatuhTempoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSudahJatuhTempoActionPerformed
+        // TODO add your handling code here:
+        initTabelPiutang();
+    }//GEN-LAST:event_cbSudahJatuhTempoActionPerformed
 
     /**
      * @param args the command line arguments

@@ -2,8 +2,10 @@ package penjualan.pembelian;
 
 import dao.UtangDAO;
 import datatable.UtangDataTable;
+import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.List;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import model.ViewPembelian;
@@ -37,6 +39,7 @@ public class Hutang extends javax.swing.JFrame {
             cal.add(Calendar.MONTH, -1);
             startDate.setDate(cal.getTime());
             initTabelUtang();
+            initDropdown(pilihSupplier, "tb_supplier", "nama");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,8 +51,14 @@ public class Hutang extends javax.swing.JFrame {
         if (start > end) {
             JOptionPane.showMessageDialog(null, "Pilih rentang tanggal dengan benar", "Kesalahan", JOptionPane.ERROR_MESSAGE);
         } else {
+            String flag = "belum-sudah";
+            if (cbBelumJatuhTempo.isSelected()) {
+                flag = "belum";
+            } else if (cbJatuhTempo.isSelected()) {
+                flag = "sudah";
+            }
             try {
-                listUtang = utangDAO.getListUtang(startDate.getDate(), endDate.getDate());
+                listUtang = utangDAO.getListUtang(startDate.getDate(), endDate.getDate(), flag, pilihSupplier.getSelectedItem().toString());
                 tblUtang.setModel(new UtangDataTable(listUtang));
                 jLabel7.setText("Utang Awal : " + String.valueOf(getTotal(listUtang, "utang_awal")));
                 jLabel8.setText("Telah Dibayar : " + String.valueOf(getTotal(listUtang, "telah_dibayar")));
@@ -58,8 +67,28 @@ public class Hutang extends javax.swing.JFrame {
                 e.printStackTrace();
             }
         }
-//        int[] size = {10, 30, 40, 40, 10, 40, 50, 70, 50, 50};
-//        adjustTableColumnWidth(tablePembelian, size);
+    }
+    
+    public void initDropdown(JComboBox comboBox, String param, String table, String field) {
+        try {
+            ResultSet rs = vm.getDataByParameter(param, table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void initDropdown(JComboBox comboBox, String table, String field) {
+        try {
+            ResultSet rs = vm.getAllDataFromTable(table);
+            while (rs.next()) {
+                comboBox.addItem(rs.getString(field));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public int getTotal(List<ViewUtang> lp, String param) {
@@ -323,6 +352,7 @@ public class Hutang extends javax.swing.JFrame {
 
     private void cbBelumJatuhTempoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbBelumJatuhTempoActionPerformed
         // TODO add your handling code here:
+        initTabelUtang();
     }//GEN-LAST:event_cbBelumJatuhTempoActionPerformed
 
     private void btnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKeluarActionPerformed
@@ -348,10 +378,12 @@ public class Hutang extends javax.swing.JFrame {
 
     private void pilihSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pilihSupplierActionPerformed
         // TODO add your handling code here:
+        initTabelUtang();
     }//GEN-LAST:event_pilihSupplierActionPerformed
 
     private void cbJatuhTempoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbJatuhTempoActionPerformed
         // TODO add your handling code here:
+        initTabelUtang();
     }//GEN-LAST:event_cbJatuhTempoActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed

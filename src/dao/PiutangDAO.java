@@ -37,7 +37,7 @@ public class PiutangDAO extends Koneksi {
     }
     
     /* Mendapatkan list piutang dari rentang tanggal penjualan tertentu yang belum lunas */
-    public List<ViewPiutang> getListPiutang(Date start, Date end) throws Exception {
+    public List<ViewPiutang> getListPiutang(Date start, Date end, String flag, String pelanggan) throws Exception {
         String dateStart = new SimpleDateFormat("yyyy-MM-dd").format(start);
         String dateEnd = new SimpleDateFormat("yyyy-MM-dd").format(end);
         listPiutang = new ArrayList<>();
@@ -48,8 +48,14 @@ public class PiutangDAO extends Koneksi {
             "LEFT JOIN tb_piutang AS tpi ON tpi.id_penjualan = tp.id\n" +
             "INNER JOIN tb_pelanggan AS tpel ON tp.id_pelanggan = tpel.id\n" +
             "WHERE tp.tunai_kredit <> 'TUNAI'\n" +
-            "AND tp.tanggal BETWEEN '" + dateStart + "' AND '" + dateEnd + "'\n" +
-            "GROUP BY tp.id HAVING (tp.grand_total - IFNULL(Sum(tpi.tunai), 0)) > 0";
+            "AND tp.tanggal BETWEEN '" + dateStart + "' AND '" + dateEnd + "'\n";
+        if (flag.equals("belum")) {
+            sql += "AND tp.jatuh_tempo >= DATE(NOW())\n";
+        } else if (flag.equals("sudah")) {
+            sql += "AND tp.jatuh_tempo <= DATE(NOW())\n";
+        }
+        if (!pelanggan.equals("Pilih Pelanggan")) sql += "AND tpel.nama = '" + pelanggan + "'\n";
+        sql += "GROUP BY tp.id HAVING (tp.grand_total - IFNULL(Sum(tpi.tunai), 0)) > 0";
         ResultSet rs = stmt.executeQuery(sql);
         int i = 1;
         while (rs.next()) {
