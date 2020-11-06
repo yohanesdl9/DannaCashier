@@ -129,7 +129,7 @@ public class Master extends javax.swing.JFrame {
         String supplier = listSuplier.getSelectedItem().toString();
         try {
             HashMap<String, String> where = new HashMap<String, String>();
-            if (!keyword.equals("")) where.put("tb.nama LIKE ", "'" + keyword + "'");
+            if (!keyword.equals("")) where.put("tb.nama LIKE ", "'%" + keyword + "%'");
             if (!kategori.equals("Semua")) where.put("kategori.keterangan = ", "'" + kategori + "'");
             if (!satuan.equals("Semua")) where.put("satuan.keterangan = ", "'" + satuan + "'");
             if (!supplier.equals("Semua")) where.put("ts.nama = ", "'" + supplier + "'");
