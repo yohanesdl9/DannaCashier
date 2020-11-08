@@ -697,7 +697,7 @@ public class PembelianTunai extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (diskonPersen.getText().length() > 0) {
             int diskon = Integer.parseInt(diskonPersen.getText());
-            if (diskon > 100 && diskon < 0) {
+            if (diskon <= 100 && diskon >= 0) {
                 int sub_total = Integer.parseInt(subtotal.getText());
                 int diskon_nominal = sub_total * (100 - diskon) / 100;
                 diskonNominal.setText(String.valueOf(diskon_nominal));
