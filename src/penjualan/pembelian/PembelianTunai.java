@@ -18,6 +18,7 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import model.Barang;
 import model.PembelianDetail;
 import penjualan.CustomCombo;
@@ -95,12 +96,22 @@ public class PembelianTunai extends javax.swing.JFrame {
             String nama = inputNama.getText();
             String satuan = inputSatuan.getText();
             String total = inputTotal.getText();
-            String harga_jual = vm.getDataByParameter("kode = '" + barcode + "'", "tb_barang", "harga_jual");
-
-            Object[] data = {barcode, nama, jumlah, satuan, harga_beli, total, harga_jual};
-            model.addRow(data);
-
-            totalPembelian += Integer.parseInt(total);
+            
+            if (getRowByValue(tblPembelian, barcode, 0) > -1) {
+                int row = getRowByValue(tblPembelian, barcode, 0);
+                int current_qty = Integer.parseInt(tblPembelian.getValueAt(row, 2).toString());
+                int current_total = Integer.parseInt(tblPembelian.getValueAt(row, 5).toString());
+                current_qty += Integer.parseInt(jumlah);
+                tblPembelian.setValueAt(String.valueOf(current_qty), row, 2);
+                int total_new = current_qty * Integer.parseInt(tblPembelian.getValueAt(row, 4).toString());
+                tblPembelian.setValueAt(String.valueOf(total_new), row, 5);
+                totalPembelian += (total_new - current_total);
+            } else {
+                String harga_jual = vm.getDataByParameter("kode = '" + barcode + "'", "tb_barang", "harga_jual");
+                Object[] data = {barcode, nama, jumlah, satuan, harga_beli, total, harga_jual};
+                model.addRow(data);
+                totalPembelian += Integer.parseInt(total);
+            }
             subtotal.setText(Integer.toString(totalPembelian));
 
             if (diskonPersen.getText().equals("")) {
@@ -110,6 +121,7 @@ public class PembelianTunai extends javax.swing.JFrame {
                 int grandTotal = totalPembelian - Integer.parseInt(diskonNominal.getText());
                 grandtotal.setText(Integer.toString(grandTotal));
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -146,6 +158,7 @@ public class PembelianTunai extends javax.swing.JFrame {
     }
     
     public void resetAll(){
+        totalPembelian = 0;
         subtotal.setText("");
         diskonPersen.setText("");
         diskonNominal.setText("");
@@ -168,6 +181,16 @@ public class PembelianTunai extends javax.swing.JFrame {
         jLabel20.setVisible(true);
         tunai.setVisible(true);
         kembalian.setVisible(true);
+    }
+    
+    public int getRowByValue(JTable table, String value, int columnIndex) {
+        TableModel model = table.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, columnIndex).equals(value)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public void hitungKembalian() {

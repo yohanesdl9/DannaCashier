@@ -18,6 +18,7 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import model.Barang;
 import model.PenjualanDetail;
 import penjualan.CustomCombo;
@@ -121,6 +122,16 @@ public class PenjualanTunai extends javax.swing.JFrame {
         inputTotal.setText("");
     }
     
+    public int getRowByValue(JTable table, String value, int columnIndex) {
+        TableModel model = table.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, columnIndex).equals(value)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
     public void addToCart(){
         String jbkb = inputBarcode.getSelectedItem().toString();
         String nama = inputNama.getText();
@@ -131,19 +142,28 @@ public class PenjualanTunai extends javax.swing.JFrame {
         String hargaBersih = inputHargaBersih.getText();
         String total = inputTotal.getText();
 
-        Object[] data = {jbkb, nama, jumlah, satuan, hargaJual, disc, hargaBersih, total};
-        model.addRow(data);
-
-        totalPenjualan += Integer.parseInt(total);
-
+        if (getRowByValue(tblPenjualan, jbkb, 0) > -1) {
+            int row = getRowByValue(tblPenjualan, jbkb, 0);
+            int current_qty = Integer.parseInt(tblPenjualan.getValueAt(row, 2).toString());
+            int current_total = Integer.parseInt(tblPenjualan.getValueAt(row, 7).toString());
+            current_qty += Integer.parseInt(jumlah);
+            tblPenjualan.setValueAt(String.valueOf(current_qty), row, 2);
+            int total_new = current_qty * Integer.parseInt(tblPenjualan.getValueAt(row, 6).toString());
+            tblPenjualan.setValueAt(String.valueOf(total_new), row, 7);
+            totalPenjualan += (total_new - current_total);
+        } else {
+            Object[] data = {jbkb, nama, jumlah, satuan, hargaJual, disc, hargaBersih, total};
+            model.addRow(data);
+            totalPenjualan += Integer.parseInt(total);
+        }
         inputSubTotal.setText(Integer.toString(totalPenjualan));
-
         if (inputNominalDiskon.getText().equals("")) {
             inputGrandTotal.setText(Integer.toString(totalPenjualan));
         } else {
             int grandTotal = totalPenjualan * Integer.parseInt(inputNominalDiskon.getText());
             inputGrandTotal.setText(Integer.toString(grandTotal));
         }
+            
         inputBarcode.setSelectedItem(null);
         inputDiskon.setText("");
         inputNama.setText("");
@@ -162,6 +182,7 @@ public class PenjualanTunai extends javax.swing.JFrame {
     }
     
     public void resetAll(){
+        totalPenjualan = 0;
         inputSubTotal.setText("");
         inputPembulatan.setText("");
         inputNominalDiskon.setText("");
