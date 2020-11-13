@@ -56,7 +56,6 @@ public class UtangDAO extends Koneksi {
         }
         if (!supplier.equals("Pilih Supplier")) sql += "AND ts.nama = '" + supplier + "'\n";
         sql += "GROUP BY tp.id HAVING (tp.grand_total - IFNULL(Sum(tu.tunai), 0)) > 0";
-        System.out.println(sql);
         ResultSet rs = stmt.executeQuery(sql);
         int i = 1;
         while (rs.next()) {

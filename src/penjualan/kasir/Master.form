@@ -875,6 +875,9 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Keluar"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exit3ActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JTextField" name="searchPelanggan">
                       <Events>
@@ -1111,6 +1114,9 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Keluar"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exit2ActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JTextField" name="searchSales">
                       <Events>

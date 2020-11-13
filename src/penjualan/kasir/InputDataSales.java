@@ -34,7 +34,6 @@ public class InputDataSales extends javax.swing.JFrame {
         } catch (Exception e){
             e.printStackTrace();
         }
-        System.out.println(mode_form);
         if (mode_form == 1) {
             System.out.println(salesEdit.getId());
             kode.setText(salesEdit.getKode());

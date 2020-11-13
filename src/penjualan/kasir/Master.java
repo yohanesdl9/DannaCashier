@@ -720,6 +720,11 @@ public class Master extends javax.swing.JFrame {
         });
 
         exit3.setText("Keluar");
+        exit3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exit3ActionPerformed(evt);
+            }
+        });
 
         searchPelanggan.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -864,6 +869,11 @@ public class Master extends javax.swing.JFrame {
         });
 
         exit2.setText("Keluar");
+        exit2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exit2ActionPerformed(evt);
+            }
+        });
 
         searchSales.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -1555,6 +1565,16 @@ public class Master extends javax.swing.JFrame {
         InputDataBarang.mode_form = 0;
         new InputDataBarang().setVisible(true);
     }//GEN-LAST:event_tambahBarangActionPerformed
+
+    private void exit2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exit2ActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_exit2ActionPerformed
+
+    private void exit3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exit3ActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_exit3ActionPerformed
 
     /**
      * @param args the command line arguments
