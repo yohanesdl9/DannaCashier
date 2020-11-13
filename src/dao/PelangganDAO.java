@@ -33,6 +33,20 @@ public class PelangganDAO extends Koneksi {
         return instance;
     }
     
+    public Pelanggan getPelanggan(String nama) throws Exception {
+        Pelanggan sup = new Pelanggan();
+        ResultSet rs = vm.getDataByParameter("nama = '" + nama + "'", "tb_pelanggan");
+        if (rs.next()){
+            sup.setId(rs.getString("id"));
+            sup.setKode(rs.getString("kode"));
+            sup.setNama(rs.getString("nama"));
+            sup.setAlamat(rs.getString("alamat"));
+            sup.setTelepon(rs.getString("telepon"));
+            sup.setKeterangan(rs.getString("keterangan"));
+        }
+        return sup;
+    }
+    
     /* Mendapatkan data pelanggan, dimasukkan ke dalam array list Pelanggan */
     public List<Pelanggan> getListPelanggan() throws Exception{
         listPelanggan = new ArrayList<>();

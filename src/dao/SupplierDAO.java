@@ -32,8 +32,25 @@ public class SupplierDAO extends Koneksi {
         return instance;
     }
     
+    public Supplier getSupplier(String kode) throws Exception {
+        Supplier sup = new Supplier();
+        ResultSet rs = vm.getDataByParameter("kode = '" + kode + "'", "tb_supplier");
+        if (rs.next()){
+            sup.setId(rs.getString("id"));
+            sup.setKode(rs.getString("kode"));
+            sup.setNama(rs.getString("nama"));
+            sup.setAlamat(rs.getString("alamat"));
+            sup.setTelepon(rs.getString("telepon"));
+            sup.setEmail(rs.getString("email"));
+            sup.setRekening(rs.getString("rekening"));
+            sup.setContact_person(rs.getString("contact_person"));
+            sup.setKeterangan(rs.getString("keterangan"));
+        }
+        return sup;
+    }
+    
     /* Mendapatkan list semua supplier */
-    public List<Supplier> getListSupplier() throws Exception{
+    public List<Supplier> getListSupplier() throws Exception {
         listSupplier = new ArrayList<>();
         ResultSet rs = vm.getAllDataFromTable("tb_supplier");
         int i = 1;

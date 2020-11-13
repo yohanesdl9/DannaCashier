@@ -72,11 +72,16 @@ public class PembelianDAO extends Koneksi {
     /* Mendapatkan data pembelian secara detail (data pembelian seperti subtotal, diskon, total,
     dan detail pembelian (barang yang dipesan, jumlah dan total harganya) berdasarkan nomor faktur yang dipilih */
     public ViewPembelian getDataPembelian(String faktur) throws Exception {
-        ResultSet rs = vm.getDataByParameter("faktur = '" + faktur + "'", "tb_pembelian");
+        String sql = "SELECT tp.*, ts.kode, ts.nama FROM tb_pembelian AS tp\n" +
+            "INNER JOIN tb_supplier AS ts ON tp.id_supplier = ts.id\n" +
+            "WHERE tp.faktur = '" + faktur + "'";
+        ResultSet rs = stmt.executeQuery(sql);
         ViewPembelian vp = new ViewPembelian();
         while (rs.next()) {
             vp.setNo(rs.getString("id"));
             vp.setFaktur(rs.getString("faktur"));
+            vp.setKode_supplier(rs.getString("kode"));
+            vp.setNama_supplier(rs.getString("nama"));
             vp.setTanggal(dateIndo(rs.getString("tanggal")));
             vp.setTunai_kredit(rs.getString("tunai_kredit"));
             vp.setGrand_total(rs.getString("grand_total"));

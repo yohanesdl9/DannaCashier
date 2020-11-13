@@ -73,13 +73,20 @@ public class PenjualanDAO extends Koneksi {
     /* Mendapatkan data penjualan berdasarkan kode penjualan seperti tanggal, grand total, pembayaran dan jatuh tempo */
     public ViewPenjualan getDataPenjualan(String faktur) throws Exception {
         ViewPenjualan vp = new ViewPenjualan();
-        ResultSet rs = vm.getDataByParameter("kode = '" + faktur + "'", "tb_penjualan");
+        String sql = "SELECT tp.*, ts.nama AS nama_sales, tpel.nama AS nama_pelanggan\n" +
+            "FROM tb_penjualan AS tp\n" +
+            "INNER JOIN tb_sales AS ts ON tp.id_sales = ts.id\n" +
+            "INNER JOIN tb_pelanggan AS tpel ON tp.id_pelanggan = tpel.id\n" +
+            "WHERE tp.kode = '" + faktur + "'";
+        ResultSet rs = stmt.executeQuery(sql);
         while (rs.next()) {
             vp.setNo(rs.getString("id"));
             vp.setFaktur(rs.getString("kode"));
             vp.setTanggal(dateIndo(rs.getString("tanggal")));
             vp.setTunai_kredit(rs.getString("tunai_kredit"));
             vp.setGrand_total(rs.getString("grand_total"));
+            vp.setSales(rs.getString("nama_sales"));
+            vp.setPelanggan(rs.getString("nama_pelanggan"));
             if (rs.getString("tunai_kredit").equals("TUNAI")) {
                 vp.setHari(rs.getString("tempo"));
             }
