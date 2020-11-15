@@ -100,4 +100,28 @@ public class ViewModel extends Koneksi {
         rs.next();
         return "FP" + faktur_penjualan.substring(4) + String.format("%05d", rs.getInt("id") + 1);
     }
+    
+    public int getStatistik(String mode_statistik) throws Exception {
+        String sql = "";
+        if (mode_statistik.equals("pengeluaran_today")){
+            sql = "SELECT IFNULL(Sum(grand_total), 0) AS total FROM tb_pembelian WHERE DATE(tanggal) = DATE(NOW());";
+        } else if (mode_statistik.equals("pengeluaran_month")) {
+            sql = "SELECT IFNULL(Sum(grand_total), 0) AS total FROM tb_pembelian WHERE MONTH(tanggal) = MONTH(NOW());";
+        } else if (mode_statistik.equals("omset_today")){
+            sql = "SELECT IFNULL(Sum(grand_total), 0) AS total FROM tb_penjualan WHERE DATE(tanggal) = DATE(NOW());";
+        } else if (mode_statistik.equals("omset_month")) {
+            sql = "SELECT IFNULL(Sum(grand_total), 0) AS total FROM tb_penjualan WHERE MONTH(tanggal) = MONTH(NOW());";
+        } else if (mode_statistik.equals("retur_beli_today")){
+            sql = "SELECT IFNULL(Sum(total_retur), 0) AS total FROM tb_retur_pembelian WHERE DATE(tanggal) = DATE(NOW());";
+        } else if (mode_statistik.equals("retur_beli_month")) {
+            sql = "SELECT IFNULL(Sum(total_retur), 0) AS total FROM tb_retur_pembelian WHERE MONTH(tanggal) = MONTH(NOW());";
+        } else if (mode_statistik.equals("retur_jual_today")){
+            sql = "SELECT IFNULL(Sum(total_nilai), 0) AS total FROM tb_retur_penjualan WHERE DATE(tanggal) = DATE(NOW());";
+        } else if (mode_statistik.equals("retur_jual_month")) {
+            sql = "SELECT IFNULL(Sum(total_nilai), 0) AS total FROM tb_retur_penjualan WHERE MONTH(tanggal) = MONTH(NOW());";
+        }
+        ResultSet rs = stmt.executeQuery(sql);
+        rs.next();
+        return rs.getInt("total");
+    }
 }
