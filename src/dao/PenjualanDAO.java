@@ -37,6 +37,46 @@ public class PenjualanDAO extends Koneksi {
         return instance;
     }
     
+    /* Mendapatkan dataset untuk grafik penjualan tahun ini */
+    public ResultSet datasetPenjualanTahunIni() throws Exception {
+        String sql = "SELECT months.MONTH, YEAR(NOW()) AS tahun,\n" +
+            "CASE\n" +
+            "	WHEN months.MONTH = 1 THEN \"Januari\"\n" +
+            "	WHEN months.MONTH = 2 THEN \"Februari\"\n" +
+            "	WHEN months.MONTH = 3 THEN \"Maret\"\n" +
+            "	WHEN months.MONTH = 4 THEN \"April\"\n" +
+            "	WHEN months.MONTH = 5 THEN \"Mei\"\n" +
+            "	WHEN months.MONTH = 6 THEN \"Juni\"\n" +
+            "	WHEN months.MONTH = 7 THEN \"Juli\"\n" +
+            "	WHEN months.MONTH = 8 THEN \"Agustus\"\n" +
+            "	WHEN months.MONTH = 9 THEN \"September\"\n" +
+            "	WHEN months.MONTH = 10 THEN \"Oktober\"\n" +
+            "	WHEN months.MONTH = 11 THEN \"November\"\n" +
+            "	WHEN months.MONTH = 12 THEN \"Desember\" \n" +
+            "END\n" +
+            "as label, IFNULL(main.value, 0) AS value\n" +
+            "FROM (SELECT 1 AS MONTH\n" +
+            "	UNION SELECT 2 AS MONTH\n" +
+            "	UNION SELECT 3 AS MONTH\n" +
+            "	UNION SELECT 4 AS MONTH\n" +
+            "	UNION SELECT 5 AS MONTH\n" +
+            "	UNION SELECT 6 AS MONTH \n" +
+            "	UNION SELECT 7 AS MONTH\n" +
+            "	UNION SELECT 8 AS MONTH\n" +
+            "	UNION SELECT 9 AS MONTH\n" +
+            "	UNION SELECT 10 AS MONTH\n" +
+            "	UNION SELECT 11 AS MONTH\n" +
+            "	UNION SELECT 12 AS MONTH) as months\n" +
+            "LEFT JOIN (\n" +
+            "	SELECT MONTH(tanggal) AS bulan, IFNULL(SUM(grand_total), 0) AS value\n" +
+            "	FROM tb_penjualan\n" +
+            "	WHERE YEAR(tanggal) = YEAR(NOW())\n" +
+            "	GROUP BY bulan\n" +
+            ") as main ON main.bulan = months.MONTH\n" +
+            "ORDER BY months.MONTH ASC";
+        return stmt.executeQuery(sql);
+    }
+    
     /* Mendapatkan list penjualan berdasarkan rentang waktu penjualan, pelanggan dan sales tertentu */
     public List<ViewPenjualan> getListPenjualan(Date start, Date end, String pelanggan, String sales) throws Exception {
         String dateStart = new SimpleDateFormat("yyyy-MM-dd").format(start);
@@ -162,7 +202,7 @@ public class PenjualanDAO extends Koneksi {
         }
         int status = statement.executeUpdate();
         if (status > 0) {
-            int id_detail = vm.getLatestId("id", "tb_pembelian_detail");
+            int id_detail = vm.getLatestId("id", "tb_penjualan_detail");
             sql = "INSERT INTO tb_penjualan_detail VALUES ";
             for (int i = 0; i < detail_penjualan.size(); i++){
                 sql += ("('" + detail_penjualan.get(i).getId() + "', '" + detail_penjualan.get(i).getId_penjualan() + "', '" +
