@@ -11,7 +11,7 @@ import java.util.Calendar;
 
 /**
  *
- * @author Yohanes Dwi Listio
+ * @author hannah fitri nur aisyah
  */
 public class ViewModel extends Koneksi {
     

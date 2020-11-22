@@ -7,7 +7,7 @@ package penjualan;
 
 /**
  *
- * @author Yohanes Dwi Listio
+ * @author hannah fitri nur aisyah
  */
 class LoggerFactory {
     

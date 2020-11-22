@@ -8,7 +8,7 @@ package penjualan;
 
 /**
  *
- * @author USER
+ * @author hannah fitri nur aisyah
  */
 public class LoginFrame extends javax.swing.JFrame {
 

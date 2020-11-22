@@ -19,7 +19,7 @@ import penjualan.ViewModel;
 
 /**
  *
- * @author USER
+ * @author hannah fitri nur aisyah
  */
 public class Piutang extends javax.swing.JFrame {
 

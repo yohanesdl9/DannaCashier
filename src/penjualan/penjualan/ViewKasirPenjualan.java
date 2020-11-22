@@ -29,7 +29,7 @@ import penjualan.ViewModel;
 
 /**
  *
- * @author Yohanes Dwi Listio
+ * @author hannah fitri nur aisyah
  */
 public class ViewKasirPenjualan extends javax.swing.JFrame {
 

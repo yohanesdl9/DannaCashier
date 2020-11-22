@@ -9,7 +9,7 @@ import java.sql.*;
 
 /**
  *
- * @author yohan
+ * @author hannah fitri nur aisyah
  */
 public class Koneksi {
     public Connection koneksi;

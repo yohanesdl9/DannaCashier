@@ -30,7 +30,7 @@ import penjualan.ViewModel;
 
 /**
  *
- * @author Yohanes Dwi Listio
+ * @author hannah fitri nur aisyah
  */
 public class ReturPenjualan extends javax.swing.JFrame {
 
