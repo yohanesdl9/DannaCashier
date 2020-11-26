@@ -44,7 +44,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
- * @author Yohanes Dwi Listio
+ * @author hannah fitri nur aisyah
  */
 public class MenuUtama extends javax.swing.JFrame {
 

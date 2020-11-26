@@ -14,7 +14,7 @@ import javax.swing.text.PlainDocument;
 
 /**
  *
- * @author Yohanes Dwi Listio
+ * @author hannah fitri nur aisyah
  */
 public class CustomCombo extends PlainDocument {
 

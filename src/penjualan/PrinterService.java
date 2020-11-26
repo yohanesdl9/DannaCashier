@@ -25,7 +25,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 
 /**
  *
- * @author Yohanes Dwi Listio
+ * @author hannah fitri nur aisyah
  */
 public class PrinterService implements Printable {
     public List<String> getPrinters(){

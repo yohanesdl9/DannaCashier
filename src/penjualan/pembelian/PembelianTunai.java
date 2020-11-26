@@ -26,7 +26,7 @@ import penjualan.ViewModel;
 
 /**
  *
- * @author Yohanes Dwi Listio
+ * @author hannah fitri nur aisyah
  */
 public class PembelianTunai extends javax.swing.JFrame {
 

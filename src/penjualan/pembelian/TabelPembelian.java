@@ -18,7 +18,7 @@ import penjualan.ViewModel;
 
 /**
  *
- * @author Yohanes Dwi Listio
+ * @author hannah fitri nur aisyah
  */
 public class TabelPembelian extends javax.swing.JFrame {
 

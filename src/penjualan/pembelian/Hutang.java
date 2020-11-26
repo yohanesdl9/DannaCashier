@@ -20,7 +20,7 @@ import penjualan.ViewModel;
 
 /**
  *
- * @author USER
+ * @author hannah fitri nur aisyah
  */
 public class Hutang extends javax.swing.JFrame {
 
