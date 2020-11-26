@@ -226,6 +226,18 @@ public class PenjualanDAO extends Koneksi {
         return status;
     }
     
+    public int deletePenjualan(String faktur) throws Exception {
+        int status = 0;
+        List<PenjualanDetail> detail = getListPembelianDetail(faktur);
+        for (int i = 0; i < detail.size(); i++){
+            int stok_masuk = Integer.parseInt(detail.get(i).getJumlah());
+            status = barangDAO.updateStockBarang(detail.get(i).getId_barang(), stok_masuk, 0, "Penambahan stok dari pembatalan transaksi penjualan " + faktur);
+        }
+        String sql = "DELETE FROM tb_penjualan WHERE kode = '" + faktur + "';";
+        status = stmt.executeUpdate(sql);
+        return status;
+    }
+    
     public String dateIndo(String date){
         String[] dates = date.split("-");
         String[] bulan = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"};

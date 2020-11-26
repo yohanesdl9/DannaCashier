@@ -225,6 +225,18 @@ public class PembelianDAO extends Koneksi {
         return status;
     }
     
+    public int deletePembelian(String faktur) throws Exception {
+        int status = 0;
+        List<PembelianDetail> detail = getListPembelianDetail(faktur);
+        for (int i = 0; i < detail.size(); i++){
+            int stok_keluar = Integer.parseInt(detail.get(i).getJumlah());
+            status = barangDAO.updateStockBarang(detail.get(i).getId_barang(), 0, stok_keluar, "Pengurangan stok dari pembatalan transaksi pembelian " + faktur);
+        }
+        String sql = "DELETE FROM tb_pembelian WHERE faktur = '" + faktur + "';";
+        status = stmt.executeUpdate(sql);
+        return status;
+    }
+    
     /* Mengubah format tanggal dari database MySQL (yyyy-mm-dd) ke bentuk tanggal bahasa Indonesia */
     public String dateIndo(String date){
         String[] dates = date.split("-");

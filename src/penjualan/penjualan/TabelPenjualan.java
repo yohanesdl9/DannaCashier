@@ -122,6 +122,7 @@ public class TabelPenjualan extends javax.swing.JFrame {
         btnRefresh = new javax.swing.JButton();
         selectSales = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
+        btnHapus = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -197,6 +198,13 @@ public class TabelPenjualan extends javax.swing.JFrame {
 
         jLabel6.setText("Sales");
 
+        btnHapus.setText("Hapus");
+        btnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -228,6 +236,8 @@ public class TabelPenjualan extends javax.swing.JFrame {
                             .addComponent(jLabel5)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnTampilKasir)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnHapus)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnRefresh)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -267,7 +277,9 @@ public class TabelPenjualan extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnExit)
                         .addComponent(btnRefresh))
-                    .addComponent(btnTampilKasir, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnTampilKasir)
+                        .addComponent(btnHapus)))
                 .addContainerGap())
         );
 
@@ -319,6 +331,26 @@ public class TabelPenjualan extends javax.swing.JFrame {
         initTabelPenjualan();
     }//GEN-LAST:event_selectSalesActionPerformed
 
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+        // TODO add your handling code here:        
+        if (tablePenjualan.getSelectedRow() > -1) {
+            int confirm = JOptionPane.showConfirmDialog(null, "Apakah Anda yakin ingin menghapus transaksi yang dipilih. Menghapus berarti membatalkan transaksi.", "Yakin ingin menghapus?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if (confirm == JOptionPane.OK_OPTION) {
+                try {
+                    int status = penjualanDAO.deletePenjualan(tablePenjualan.getValueAt(tablePenjualan.getSelectedRow(), 1).toString());
+                    if (status > 0) {
+                        JOptionPane.showMessageDialog(null, "Berhasil menghapus transaksi pembelian.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                        initTabelPenjualan();
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih dahulu transaksi pembelian yang akan dihapus", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnHapusActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -356,6 +388,7 @@ public class TabelPenjualan extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExit;
+    private javax.swing.JButton btnHapus;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnTampilKasir;
     private com.toedter.calendar.JDateChooser endDate;
